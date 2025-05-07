@@ -2,6 +2,7 @@ import Render from "../render/render.ts";
 import type {Canvaser} from "./core.types.ts";
 import type {RenderTargetInstances} from "../render/render.types.ts";
 import Container from "../container/container.ts";
+import {cancelAllEvents, registerAllEvents} from "../eventCenter/eventCenter.ts";
 
 
 const MY_CANVAS: Canvaser = {
@@ -62,6 +63,8 @@ export function init(
   initContainer(target.clientWidth, target.clientHeight, MY_CANVAS)
 
   initRender(fps);
+
+  registerAllEvents()
 }
 
 export function exit() {
@@ -72,4 +75,6 @@ export function exit() {
   }
 
   RenderInstance = null;
+
+  cancelAllEvents()
 }

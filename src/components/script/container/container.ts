@@ -1,4 +1,5 @@
 import type {Canvaser} from "../core/core.types.ts";
+import PubSub from "../../../utils/pubSub.ts";
 
 class Container {
   canvas: HTMLCanvasElement | null = null
@@ -30,13 +31,13 @@ class Container {
     if (!this.canvas) return
 
     // 拖动事件
-    this.canvas.addEventListener('mousedown', (e) => {
+    PubSub.subscribe('mousedown', (e) => {
       this.dragging = true
       this.lastX = e.clientX
       this.lastY = e.clientY
     })
 
-    window.addEventListener('mousemove', (e) => {
+    PubSub.subscribe('mousemove', (e) => {
       if (!this.dragging) return
       const dx = e.clientX - this.lastX
       const dy = e.clientY - this.lastY
@@ -47,12 +48,12 @@ class Container {
       this.offsetY += dy
     })
 
-    window.addEventListener('mouseup', () => {
+    PubSub.subscribe('mouseup', () => {
       this.dragging = false
     })
 
     // 缩放事件（滚轮）
-    this.canvas.addEventListener('wheel', (e) => {
+    PubSub.subscribe('wheel', (e) => {
       e.preventDefault()
 
       const zoomFactor = 1.1
@@ -71,7 +72,7 @@ class Container {
       this.offsetX = mouseX - (mouseX - this.offsetX) * scaleChange
       this.offsetY = mouseY - (mouseY - this.offsetY) * scaleChange
 
-    }, {passive: false})
+    })
   }
 
   draw() {
@@ -81,11 +82,9 @@ class Container {
 
     // 清空并应用变换
     ctx.setTransform(1, 0, 0, 1, 0, 0)
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
     ctx.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY)
 
-    // 画内容（可以替换成你自己的图形）
     ctx.fillStyle = '#f0f0f0'
     ctx.fillRect(-1000, -1000, 2000, 2000) // 背景大点方便拖动
 
