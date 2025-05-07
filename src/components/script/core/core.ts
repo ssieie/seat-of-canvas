@@ -3,7 +3,10 @@ import type {Canvaser} from "./core.types.ts";
 import type {RenderTargetInstances} from "../render/render.types.ts";
 import Container from "../container/container.ts";
 import {cancelAllEvents, registerAllEvents} from "../eventCenter/eventCenter.ts";
+import Test from "../test/test.ts";
+import RuntimeStore from "../runtimeStore/runtimeStore.ts";
 
+const store = RuntimeStore.getInstance();
 
 const MY_CANVAS: Canvaser = {
   cvs: null,
@@ -12,12 +15,14 @@ const MY_CANVAS: Canvaser = {
 
 let RenderInstance: Render | null = null;
 
+let ContainerInstance: Container | null = null;
+
 const instances: RenderTargetInstances = {
-  Container: null, // 主容器
+  Test: null
 };
 
-function initContainer(w: number, h: number, canvas: Canvaser) {
-  instances.Container = new Container(w, h, canvas);
+function initTest(canvas: Canvaser) {
+  instances.Test = new Test(canvas);
 }
 
 function initRender(fps: number) {
@@ -26,25 +31,12 @@ function initRender(fps: number) {
   // 主渲染任务
   RenderInstance.run(instances);
 
-  // 指定时间间隔触发器的例子
-  RenderInstance.addBehavior<number | undefined>(
-    "demo",
-    () => {
-      return 1
-    },
-    (frequency) => {
-      if (frequency) {
-        console.log(frequency);
-        // todo 改变某个值
-      }
-    },
-    1000 / 0.1,
-    false,
-  ); // 0.1 次/秒
+  // 注册渲染期间任何自定义行为
+  // behaviorController();
 }
 
 export function resize(w: number, h: number) {
-  instances.Container?.resize?.(w, h);
+  ContainerInstance?.resize?.(w, h);
 }
 
 export function init(
@@ -58,9 +50,11 @@ export function init(
 
   MY_CANVAS.pen = MY_CANVAS.cvs.getContext('2d')
 
+  ContainerInstance = new Container(target.clientWidth, target.clientHeight, MY_CANVAS)
+
   target.appendChild(MY_CANVAS.cvs)
 
-  initContainer(target.clientWidth, target.clientHeight, MY_CANVAS)
+  initTest(MY_CANVAS)
 
   initRender(fps);
 
@@ -68,6 +62,11 @@ export function init(
 }
 
 export function exit() {
+  ContainerInstance?.clear();
+  ContainerInstance = null;
+
+  store.unsubscribeAll()
+
   RenderInstance?.clear();
 
   for (const key in instances) {

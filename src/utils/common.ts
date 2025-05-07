@@ -48,3 +48,30 @@ export function generateUuid(): string {
     return v.toString(16);
   });
 }
+
+export function deepCopy(obj: any, cache = new WeakMap()) {
+  // 如果是基本数据类型或者是null/undefined，直接返回
+  if (obj === null || typeof obj !== 'object') {
+    return obj
+  }
+
+  // 检查缓存，防止循环引用
+  if (cache.has(obj)) {
+    return cache.get(obj)
+  }
+
+  // 根据类型创建新的对象或数组
+  const result: any = Array.isArray(obj) ? [] : {}
+
+  // 将当前对象放入缓存
+  cache.set(obj, result)
+
+  // 递归处理每个属性
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      result[key] = deepCopy(obj[key], cache)
+    }
+  }
+
+  return result
+}

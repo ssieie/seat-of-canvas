@@ -1,16 +1,17 @@
 import type {Canvaser} from "../core/core.types.ts";
 import PubSub from "../../../utils/pubSub.ts";
+import type {ContainerTransformState} from "./container.type.ts";
+import RuntimeStore from "../runtimeStore/runtimeStore.ts";
+import behaviorTasksInstance from "../behaviorTasks/behaviorTasks.ts";
+
+const store = RuntimeStore.getInstance();
+
 
 class Container {
   canvas: HTMLCanvasElement | null = null
   ctx: CanvasRenderingContext2D | null = null
   private dragging = false
-  private lastX = 0
-  private lastY = 0
-
-  private offsetX = 0
-  private offsetY = 0
-  private scale = 1
+  transformState: ContainerTransformState
 
   constructor(w: number, h: number, cv: Canvaser) {
     this.canvas = cv.cvs
@@ -18,7 +19,15 @@ class Container {
 
     this.resize(w, h)
 
+    this.transformState = store.getState('containerTransformState')
+
+    store.subscribe('containerTransformState', this.onTransformStateChange.bind(this));
+
     this.addEvents()
+  }
+
+  onTransformStateChange(newVal: ContainerTransformState) {
+    this.transformState = newVal
   }
 
   resize(width: number, height: number) {
@@ -32,20 +41,36 @@ class Container {
 
     // 拖动事件
     PubSub.subscribe('mousedown', (e) => {
-      this.dragging = true
-      this.lastX = e.clientX
-      this.lastY = e.clientY
+      if (e.button === 0) {
+        this.dragging = true
+
+        store.updateState('containerTransformState', {
+          ...this.transformState,
+          lastX: e.clientX,
+          lastY: e.clientY,
+        });
+      }
+
+      if (e.button === 1) {
+        this.resetTransform()
+      }
     })
 
     PubSub.subscribe('mousemove', (e) => {
       if (!this.dragging) return
-      const dx = e.clientX - this.lastX
-      const dy = e.clientY - this.lastY
-      this.lastX = e.clientX
-      this.lastY = e.clientY
+      const dx = e.clientX - this.transformState.lastX
+      const dy = e.clientY - this.transformState.lastY
 
-      this.offsetX += dx
-      this.offsetY += dy
+      let newOffsetX = this.transformState.offsetX + dx;
+      let newOffsetY = this.transformState.offsetY + dy;
+
+      store.updateState('containerTransformState', {
+        ...this.transformState,
+        lastX: e.clientX,
+        lastY: e.clientY,
+        offsetX: newOffsetX,
+        offsetY: newOffsetY,
+      });
     })
 
     PubSub.subscribe('mouseup', () => {
@@ -56,51 +81,83 @@ class Container {
     PubSub.subscribe('wheel', (e) => {
       e.preventDefault()
 
+      let scale = this.transformState.scale
+      let offsetX = this.transformState.offsetX
+      let offsetY = this.transformState.offsetY
+
       const zoomFactor = 1.1
-      const oldScale = this.scale
+      const oldScale = scale
       const mouseX = e.offsetX
       const mouseY = e.offsetY
 
       if (e.deltaY < 0) {
-        this.scale *= zoomFactor
+        scale *= zoomFactor
       } else {
-        this.scale /= zoomFactor
+        scale /= zoomFactor
       }
 
       // 保持缩放中心在鼠标位置
-      const scaleChange = this.scale / oldScale
-      this.offsetX = mouseX - (mouseX - this.offsetX) * scaleChange
-      this.offsetY = mouseY - (mouseY - this.offsetY) * scaleChange
+      const scaleChange = scale / oldScale
 
+      store.updateState('containerTransformState', {
+        ...this.transformState,
+        scale,
+        offsetX: mouseX - (mouseX - offsetX) * scaleChange,
+        offsetY: mouseY - (mouseY - offsetY) * scaleChange,
+      });
     })
   }
 
-  draw() {
-    if (!this.ctx || !this.canvas) return
-    const ctx = this.ctx
-    ctx.save()
+  resetTransform() {
+    const duration = 300; // ms
+    const startTime = performance.now();
 
-    // 清空并应用变换
-    ctx.setTransform(1, 0, 0, 1, 0, 0)
+    const startState = {
+      offsetX: this.transformState.offsetX,
+      offsetY: this.transformState.offsetY,
+      scale: this.transformState.scale,
+    };
 
-    ctx.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY)
+    const endState = {
+      offsetX: 0,
+      offsetY: 0,
+      scale: 1,
+    };
 
-    ctx.fillStyle = '#f0f0f0'
-    ctx.fillRect(-1000, -1000, 2000, 2000) // 背景大点方便拖动
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
-    ctx.fillStyle = 'blue'
-    ctx.fillRect(0, 0, 200, 200)
+    behaviorTasksInstance.addBehavior<ContainerTransformState>(
+      "resetTransform",
+      () => {
+        const now = performance.now();
+        const elapsed = now - startTime;
+        const t = Math.min(1, elapsed / duration);
+        const easeOut = t * (2 - t);
 
-    ctx.fillStyle = 'red'
-    ctx.beginPath()
-    ctx.arc(400, 200, 80, 0, Math.PI * 2)
-    ctx.fill()
+        // 动画完成时移除任务
+        if (t >= 1) {
+          behaviorTasksInstance.delBehavior("resetTransform");
+        }
 
-    ctx.restore()
+        return {
+          offsetX: lerp(startState.offsetX, endState.offsetX, easeOut),
+          offsetY: lerp(startState.offsetY, endState.offsetY, easeOut),
+          scale: lerp(startState.scale, endState.scale, easeOut),
+          lastX: 0,
+          lastY: 0,
+        };
+      },
+      (val) => {
+        store.updateState('containerTransformState', val)
+      },
+      1000 / 60, // 每秒 60 次
+      true
+    );
   }
 
   clear() {
     //
+    store.unsubscribe('containerTransformState', this.onTransformStateChange.bind(this));
   }
 }
 
