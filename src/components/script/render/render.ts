@@ -1,6 +1,7 @@
 import type {RenderTargetInstances} from "./render.types.ts";
 import type {Canvaser} from "../core/core.types.ts";
 import behaviorTasksInstance from "../behaviorTasks/behaviorTasks.ts";
+import drawGrid from "./drawGrid.ts";
 
 class Render {
   cvs: HTMLCanvasElement;
@@ -32,6 +33,8 @@ class Render {
       this.lastRenderTime = currentTime - (elapsed % this.fpsInterval);
 
       this.$.clearRect(0, 0, this.cvs.width, this.cvs.height);
+
+      drawGrid(this.$, this.cvs.width, this.cvs.height)
 
       for (const key in instances) {
         instances[key]?.draw?.();

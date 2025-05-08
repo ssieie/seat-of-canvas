@@ -1,9 +1,11 @@
 import type {ContainerTransformState} from "../container/container.type.ts";
+import type {Element, Group} from "../graphic/graphic.types.ts";
 
 
 type RuntimeState = {
   containerTransformState: ContainerTransformState
-
+  group: Group[]
+  element: Element
 };
 
 
@@ -15,7 +17,9 @@ function initRuntimeState(): RuntimeState {
       offsetX: 0,
       offsetY: 0,
       scale: 1,
-    }
+    },
+    group: [],
+    element: []
   }
 }
 
@@ -68,13 +72,13 @@ class RuntimeStore {
   }
 
   // 订阅特定字段
-  subscribe<K extends keyof RuntimeState>(key: K, listener: (val: RuntimeState[K], old: RuntimeState[K]) => void) {
+  subscribe<K extends keyof RuntimeState>(key: K, listener: (val: RuntimeState[K], old: RuntimeState[K]) => void, immediately = false) {
     if (!this.listeners[key]) {
-      this.listeners[key] = new Set();
+      this.listeners[key] = new Set() as Listeners[K];
     }
     this.listeners[key].add(listener);
     // 立即触发一次
-    listener(this.state[key], this.state[key]);
+    immediately && listener(this.state[key], this.state[key]);
   }
 
   // 取消订阅

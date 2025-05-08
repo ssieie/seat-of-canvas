@@ -85,12 +85,13 @@ class Container {
       let offsetX = this.transformState.offsetX
       let offsetY = this.transformState.offsetY
 
-      const zoomFactor = 1.1
+      const zoomFactor = 1.09
       const oldScale = scale
       const mouseX = e.offsetX
       const mouseY = e.offsetY
 
       if (e.deltaY < 0) {
+        if (scale > 3) return
         scale *= zoomFactor
       } else {
         scale /= zoomFactor
@@ -101,7 +102,7 @@ class Container {
 
       store.updateState('containerTransformState', {
         ...this.transformState,
-        scale,
+        scale: scale,
         offsetX: mouseX - (mouseX - offsetX) * scaleChange,
         offsetY: mouseY - (mouseY - offsetY) * scaleChange,
       });

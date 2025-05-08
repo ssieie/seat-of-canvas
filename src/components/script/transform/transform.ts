@@ -2,7 +2,7 @@ import RuntimeStore from "../runtimeStore/runtimeStore.ts";
 
 const store = RuntimeStore.getInstance();
 
-function getTransformState() {
+export function getTransformState() {
   return store.getState('containerTransformState');
 }
 

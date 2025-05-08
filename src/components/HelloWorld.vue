@@ -35,13 +35,33 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="wrapper" ref="wrapperRef"></div>
+  <div class="btns">
+    <div class="btn">+矩形3*3</div>
+    <div class="btn">+矩形6*4</div>
+  </div>
+  <div class="wrapper" @contextmenu.prevent ref="wrapperRef"></div>
 </template>
 
 <style scoped>
+.btns {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn {
+  background: blue;
+  padding: 2px 10px;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
 .wrapper {
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 40px);
   overflow: hidden;
 }
 </style>
