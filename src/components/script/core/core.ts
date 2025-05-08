@@ -1,10 +1,10 @@
 import Render from "../render/render.ts";
-import type {Canvaser} from "./core.types.ts";
+import type {Canvaser, GraphicFunc} from "./core.types.ts";
 import type {RenderTargetInstances} from "../render/render.types.ts";
 import Container from "../container/container.ts";
 import {cancelAllEvents, registerAllEvents} from "../eventCenter/eventCenter.ts";
-import Test from "../test/test.ts";
 import RuntimeStore from "../runtimeStore/runtimeStore.ts";
+import initGraphicInstances from "./graphicRegister.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -18,12 +18,9 @@ let RenderInstance: Render | null = null;
 let ContainerInstance: Container | null = null;
 
 const instances: RenderTargetInstances = {
-  Test: null
+  Test: null,
+  Matrix: null
 };
-
-function initTest(canvas: Canvaser) {
-  instances.Test = new Test(canvas);
-}
 
 function initRender(fps: number) {
   RenderInstance = new Render(fps, MY_CANVAS);
@@ -42,7 +39,7 @@ export function resize(w: number, h: number) {
 export function init(
   target: HTMLElement,
   fps = 30,
-) {
+): GraphicFunc {
 
   MY_CANVAS.cvs = document.createElement('canvas')
 
@@ -54,11 +51,13 @@ export function init(
 
   target.appendChild(MY_CANVAS.cvs)
 
-  initTest(MY_CANVAS)
+  const func = initGraphicInstances(MY_CANVAS, instances)
 
   initRender(fps);
 
   registerAllEvents()
+
+  return func
 }
 
 export function exit() {

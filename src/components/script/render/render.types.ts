@@ -1,10 +1,8 @@
-
 interface RenderTargetInstancesFunc {
   draw: () => void;
   clear: () => void;
-  resize?: (w: number, h: number) => void;
   // 以下为自定义
-  changeWalkStatus?: () => void;
+  addMatrixGraphic?: (name: string, row: number, col: number) => void;
 }
 
 export interface RenderTargetInstances {

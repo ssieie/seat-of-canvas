@@ -13,22 +13,23 @@ class Test {
 
   draw() {
     const ctx = this.ctx!
-    ctx.fillStyle = '#f0f0f0'
-    const screen1 = originToScreen(-1000, -1000);
-    ctx.fillRect(screen1.x, screen1.y, scaleSize(2000), scaleSize(2000)) // 背景大点方便拖动
 
+    // const screen1 = originToScreen(0, 0);
+    // ctx.textAlign = "center";
+    // ctx.fillText('asdasd', screen1.x, screen1.y);
+    // ctx.fillRect(screen1.x, screen1.y, scaleSize(50), scaleSize(50))
 
     for (let i = 0; i < 100; i++) {
       ctx.fillStyle = 'blue'
-      const screen2 = originToScreen(0 + i * 200, 0 + i * 300);
-      ctx.fillRect(screen2.x, screen2.y, scaleSize(200), scaleSize(200))
+      const screen2 = originToScreen(0 + i * 60, 550 + i * 60);
+      ctx.fillRect(screen2.x, screen2.y, scaleSize(50), scaleSize(50))
     }
 
     for (let i = 0; i < 100; i++) {
       ctx.fillStyle = 'red'
       ctx.beginPath()
-      const screen3 = originToScreen(400 + i * 200, 200 + i * 200);
-      ctx.arc(screen3.x, screen3.y, scaleSize(80), 0, Math.PI * 2)
+      const screen3 = originToScreen(400 + i * 60, 550 + i * 60);
+      ctx.arc(screen3.x, screen3.y, scaleSize(20), 0, Math.PI * 2)
       ctx.fill()
     }
 

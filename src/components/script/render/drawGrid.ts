@@ -7,7 +7,7 @@ export default function drawGrid(
 ): void {
   const {scale: rawScale, offsetX, offsetY} = getTransformState();
 
-  const scale = Math.min(Math.max(rawScale, 0.75), 3); // 限制 scale 在 0.2 ~ 5 之间
+  const scale = Math.min(Math.max(rawScale, 0.75), 3);
 
   const gridSpacing = 30; // 原始点阵间距
   let dotRadius = 1;  // 每个点的半径

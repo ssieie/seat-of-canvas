@@ -6,7 +6,6 @@ import behaviorTasksInstance from "../behaviorTasks/behaviorTasks.ts";
 
 const store = RuntimeStore.getInstance();
 
-
 class Container {
   canvas: HTMLCanvasElement | null = null
   ctx: CanvasRenderingContext2D | null = null

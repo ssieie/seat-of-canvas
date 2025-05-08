@@ -1,11 +1,10 @@
 import type {ContainerTransformState} from "../container/container.type.ts";
-import type {Element, Group} from "../graphic/graphic.types.ts";
+import type {Graphic} from "../graphic/graphic.types.ts";
 
 
 type RuntimeState = {
   containerTransformState: ContainerTransformState
-  group: Group[]
-  element: Element
+  graphicMatrix: Graphic
 };
 
 
@@ -18,8 +17,11 @@ function initRuntimeState(): RuntimeState {
       offsetY: 0,
       scale: 1,
     },
-    group: [],
-    element: []
+    graphicMatrix: {
+      groups: {},
+      elements: {},
+      groupElements: {}
+    },
   }
 }
 
