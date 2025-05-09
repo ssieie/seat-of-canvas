@@ -5,6 +5,7 @@ import Container from "../container/container.ts";
 import {cancelAllEvents, registerAllEvents} from "../eventCenter/eventCenter.ts";
 import RuntimeStore from "../runtimeStore/runtimeStore.ts";
 import initGraphicInstances from "./graphicRegister.ts";
+import AssetsLoader from "../assetsLoader/assetsLoader.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -36,10 +37,10 @@ export function resize(w: number, h: number) {
   ContainerInstance?.resize?.(w, h);
 }
 
-export function init(
+export async function init(
   target: HTMLElement,
   fps = 30,
-): GraphicFunc {
+): Promise<GraphicFunc> {
 
   MY_CANVAS.cvs = document.createElement('canvas')
 
@@ -50,6 +51,8 @@ export function init(
   ContainerInstance = new Container(target.clientWidth, target.clientHeight, MY_CANVAS)
 
   target.appendChild(MY_CANVAS.cvs)
+
+  await AssetsLoader.load().catch(console.error)
 
   const func = initGraphicInstances(MY_CANVAS, instances)
 

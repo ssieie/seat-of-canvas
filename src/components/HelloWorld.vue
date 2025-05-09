@@ -27,11 +27,13 @@ const addM = (row: number, col: number) => {
 }
 
 
-onMounted(() => {
+onMounted(async () => {
   if (wrapperRef.value) {
     resizeObserver.observe(wrapperRef.value)
 
-    cFunc = init(wrapperRef.value, 60)
+    cFunc = await init(wrapperRef.value, 60)
+
+    addM(4, 5)
   }
 })
 

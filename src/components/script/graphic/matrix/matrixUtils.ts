@@ -1,6 +1,7 @@
 import type {Element, Group} from "../graphic.types.ts";
 import {ELEMENT_HEIGHT, ELEMENT_WIDTH} from "../constant.ts";
 import {originToScreen, scaleSize} from "../../transform/transform.ts";
+import {setCtxFont} from "../graphicUtils.ts";
 
 const BOTTOM_TEXT_HEIGHT = 30;
 
@@ -45,23 +46,20 @@ export function drawGroup(ctx: CanvasRenderingContext2D, group: Group) {
 }
 
 export function drawGroupName(ctx: CanvasRenderingContext2D, group: Group) {
-  ctx.font = `${scaleSize(13)}px Arial`;
-  ctx.fillStyle = "#000";
-  ctx.textAlign = "center";
+  setCtxFont(ctx, '#000', 'center')
   const textScreen = originToScreen(group.x + group.width / 2, group.y + group.height - MATRIX_GAP);
   ctx.fillText(`区域名称：${group.group_name}`, textScreen.x, textScreen.y);
 }
 
 export function drawGroupElement(ctx: CanvasRenderingContext2D, element: Element) {
   ctx.strokeStyle = 'red'
+  ctx.lineWidth = scaleSize(2)
   const screen = originToScreen(element.x, element.y);
   ctx.strokeRect(screen.x, screen.y, scaleSize(element.width), scaleSize(element.height))
 }
 
 export function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: Element) {
-  ctx.font = `${scaleSize(13)}px Arial`;
-  ctx.fillStyle = "#000";
-  ctx.textAlign = "center";
+  setCtxFont(ctx, '#000', 'center')
   const textScreen = originToScreen(element.x + element.width / 2, element.y + MATRIX_GAP);
   ctx.fillText(String(element.index), textScreen.x, textScreen.y);
 }
