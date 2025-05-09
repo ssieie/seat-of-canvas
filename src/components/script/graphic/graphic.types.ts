@@ -29,4 +29,6 @@ export interface Element {
   height: number;
   // 矩阵组特有
   pos?: [number, number]
+  // 业务相关
+  text?: string
 }

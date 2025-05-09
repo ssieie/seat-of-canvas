@@ -13,11 +13,14 @@ export const loadImg = (imgList: string[]): Promise<LoadImgRes[]> => {
         const img = new Image();
         img.src = url;
         img.onload = function () {
-          res({
-            name: clearFileName(url)!,
-            uri: img,
-            width: img.width,
-            height: img.height,
+          createImageBitmap(img).then((bitmap) => {
+            res({
+              name: clearFileName(url)!,
+              uri: img,
+              width: img.width,
+              height: img.height,
+              bitmap,
+            });
           });
         };
         img.onerror = function () {

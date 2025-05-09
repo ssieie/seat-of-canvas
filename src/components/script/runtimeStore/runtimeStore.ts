@@ -1,5 +1,5 @@
 import type {ContainerTransformState} from "../container/container.type.ts";
-import type {Graphic} from "../graphic/graphic.types.ts";
+import type {Graphic, Group} from "../graphic/graphic.types.ts";
 
 
 type RuntimeState = {
@@ -7,6 +7,7 @@ type RuntimeState = {
   graphicMatrix: Graphic
 };
 
+export type GraphicGroups = 'graphicMatrix'
 
 function initRuntimeState(): RuntimeState {
   return {
@@ -102,6 +103,16 @@ class RuntimeStore {
     this.listeners[key]?.forEach((listener) => {
       listener(newValue, oldValue);
     });
+  }
+
+  // 获取画布上已有的全部组
+  getGraphicGroups(graphic: GraphicGroups[]) {
+    const res: Group[] = []
+    const graphicSet = Array.from(new Set(graphic))
+    for (const key of graphicSet) {
+      res.push(...Object.values(this.state[key].groups))
+    }
+    return res;
   }
 
   reset() {

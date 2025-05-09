@@ -7,21 +7,21 @@ export function getTransformState() {
 }
 
 // 原坐标转为屏幕坐标
-export function originToScreen(x: number, y: number) {
+export function canvasToScreen(x: number, y: number): [number, number] {
   const {scale, offsetX, offsetY} = getTransformState();
-  return {
-    x: x * scale + offsetX,
-    y: y * scale + offsetY
-  };
+  return [
+    (x * scale + offsetX),
+    (y * scale + offsetY)
+  ];
 }
 
-// 屏幕坐标转为原坐标
-function screenToOrigin(x: number, y: number) {
+// 屏幕坐标转为原坐
+export const screenToCanvas = (x: number, y: number): [number, number] => {
   const {scale, offsetX, offsetY} = getTransformState();
-  return {
-    x: (x - offsetX) / scale,
-    y: (y - offsetY) / scale
-  }
+  return [
+    (x - offsetX) / scale,
+    (y - offsetY) / scale,
+  ];
 }
 
 export function scaleSize(size: number) {

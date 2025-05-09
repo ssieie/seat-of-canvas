@@ -9,6 +9,7 @@ import {
   fillMatrixElement,
   getMatrixRect,
 } from "./matrixUtils.ts";
+import {getBasicPos} from "../graphicUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -36,8 +37,7 @@ class Matrix {
     const groupId = generateUuid()
     const [w, h] = getMatrixRect(row, col)
 
-    // todo 根据占位情况得到画布上合适的位置.
-    const [basicX, basicY] = [0, 0]
+    const [basicX, basicY] = getBasicPos(w, h, this.canvas!)
 
     const group: Group = {
       group_id: groupId,

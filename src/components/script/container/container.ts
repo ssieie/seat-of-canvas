@@ -93,6 +93,7 @@ class Container {
         if (scale > 3) return
         scale *= zoomFactor
       } else {
+        if (scale < .1) return
         scale /= zoomFactor
       }
 
