@@ -31,7 +31,7 @@ class Matrix {
     this.graphicData = newVal
   }
 
-  addMatrixGraphic(name: string, row: number, col: number) {
+  async addMatrixGraphic(name: string, row: number, col: number) {
     // 新建一个矩形组
     const graphicMatrix: Graphic = deepCopy(this.graphicData)
     const groupId = generateUuid()
@@ -45,8 +45,8 @@ class Matrix {
       z_index: 1,
       x: basicX,
       y: basicY,
-      width: w,
-      height: h,
+      w: w,
+      h: h,
       size: row * col,
       type: 'rectangle',
     }

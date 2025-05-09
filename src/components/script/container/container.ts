@@ -6,6 +6,9 @@ import {setTransformFrame} from "../transform/keyframe.ts";
 
 const store = RuntimeStore.getInstance();
 
+const MAX_SCALE = 3
+const MIN_SCALE = .2
+
 class Container {
   canvas: HTMLCanvasElement | null = null
   ctx: CanvasRenderingContext2D | null = null
@@ -90,10 +93,10 @@ class Container {
       const mouseY = e.offsetY
 
       if (e.deltaY < 0) {
-        if (scale > 3) return
+        if (scale > MAX_SCALE) return
         scale *= zoomFactor
       } else {
-        if (scale < .1) return
+        if (scale < MIN_SCALE) return
         scale /= zoomFactor
       }
 

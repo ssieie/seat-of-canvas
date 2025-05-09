@@ -12,8 +12,8 @@ export interface Group {
   z_index: number;
   x: number;
   y: number;
-  width: number;
-  height: number;
+  w: number;
+  h: number;
   size: number;
   type: GroupType;
   //

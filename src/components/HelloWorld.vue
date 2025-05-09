@@ -26,6 +26,16 @@ const addM = (row: number, col: number) => {
   }
 }
 
+const addMTest = (row: number, col: number) => {
+  if (cFunc) {
+    console.time('getBasicPos start')
+    for (let i = 0; i < 100; i++) {
+      cFunc.matrixFunc.addMatrixGraphic('测试1', row, col)
+    }
+    console.timeEnd('getBasicPos start')
+  }
+}
+
 
 onMounted(async () => {
   if (wrapperRef.value) {
@@ -50,6 +60,7 @@ onUnmounted(() => {
   <div class="btns">
     <div class="btn" @click="addM(3,3)">+矩形3*3</div>
     <div class="btn" @click="addM(6,4)">+矩形6*4</div>
+    <div class="btn" @click="addMTest(6,4)">+矩形6*4 * 100</div>
   </div>
   <div class="wrapper" @contextmenu.prevent ref="wrapperRef"></div>
 </template>

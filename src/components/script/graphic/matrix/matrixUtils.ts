@@ -44,24 +44,26 @@ export function fillMatrixElement(groupId: string, row: number, col: number, bas
 export function drawGroup(ctx: CanvasRenderingContext2D, group: Group) {
   ctx.fillStyle = 'rgb(242, 242, 242)'
   const [x, y] = canvasToScreen(group.x, group.y);
-  ctx.fillRect(x, y, scaleSize(group.width), scaleSize(group.height))
+  ctx.fillRect(x, y, scaleSize(group.w), scaleSize(group.h))
 }
 
 export function drawGroupName(ctx: CanvasRenderingContext2D, group: Group) {
   setCtxFont(ctx, '#000', 'center')
-  const [x, y] = canvasToScreen(group.x + group.width / 2, group.y + group.height - MATRIX_GAP);
+  const [x, y] = canvasToScreen(group.x + group.w / 2, group.y + group.h - MATRIX_GAP);
   ctx.fillText(`区域名称：${group.group_name}`, x, y);
 }
 
 export function drawGroupElement(ctx: CanvasRenderingContext2D, element: Element) {
   const [x, y] = canvasToScreen(element.x, element.y);
   ctx.drawImage(AssetsLoader.unSeat.bitmap, x, y, scaleSize(element.width), scaleSize(element.height))
-  // ctx.strokeRect(screen.x, screen.y, scaleSize(element.width), scaleSize(element.height))
+  // ctx.strokeRect(x, y, scaleSize(element.width), scaleSize(element.height))
 }
+
+const INDEX_TEXT_MARGIN = MATRIX_GAP + 5
 
 export function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: Element) {
   setCtxFont(ctx, '#000', 'center')
-  const [x, y] = canvasToScreen(element.x + element.width / 2, element.y + MATRIX_GAP + 5);
+  const [x, y] = canvasToScreen(element.x + element.width / 2, element.y + INDEX_TEXT_MARGIN);
   ctx.fillText(String(element.index), x, y);
 
   if (element.text) {

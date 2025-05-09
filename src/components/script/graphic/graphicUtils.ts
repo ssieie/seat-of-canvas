@@ -22,23 +22,20 @@ export function setCtxFont(ctx: CanvasRenderingContext2D, color: string, textAli
   ctx.textBaseline = textBaseline;
 }
 
-export interface Rect {
-  x: number
-  y: number
-  w: number
-  h: number
-}
 
 // 矩形是否重叠
-function isOverlap(newRect: Rect, existingRects: Group[]): boolean {
+function isOverlap(newRect: Pick<Group, 'x' | 'y' | 'w' | 'h'>, existingRects: Group[]): boolean {
   const {x, y, w, h} = newRect;
-  return existingRects.some(r => {
-      return !(
-        x + w <= r.x || x >= r.x + r.width ||
-        y + h <= r.y || y >= r.y + r.height
-      );
+  for (let i = 0, len = existingRects.length; i < len; i++) {
+    const r = existingRects[i];
+    if (
+      !(x + w <= r.x || x >= r.x + r.w ||
+        y + h <= r.y || y >= r.y + r.h)
+    ) {
+      return true;
     }
-  );
+  }
+  return false;
 }
 
 // 根据画布矩形分布情况返回新矩形可用的基准Pos --以下为简单实现性能欠佳
@@ -58,9 +55,11 @@ export function getBasicPos(w: number, h: number, cvs: HTMLCanvasElement): [numb
   for (let y = startY; ; y += step) {
     const xBoundary = startX + screenW - w * scale
     for (let x = startX; x < xBoundary; x += step) {
-      if (!isOverlap({x, y, w, h}, allGraphicGroups)) {
-        return [x + GRAPHIC_MARGIN, y + GRAPHIC_MARGIN];
+      if (isOverlap({x, y, w, h}, allGraphicGroups)) {
+        x += w; // 跳过宽度，避免在同一区域继续尝试
+        continue;
       }
+      return [x + GRAPHIC_MARGIN, y + GRAPHIC_MARGIN];
     }
   }
 }
