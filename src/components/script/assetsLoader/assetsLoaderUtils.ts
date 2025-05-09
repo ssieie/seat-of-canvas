@@ -21,7 +21,7 @@ export const loadImg = (imgList: string[]): Promise<LoadImgRes[]> => {
               height: img.height,
               bitmap,
             });
-          });
+          }).catch(reject);
         };
         img.onerror = function () {
           reject(new Error(`load img error: ${url}`));

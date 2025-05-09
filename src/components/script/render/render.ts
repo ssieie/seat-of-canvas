@@ -27,8 +27,6 @@ class Render {
     let currentTime = performance.now();
     let elapsed = currentTime - this.lastRenderTime;
 
-    behaviorTasksInstance.getBehaviorTasksSize && behaviorTasksInstance.behaviorProcess(currentTime);
-
     if (elapsed > this.fpsInterval) {
       this.lastRenderTime = currentTime - (elapsed % this.fpsInterval);
 
@@ -40,6 +38,8 @@ class Render {
         instances[key]?.draw?.();
       }
     }
+
+    behaviorTasksInstance.getBehaviorTasksSize && behaviorTasksInstance.behaviorProcess(currentTime);
   }
 
   clear() {
