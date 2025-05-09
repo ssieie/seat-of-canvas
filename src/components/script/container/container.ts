@@ -2,7 +2,7 @@ import type {Canvaser} from "../core/core.types.ts";
 import PubSub from "../../../utils/pubSub.ts";
 import type {ContainerTransformState} from "./container.type.ts";
 import RuntimeStore from "../runtimeStore/runtimeStore.ts";
-import behaviorTasksInstance from "../behaviorTasks/behaviorTasks.ts";
+import {setTransformFrame} from "../transform/keyframe.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -109,50 +109,7 @@ class Container {
   }
 
   resetTransform() {
-    const duration = 300; // ms
-    const startTime = performance.now();
-
-    const startState = {
-      offsetX: this.transformState.offsetX,
-      offsetY: this.transformState.offsetY,
-      scale: this.transformState.scale,
-    };
-
-    const endState = {
-      offsetX: 0,
-      offsetY: 0,
-      scale: 1,
-    };
-
-    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-
-    behaviorTasksInstance.addBehavior<ContainerTransformState>(
-      "resetTransform",
-      () => {
-        const now = performance.now();
-        const elapsed = now - startTime;
-        const t = Math.min(1, elapsed / duration);
-        const easeOut = t * (2 - t);
-
-        // 动画完成时移除任务
-        if (t >= 1) {
-          behaviorTasksInstance.delBehavior("resetTransform");
-        }
-
-        return {
-          offsetX: lerp(startState.offsetX, endState.offsetX, easeOut),
-          offsetY: lerp(startState.offsetY, endState.offsetY, easeOut),
-          scale: lerp(startState.scale, endState.scale, easeOut),
-          lastX: 0,
-          lastY: 0,
-        };
-      },
-      (val) => {
-        store.updateState('containerTransformState', val)
-      },
-      1000 / 60, // 每秒 60 次
-      true
-    );
+    setTransformFrame({scale: 1, offsetX: 0, offsetY: 0})
   }
 
   clear() {
