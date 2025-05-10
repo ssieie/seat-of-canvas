@@ -1,15 +1,16 @@
-import type {Canvaser, GraphicFunc} from "./core.types.ts";
+import type {Canvaser, GraphicOperateFunc, OperateFunc} from "./core.types.ts";
 import Test from "../test/test.ts";
 import type {RenderTargetInstances} from "../render/render.types.ts";
-import Matrix from "../graphic/matrix/matrix.ts";
+import Graphic from "../graphic/graphic.ts";
 
-export default function initGraphicInstances(canvas: Canvaser, instances: RenderTargetInstances): GraphicFunc {
+export default function initGraphicInstances(canvas: Canvaser, instances: RenderTargetInstances): OperateFunc {
 
   initTest(canvas, instances)
-  const matrixFunc = initMatrix(canvas, instances)
+
+  const graphicOperateFunc = initGraphic(canvas, instances)
 
   return {
-    matrixFunc
+    graphicOperateFunc
   }
 
 }
@@ -18,10 +19,8 @@ function initTest(canvas: Canvaser, instances: RenderTargetInstances) {
   instances.Test = new Test(canvas);
 }
 
-function initMatrix(canvas: Canvaser, instances: RenderTargetInstances) {
-  instances.Matrix = new Matrix(canvas);
+function initGraphic(canvas: Canvaser, instances: RenderTargetInstances): GraphicOperateFunc {
+  instances.Graphic = new Graphic(canvas);
 
-  return {
-    addMatrixGraphic: instances.Matrix.addMatrixGraphic!.bind(instances.Matrix)
-  }
+  return instances.Graphic.operate!.call(instances.Graphic)
 }

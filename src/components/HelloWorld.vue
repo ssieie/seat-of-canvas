@@ -2,7 +2,7 @@
 import {onMounted, onUnmounted, ref} from 'vue'
 import {init, exit, resize} from "./script/core/core.ts";
 import {throttle} from '../utils/common.ts'
-import type {GraphicFunc} from "./script/core/core.types.ts";
+import type {OperateFunc} from "./script/core/core.types.ts";
 
 const wrapperRef = ref<HTMLElement | null>(null)
 
@@ -10,7 +10,6 @@ const resizeHandler = (entries: ResizeObserverEntry[]) => {
   const entry = entries[0]
   if (entry && entry.contentRect) {
     const {width, height} = entry.contentRect
-    console.log('Size changed:', width, height)
     resize(width, height)
   }
 }
@@ -18,11 +17,11 @@ const resizeThrottleHandler = throttle(resizeHandler, 300)
 
 const resizeObserver = new ResizeObserver(resizeThrottleHandler)
 
-let cFunc: GraphicFunc = null
+let cFunc: OperateFunc = null
 
 const addM = (row: number, col: number) => {
   if (cFunc) {
-    cFunc.matrixFunc.addMatrixGraphic('测试1', row, col)
+    cFunc.graphicOperateFunc.addMatrixGraphic('测试1', row, col)
   }
 }
 
@@ -30,7 +29,7 @@ const addMTest = (row: number, col: number) => {
   if (cFunc) {
     console.time('getBasicPos start')
     for (let i = 0; i < 100; i++) {
-      cFunc.matrixFunc.addMatrixGraphic('测试1', row, col)
+      cFunc.graphicOperateFunc.addMatrixGraphic('测试1', row, col)
     }
     console.timeEnd('getBasicPos start')
   }
@@ -39,9 +38,10 @@ const addMTest = (row: number, col: number) => {
 
 onMounted(async () => {
   if (wrapperRef.value) {
-    resizeObserver.observe(wrapperRef.value)
 
     cFunc = await init(wrapperRef.value, 60)
+
+    resizeObserver.observe(wrapperRef.value)
 
     addM(4, 5)
   }
@@ -49,8 +49,8 @@ onMounted(async () => {
 
 onUnmounted(() => {
   if (wrapperRef.value) {
-    exit()
     resizeObserver.unobserve(wrapperRef.value)
+    exit()
   }
 })
 

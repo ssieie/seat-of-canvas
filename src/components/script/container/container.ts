@@ -19,6 +19,7 @@ class Container {
     this.canvas = cv.cvs
     this.ctx = cv.pen
 
+    // 确保画布设置正确的宽高
     this.resize(w, h)
 
     this.transformState = store.getState('containerTransformState')
@@ -34,8 +35,11 @@ class Container {
 
   resize(width: number, height: number) {
     if (!this.canvas || !this.ctx) return
+    console.log("Size Change", width, height)
     this.canvas.width = width
     this.canvas.height = height
+
+    store.updateState('cvs', this.canvas)
   }
 
   private addEvents() {

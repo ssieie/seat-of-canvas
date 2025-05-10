@@ -3,6 +3,7 @@ import type {Graphic, Group} from "../graphic/graphic.types.ts";
 
 
 type RuntimeState = {
+  cvs: HTMLCanvasElement | null;
   containerTransformState: ContainerTransformState
   graphicMatrix: Graphic
 };
@@ -11,6 +12,7 @@ export type GraphicGroups = 'graphicMatrix'
 
 function initRuntimeState(): RuntimeState {
   return {
+    cvs: null,
     containerTransformState: {
       lastX: 0,
       lastY: 0,

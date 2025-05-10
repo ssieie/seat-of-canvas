@@ -14,8 +14,8 @@ import {getBasicPos} from "../graphicUtils.ts";
 const store = RuntimeStore.getInstance();
 
 class Matrix {
-  canvas: HTMLCanvasElement | null = null
-  ctx: CanvasRenderingContext2D | null = null
+  private readonly canvas: HTMLCanvasElement | null
+  private readonly ctx: CanvasRenderingContext2D | null
 
   graphicData: Graphic
 
@@ -47,6 +47,7 @@ class Matrix {
       y: basicY,
       w: w,
       h: h,
+      hover: false,
       size: row * col,
       type: 'rectangle',
     }

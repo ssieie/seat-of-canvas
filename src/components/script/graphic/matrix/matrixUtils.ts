@@ -45,6 +45,10 @@ export function drawGroup(ctx: CanvasRenderingContext2D, group: Group) {
   ctx.fillStyle = 'rgb(242, 242, 242)'
   const [x, y] = canvasToScreen(group.x, group.y);
   ctx.fillRect(x, y, scaleSize(group.w), scaleSize(group.h))
+
+  if (group.hover){
+    ctx.strokeRect(x, y, scaleSize(group.w), scaleSize(group.h))
+  }
 }
 
 export function drawGroupName(ctx: CanvasRenderingContext2D, group: Group) {

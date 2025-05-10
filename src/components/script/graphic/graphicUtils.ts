@@ -49,11 +49,10 @@ export function getBasicPos(w: number, h: number, cvs: HTMLCanvasElement): [numb
   // 屏幕 (0, 0) 映射到画布逻辑坐标的起始点
   const startX = -offsetX / scale;
   const startY = -offsetY / scale;
-
+  const xBoundary = startX + screenW - w;
   const step = 10; // 步进像素
 
   for (let y = startY; ; y += step) {
-    const xBoundary = startX + screenW - w * scale
     for (let x = startX; x < xBoundary; x += step) {
       if (isOverlap({x, y, w, h}, allGraphicGroups)) {
         x += w; // 跳过宽度，避免在同一区域继续尝试

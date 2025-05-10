@@ -12,6 +12,9 @@ class Render {
   frame: number | undefined;
 
   constructor(fps: number, context: Canvaser) {
+    if (!context.cvs || !context.pen) {
+      throw new Error("Canvaser context is incomplete.");
+    }
     this.cvs = context.cvs!;
     this.$ = context.pen!;
 
@@ -20,7 +23,6 @@ class Render {
     this.lastRenderTime = performance.now();
   }
 
-
   run(instances: RenderTargetInstances) {
     this.frame = window.requestAnimationFrame(this.run.bind(this, instances));
 
@@ -28,22 +30,39 @@ class Render {
     let elapsed = currentTime - this.lastRenderTime;
 
     if (elapsed > this.fpsInterval) {
+
       this.lastRenderTime = currentTime - (elapsed % this.fpsInterval);
 
-      this.$.clearRect(0, 0, this.cvs.width, this.cvs.height);
-
-      drawGrid(this.$, this.cvs.width, this.cvs.height)
-
-      for (const key in instances) {
-        instances[key]?.draw?.();
-      }
+      this.clearScreen();
+      this.renderGrid();
+      this.renderInstances(instances);
     }
 
-    behaviorTasksInstance.getBehaviorTasksSize && behaviorTasksInstance.behaviorProcess(currentTime);
+    this.processBehavior(currentTime);
   }
 
   clear() {
     this.frame && window.cancelAnimationFrame(this.frame);
+  }
+
+  private clearScreen() {
+    this.$.clearRect(0, 0, this.cvs.width, this.cvs.height);
+  }
+
+  private renderGrid() {
+    drawGrid(this.$, this.cvs.width, this.cvs.height);
+  }
+
+  private renderInstances(instances: RenderTargetInstances) {
+    for (const key in instances) {
+      instances[key]?.draw?.();
+    }
+  }
+
+  private processBehavior(time: number) {
+    if (behaviorTasksInstance.getBehaviorTasksSize) {
+      behaviorTasksInstance.behaviorProcess(time);
+    }
   }
 }
 

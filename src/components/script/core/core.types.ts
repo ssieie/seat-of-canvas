@@ -3,6 +3,10 @@ export type Canvaser = {
   pen: CanvasRenderingContext2D | null;
 };
 
-export type GraphicFunc = {
-  matrixFunc: { addMatrixGraphic: (name: string, row: number, col: number) => void }
+export type GraphicOperateFunc = {
+  addMatrixGraphic: (name: string, row: number, col: number) => void
+}
+
+export type OperateFunc = {
+  graphicOperateFunc: GraphicOperateFunc
 } | null

@@ -1,9 +1,13 @@
 import PubSub from '../../../utils/pubSub.ts'
+import {mousemoveTargetThrottleHandler} from "./hitTargetDetection.ts";
 
 const mousedownHandler = (e: MouseEvent) => {
   PubSub.publish('mousedown', e)
 }
 const mousemoveHandler = (e: MouseEvent) => {
+
+  mousemoveTargetThrottleHandler(e)
+
   PubSub.publish('mousemove', e)
 }
 const mouseupHandler = (e: MouseEvent) => {

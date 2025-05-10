@@ -14,6 +14,7 @@ export interface Group {
   y: number;
   w: number;
   h: number;
+  hover: boolean
   size: number;
   type: GroupType;
   //

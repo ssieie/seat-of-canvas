@@ -1,5 +1,5 @@
 import Render from "../render/render.ts";
-import type {Canvaser, GraphicFunc} from "./core.types.ts";
+import type {Canvaser, OperateFunc} from "./core.types.ts";
 import type {RenderTargetInstances} from "../render/render.types.ts";
 import Container from "../container/container.ts";
 import {cancelAllEvents, registerAllEvents} from "../eventCenter/eventCenter.ts";
@@ -20,7 +20,7 @@ let ContainerInstance: Container | null = null;
 
 const instances: RenderTargetInstances = {
   Test: null,
-  Matrix: null
+  Graphic: null,
 };
 
 function initRender(fps: number) {
@@ -40,7 +40,7 @@ export function resize(w: number, h: number) {
 export async function init(
   target: HTMLElement,
   fps = 30,
-): Promise<GraphicFunc> {
+): Promise<OperateFunc> {
 
   MY_CANVAS.cvs = document.createElement('canvas')
 
