@@ -1,10 +1,10 @@
 export interface Graphic {
-  groups: Record<string, Group>; // group_id 作为 key
+  groups: Record<GroupType, Record<string, Group>>; // group_id 作为 key
   elements: Record<string, Element>; // element_id 作为 key
   groupElements: Record<string, string[]>; // group_id -> element_id 列表
 }
 
-type GroupType = 'rectangle' | 'circle' | 'triangle' | 'polygon';
+export type GroupType = 'rectangle' | 'circle' | 'ellipse';
 
 export interface Group {
   group_id: string;
@@ -19,6 +19,8 @@ export interface Group {
   type: GroupType;
   //
 }
+
+export type RBushGroupItem = Group & { minX: number, minY: number, maxX: number, maxY: number };
 
 export interface Element {
   id: string;

@@ -1,13 +1,11 @@
 import {throttle} from "../../../utils/common.ts";
-import RuntimeStore from "../runtimeStore/runtimeStore.ts";
-import {getGraphicGroups} from "../graphic/graphicUtils.ts";
+import RuntimeStore, {allGraphicGroups} from "../runtimeStore/runtimeStore.ts";
 import {getTransformState} from "../transform/transform.ts";
+import type {Group} from "../graphic/graphic.types.ts";
 
 const store = RuntimeStore.getInstance();
 
-const getCanvas = () => {
-  return store.getState('cvs')
-}
+const getCanvas = () => store.getState('cvs');
 
 const toCanvasCoords = (e: MouseEvent) => {
   const {offsetX, offsetY, scale} = getTransformState();
@@ -31,13 +29,43 @@ const toCanvasCoords = (e: MouseEvent) => {
 
 
 const mousemoveTargetHandler = (e: MouseEvent) => {
-  const mxy = toCanvasCoords(e);
-  if (mxy) {
-    scheduleHitTest(mxy);
+  const pos = toCanvasCoords(e);
+  if (pos) {
+    scheduleHitTest(pos);
   }
 }
 
 let idleCallbackId: number | null = null;
+
+let prevHitGroupIds = new Set<string>();
+
+// 更新 hover 状态
+function updateHoverState(hitIds: Set<string>) {
+  const allGroups = store.getGraphicGroups(allGraphicGroups);
+  // 清除上一次命中的 hover 状态
+  for (const groupId of prevHitGroupIds) {
+    if (!hitIds.has(groupId)) {
+      const group = allGroups.get(groupId);
+      if (group) {
+        group.hover = false;
+        group.z_index = 0;
+      }
+    }
+  }
+
+  for (const group_id of hitIds.values()) {
+
+    if (allGroups.has(group_id)) {
+      const hitG: Group = allGroups.get(group_id)!
+      hitG.hover = true;
+      hitG.z_index = 1;
+    }
+
+  }
+
+  // 保存本次命中的 group_id 集合
+  prevHitGroupIds = hitIds;
+}
 
 function scheduleHitTest({mx, my}: { mx: number, my: number }) {
   if (idleCallbackId) {
@@ -45,18 +73,21 @@ function scheduleHitTest({mx, my}: { mx: number, my: number }) {
     idleCallbackId = null;
   }
   idleCallbackId = requestIdleCallback(_deadline => {
-    const rects = getGraphicGroups()
-    for (const r of rects) {
-      if (mx >= r.x && mx <= r.x + r.w && my >= r.y && my <= r.y + r.h) {
-        r.hover = true;
-        r.z_index = 1
-      } else {
-        r.hover = false;
-        r.z_index = 0
-      }
-    }
+    const groupTree = store.getState('groupTree');
+    const hits = groupTree.search({
+      minX: mx,
+      minY: my,
+      maxX: mx,
+      maxY: my
+    });
+
+    const hitIds = new Set(hits.map((g: any) => g.group_id));
+
+    updateHoverState(hitIds);
+
     idleCallbackId = null;
-  }, {timeout: 1000});
+  }, {timeout: 300});
 }
 
-export const mousemoveTargetThrottleHandler = throttle(mousemoveTargetHandler, 200)
+export const mousemoveTargetThrottleHandler = throttle(mousemoveTargetHandler, 100)
+// export const mousemoveTargetThrottleHandler = mousemoveTargetHandler

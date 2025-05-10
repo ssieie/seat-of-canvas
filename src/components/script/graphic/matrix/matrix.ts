@@ -1,6 +1,6 @@
 import type {Canvaser} from "../../core/core.types.ts";
 import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
-import type {Graphic, Group} from "../graphic.types.ts";
+import type {Graphic, Group, GroupType} from "../graphic.types.ts";
 import {deepCopy, generateUuid} from "../../../../utils/common.ts";
 import {
   drawGroup,
@@ -12,6 +12,8 @@ import {
 import {getBasicPos} from "../graphicUtils.ts";
 
 const store = RuntimeStore.getInstance();
+
+const GRAPHIC_TYPE: GroupType = 'rectangle'
 
 class Matrix {
   private readonly canvas: HTMLCanvasElement | null
@@ -54,7 +56,7 @@ class Matrix {
 
     const elements = fillMatrixElement(groupId, row, col, [basicX, basicY])
 
-    graphicMatrix.groups[groupId] = group
+    graphicMatrix.groups[GRAPHIC_TYPE][groupId] = group
 
     graphicMatrix.elements = {
       ...graphicMatrix.elements,
@@ -69,15 +71,17 @@ class Matrix {
   draw() {
     const ctx = this.ctx!
     // 绘制矩形组
-    for (const groupId in this.graphicData.groups) {
-      const group = this.graphicData.groups[groupId]
+    for (const groupId in this.graphicData.groups[GRAPHIC_TYPE]) {
+
+      const group = this.graphicData.groups[GRAPHIC_TYPE][groupId]
+
       drawGroup(ctx, group)
 
       // 组描述文本
       drawGroupName(ctx, group)
 
       // 组内元素
-      const elements = this.graphicData.groupElements[groupId]
+      const elements = this.graphicData.groupElements[group.group_id]
 
       for (const elementId of elements) {
         const element = this.graphicData.elements[elementId]

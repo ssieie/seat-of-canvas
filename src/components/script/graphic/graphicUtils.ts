@@ -1,14 +1,12 @@
 import {getTransformState, scaleSize} from "../transform/transform.ts";
-import RuntimeStore, {type GraphicGroups} from "../runtimeStore/runtimeStore.ts";
-import type {Group} from "./graphic.types.ts";
+import RuntimeStore, {allGraphicGroups} from "../runtimeStore/runtimeStore.ts";
+import type {Group, GroupType} from "./graphic.types.ts";
 
 const store = RuntimeStore.getInstance();
 
 const GRAPHIC_MARGIN = 10;
 
-const allGraphicGroups: GraphicGroups[] = ['graphicMatrix']
-
-export function getGraphicGroups(graphic?: GraphicGroups[]) {
+export function getGraphicGroups(graphic?: GroupType[]) {
   return store.getGraphicGroups(graphic ? graphic : allGraphicGroups);
 }
 
@@ -24,10 +22,10 @@ export function setCtxFont(ctx: CanvasRenderingContext2D, color: string, textAli
 
 
 // 矩形是否重叠
-function isOverlap(newRect: Pick<Group, 'x' | 'y' | 'w' | 'h'>, existingRects: Group[]): boolean {
+function isOverlap(newRect: Pick<Group, 'x' | 'y' | 'w' | 'h'>, existingRects: Map<string, Group>): boolean {
   const {x, y, w, h} = newRect;
-  for (let i = 0, len = existingRects.length; i < len; i++) {
-    const r = existingRects[i];
+
+  for (const r of existingRects.values()) {
     if (
       !(x + w <= r.x || x >= r.x + r.w ||
         y + h <= r.y || y >= r.y + r.h)
@@ -35,6 +33,7 @@ function isOverlap(newRect: Pick<Group, 'x' | 'y' | 'w' | 'h'>, existingRects: G
       return true;
     }
   }
+
   return false;
 }
 

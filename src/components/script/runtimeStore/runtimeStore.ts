@@ -1,14 +1,15 @@
 import type {ContainerTransformState} from "../container/container.type.ts";
-import type {Graphic, Group} from "../graphic/graphic.types.ts";
+import type {Graphic, Group, GroupType, RBushGroupItem} from "../graphic/graphic.types.ts";
+import RBush from 'rbush';
 
+export const allGraphicGroups: GroupType[] = ['rectangle', 'circle', 'ellipse'];
 
 type RuntimeState = {
   cvs: HTMLCanvasElement | null;
   containerTransformState: ContainerTransformState
   graphicMatrix: Graphic
+  groupTree: RBush<RBushGroupItem>
 };
-
-export type GraphicGroups = 'graphicMatrix'
 
 function initRuntimeState(): RuntimeState {
   return {
@@ -21,11 +22,33 @@ function initRuntimeState(): RuntimeState {
       scale: 1,
     },
     graphicMatrix: {
-      groups: {},
+      groups: {
+        rectangle: {},
+        circle: {},
+        ellipse: {},
+      },
       elements: {},
       groupElements: {}
     },
+    groupTree: new RBush(),
   }
+}
+
+function rebuildGroupTree(store: RuntimeStore) {
+  const groups = store.getGraphicGroups(allGraphicGroups);
+  const tree = new RBush<RBushGroupItem>();
+
+  for (const g of groups.values()) {
+    tree.insert({
+      ...g,
+      minX: g.x,
+      minY: g.y,
+      maxX: g.x + g.w,
+      maxY: g.y + g.h,
+    });
+  }
+
+  store.updateState('groupTree', tree);
 }
 
 type Listeners = {
@@ -69,9 +92,15 @@ class RuntimeStore {
   }
 
   updateState<K extends keyof RuntimeState>(key: K, value: RuntimeState[K]) {
+
     const oldValue = this.state[key];
     if (oldValue !== value) {
       this.state[key] = value;
+
+      if (key === 'graphicMatrix') {
+        rebuildGroupTree(RuntimeStore.getInstance());
+      }
+
       this.notify(key, value, oldValue);
     }
   }
@@ -108,13 +137,15 @@ class RuntimeStore {
   }
 
   // 获取画布上已有的全部组
-  getGraphicGroups(graphic: GraphicGroups[]) {
-    const res: Group[] = []
+  getGraphicGroups(graphic: GroupType[]): Map<string, Group> {
+    const res = new Map<string, Group>();
     const graphicSet = Array.from(new Set(graphic))
     for (const key of graphicSet) {
-      res.push(...Object.values(this.state[key].groups))
+      for (const [id, group] of Object.entries(this.state.graphicMatrix.groups[key])) {
+        res.set(id, group);
+      }
     }
-    return res;
+    return res
   }
 
   reset() {
