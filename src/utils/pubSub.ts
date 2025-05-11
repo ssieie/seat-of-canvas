@@ -2,6 +2,8 @@ type Callback<T extends any[] = any[]> = (...args: T) => void;
 
 type MyEvents = {
   mousedown: [MouseEvent];
+  mousedown_dnh: [MouseEvent]; // 未命中元素
+  mousedown_group: [MouseEvent, string]; // 命中组
   mousemove: [MouseEvent];
   mouseup: [MouseEvent];
   wheel: [WheelEvent];

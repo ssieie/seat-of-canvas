@@ -47,18 +47,20 @@ class Container {
 
     // 拖动事件
     PubSub.subscribe('mousedown', (e) => {
+      if (e.button === 1) {
+        this.resetTransform()
+      }
+    })
+
+
+    PubSub.subscribe('mousedown_dnh', (e) => {
       if (e.button === 0) {
         this.dragging = true
-
         store.updateState('containerTransformState', {
           ...this.transformState,
           lastX: e.clientX,
           lastY: e.clientY,
         });
-      }
-
-      if (e.button === 1) {
-        this.resetTransform()
       }
     })
 

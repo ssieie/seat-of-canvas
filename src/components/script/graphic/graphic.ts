@@ -1,13 +1,15 @@
 import type {Canvaser, GraphicOperateFunc} from "../core/core.types.ts";
 import Matrix from "./matrix/matrix.ts";
+import OperateGraphic from "./operateGraphic.ts";
 
-class Graphic {
+class Graphic extends OperateGraphic {
   canvas: HTMLCanvasElement | null = null
   ctx: CanvasRenderingContext2D | null = null
 
   matrix: Matrix
 
   constructor(cv: Canvaser) {
+    super(cv);
     this.canvas = cv.cvs
     this.ctx = cv.pen
 
@@ -19,6 +21,7 @@ class Graphic {
   }
 
   clear() {
+    super.clear()
     this.matrix.clear()
   }
 

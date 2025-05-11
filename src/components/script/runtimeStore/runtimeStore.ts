@@ -5,6 +5,7 @@ import RBush from 'rbush';
 export const allGraphicGroups: GroupType[] = ['rectangle', 'circle', 'ellipse'];
 
 type RuntimeState = {
+  highlightElements: boolean
   cvs: HTMLCanvasElement | null;
   containerTransformState: ContainerTransformState
   graphicMatrix: Graphic
@@ -13,6 +14,7 @@ type RuntimeState = {
 
 function initRuntimeState(): RuntimeState {
   return {
+    highlightElements: true,
     cvs: null,
     containerTransformState: {
       lastX: 0,
@@ -34,7 +36,7 @@ function initRuntimeState(): RuntimeState {
   }
 }
 
-function rebuildGroupTree(store: RuntimeStore) {
+export function rebuildGroupTree(store: RuntimeStore) {
   const groups = store.getGraphicGroups(allGraphicGroups);
   const tree = new RBush<RBushGroupItem>();
 
@@ -94,15 +96,17 @@ class RuntimeStore {
   updateState<K extends keyof RuntimeState>(key: K, value: RuntimeState[K]) {
 
     const oldValue = this.state[key];
-    if (oldValue !== value) {
-      this.state[key] = value;
 
-      if (key === 'graphicMatrix') {
-        rebuildGroupTree(RuntimeStore.getInstance());
-      }
-
-      this.notify(key, value, oldValue);
+    this.state[key] = value;
+    if (key === 'graphicMatrix') {
+      rebuildGroupTree(RuntimeStore.getInstance());
     }
+
+    this.notify(key, value, oldValue);
+
+    // if (oldValue !== value) {
+    //
+    // }
   }
 
   // 订阅特定字段
@@ -146,6 +150,20 @@ class RuntimeStore {
       }
     }
     return res
+  }
+
+  // 获取指定组
+  getGraphicGroupsById(groupId: string): Group | null {
+    if (!groupId) return null;
+    for (const key of allGraphicGroups) {
+      for (const [id, group] of Object.entries(this.state.graphicMatrix.groups[key])) {
+        if (groupId === id) {
+          return group;
+        }
+      }
+    }
+
+    return null;
   }
 
   reset() {

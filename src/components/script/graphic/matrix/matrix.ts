@@ -1,7 +1,7 @@
 import type {Canvaser} from "../../core/core.types.ts";
 import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
 import type {Graphic, Group, GroupType} from "../graphic.types.ts";
-import {deepCopy, generateUuid} from "../../../../utils/common.ts";
+import {generateUuid} from "../../../../utils/common.ts";
 import {
   drawGroup,
   drawGroupElement, drawGroupElementIndex,
@@ -26,16 +26,17 @@ class Matrix {
     this.ctx = cv.pen
 
     this.graphicData = store.getState('graphicMatrix')
-    store.subscribe('graphicMatrix', this.onGraphicMatrixChange.bind(this));
+    // store.subscribe('graphicMatrix', this.onGraphicMatrixChange.bind(this));
   }
 
-  onGraphicMatrixChange(newVal: Graphic) {
-    this.graphicData = newVal
-  }
+  // onGraphicMatrixChange(newVal: Graphic) {
+  //   this.graphicData = newVal
+  // }
 
   async addMatrixGraphic(name: string, row: number, col: number) {
     // 新建一个矩形组
-    const graphicMatrix: Graphic = deepCopy(this.graphicData)
+    // const graphicMatrix: Graphic = deepCopy()
+    const graphicMatrix: Graphic = this.graphicData
     const groupId = generateUuid()
     const [w, h] = getMatrixRect(row, col)
 
@@ -44,7 +45,7 @@ class Matrix {
     const group: Group = {
       group_id: groupId,
       group_name: name,
-      z_index: 1,
+      z_index: 0,
       x: basicX,
       y: basicY,
       w: w,
@@ -71,9 +72,8 @@ class Matrix {
   draw() {
     const ctx = this.ctx!
     // 绘制矩形组
-    for (const groupId in this.graphicData.groups[GRAPHIC_TYPE]) {
 
-      const group = this.graphicData.groups[GRAPHIC_TYPE][groupId]
+    for (const group of Object.values(this.graphicData.groups[GRAPHIC_TYPE]).sort((a, b) => a.z_index - b.z_index)) {
 
       drawGroup(ctx, group)
 
@@ -85,16 +85,16 @@ class Matrix {
 
       for (const elementId of elements) {
         const element = this.graphicData.elements[elementId]
-        drawGroupElement(ctx, element)
+        drawGroupElement(ctx, element, group)
 
         // 元素序号
-        drawGroupElementIndex(ctx, element)
+        drawGroupElementIndex(ctx, element, group)
       }
     }
   }
 
   clear() {
-    store.unsubscribe('graphicMatrix', this.onGraphicMatrixChange.bind(this));
+    // store.unsubscribe('graphicMatrix', this.onGraphicMatrixChange.bind(this));
   }
 }
 

@@ -1,7 +1,16 @@
 import PubSub from '../../../utils/pubSub.ts'
-import {mousemoveTargetThrottleHandler} from "./hitTargetDetection.ts";
+import {didNotHitAnyElement, mousemoveTargetThrottleHandler} from "./tool/hitTargetDetection.ts";
 
 const mousedownHandler = (e: MouseEvent) => {
+
+  const dnh = didNotHitAnyElement(e)
+
+  if (!dnh) {
+    PubSub.publish('mousedown_dnh', e)
+  } else {
+    PubSub.publish('mousedown_group', e, dnh.group_id)
+  }
+
   PubSub.publish('mousedown', e)
 }
 const mousemoveHandler = (e: MouseEvent) => {
