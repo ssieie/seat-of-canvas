@@ -1,6 +1,8 @@
 import {getTransformState, scaleSize} from "../transform/transform.ts";
 import RuntimeStore, {allGraphicGroups} from "../runtimeStore/runtimeStore.ts";
-import type {Group, GroupType} from "./graphic.types.ts";
+import type {Element, Group, GroupType} from "./graphic.types.ts";
+import {didNotHitAnyElement, getCanvas, hitElement} from "../eventCenter/tool/hitTargetDetection.ts";
+import {swapElement, swapInArrayFlexible} from "../utils/common.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -60,4 +62,54 @@ export function getBasicPos(w: number, h: number, cvs: HTMLCanvasElement): [numb
       return [x + GRAPHIC_MARGIN, y + GRAPHIC_MARGIN];
     }
   }
+}
+
+export function withinCanvas(e: MouseEvent) {
+  // 获取鼠标在 canvas 上的相对位置
+  const canvas = getCanvas()
+
+  if (canvas) {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+
+    // 判断是否在 canvas 内
+    const withinCanvas = (
+      mouseX >= rect.left &&
+      mouseX <= rect.right &&
+      mouseY >= rect.top &&
+      mouseY <= rect.bottom
+    );
+
+    return withinCanvas
+  }
+
+  return false
+}
+
+// 释放元素是否交换元素如果有
+export function exchangeElements(e: MouseEvent, dragEl: Element) {
+  const dnh = didNotHitAnyElement(e)
+
+  if (dnh) {
+    const hitEl = hitElement(e, dnh)
+
+    if (hitEl) {
+      if (hitEl.id === dragEl.id) return
+
+      const graphicMatrix = store.getState('graphicMatrix')
+      const fromGroupId = dragEl.group_by;
+      const toGroupId = hitEl.group_by;
+
+      swapElement(dragEl, hitEl)
+
+      if (fromGroupId !== toGroupId) {
+        // 不同组交换
+        graphicMatrix.groupElements[fromGroupId] = swapInArrayFlexible(graphicMatrix.groupElements[fromGroupId], dragEl.id, hitEl.id)
+        graphicMatrix.groupElements[toGroupId] = swapInArrayFlexible(graphicMatrix.groupElements[toGroupId], hitEl.id, dragEl.id)
+      }
+
+    }
+  }
+
 }

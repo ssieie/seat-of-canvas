@@ -1,6 +1,7 @@
 import type {Canvaser, GraphicOperateFunc} from "../core/core.types.ts";
 import Matrix from "./matrix/matrix.ts";
 import OperateGraphic from "./operateGraphic.ts";
+import {drawDragElement} from "./matrix/matrixUtils.ts";
 
 class Graphic extends OperateGraphic {
   canvas: HTMLCanvasElement | null = null
@@ -17,7 +18,11 @@ class Graphic extends OperateGraphic {
   }
 
   draw() {
+    if (!this.ctx) return
+
     this.matrix.draw()
+
+    drawDragElement(this.ctx)
   }
 
   clear() {

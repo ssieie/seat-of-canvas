@@ -1,11 +1,13 @@
-import {throttle} from "../../../../utils/common.ts";
+import {throttle} from "../../utils/common.ts";
 import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
 import {getTransformState} from "../../transform/transform.ts";
+import type {Element, RBushGroupItem} from "../../graphic/graphic.types.ts";
 
 const store = RuntimeStore.getInstance();
 
-const getCanvas = () => store.getState('cvs');
+export const getCanvas = () => store.getState('cvs');
 
+// 把鼠标坐标转换到画布坐标
 export const toCanvasCoords = (e: MouseEvent) => {
   const {offsetX, offsetY, scale} = getTransformState();
   const canvas = getCanvas()
@@ -122,6 +124,29 @@ export const didNotHitAnyElement = (e: MouseEvent) => {
     }, hits[0]);
 
     return topGroup;
+  }
+
+  return null
+}
+
+export const hitElement = (e: MouseEvent, group: RBushGroupItem): Element | null => {
+  const pos = toCanvasCoords(e);
+
+  if (pos) {
+    const {mx, my} = pos;
+    const elements = store.getGraphicGroupElementsById(group.group_id)
+    for (const element of elements) {
+      const {x: oX, y: oY, width, height} = element;
+      const [x, y] = [group.x + oX, group.y + oY]
+      if (
+        mx >= x &&
+        mx <= x + width &&
+        my >= y &&
+        my <= y + height
+      ) {
+        return element;
+      }
+    }
   }
 
   return null

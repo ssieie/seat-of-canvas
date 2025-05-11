@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {onMounted, onUnmounted, ref} from 'vue'
 import {init, exit, resize} from "./script/core/core.ts";
-import {throttle} from '../utils/common.ts'
+import {throttle} from './script/utils/common.ts'
 import type {OperateFunc} from "./script/core/core.types.ts";
 
 const wrapperRef = ref<HTMLElement | null>(null)
@@ -43,7 +43,7 @@ onMounted(async () => {
 
     resizeObserver.observe(wrapperRef.value)
 
-    addM(4, 5)
+    addM(2, 2)
   }
 })
 
@@ -58,6 +58,7 @@ onUnmounted(() => {
 
 <template>
   <div class="btns">
+    <div class="btn" @click="addM(2,2)">+矩形2*2</div>
     <div class="btn" @click="addM(3,3)">+矩形3*3</div>
     <div class="btn" @click="addM(6,4)">+矩形6*4</div>
     <div class="btn" @click="addMTest(6,4)">+矩形6*4 * 100</div>

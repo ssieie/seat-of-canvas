@@ -3,6 +3,9 @@ import {ELEMENT_HEIGHT, ELEMENT_WIDTH} from "../constant.ts";
 import {canvasToScreen, scaleSize} from "../../transform/transform.ts";
 import {setCtxFont} from "../graphicUtils.ts";
 import AssetsLoader from "../../assetsLoader/assetsLoader.ts";
+import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
+
+const store = RuntimeStore.getInstance();
 
 const BOTTOM_TEXT_HEIGHT = 30;
 
@@ -12,6 +15,8 @@ export const MATRIX_GAP = 10
 export function getMatrixRect(row: number, col: number): [w: number, h: number] {
   return [col * ELEMENT_WIDTH + (col - 1) * MATRIX_GAP + MATRIX_GAP * 3, row * ELEMENT_HEIGHT + (row - 1) * MATRIX_GAP + BOTTOM_TEXT_HEIGHT + MATRIX_GAP * 2];
 }
+
+const E_GAP = MATRIX_GAP * 1.5
 
 export function fillMatrixElement(groupId: string, row: number, col: number, _basicPos: [number, number]): {
   [s: string]: Element,
@@ -24,12 +29,17 @@ export function fillMatrixElement(groupId: string, row: number, col: number, _ba
   for (let y = 0; y < row; y++) {
     for (let x = 0; x < col; x++) {
       const id = `${groupId}-${y}-${x}`;
+      const gX = x * ELEMENT_WIDTH + MATRIX_GAP * x + E_GAP
+      const gY = y * ELEMENT_HEIGHT + MATRIX_GAP * y + E_GAP
       elements[id] = {
         id,
         group_by: groupId,
         index,
-        x: x * ELEMENT_WIDTH + MATRIX_GAP * x + MATRIX_GAP * 1.5,
-        y: y * ELEMENT_HEIGHT + MATRIX_GAP * y + MATRIX_GAP * 1.5,
+        x: gX,
+        y: gY,
+        isDragging: false,
+        dX: 0,
+        dY: 0,
         width: ELEMENT_WIDTH,
         height: ELEMENT_HEIGHT,
         pos: [y, x],
@@ -46,9 +56,15 @@ export function drawGroup(ctx: CanvasRenderingContext2D, group: Group) {
   const [x, y] = canvasToScreen(group.x, group.y);
   ctx.fillRect(x, y, scaleSize(group.w), scaleSize(group.h))
 
+  ctx.lineWidth = scaleSize(1);
+
+  ctx.strokeStyle = 'rgb(219,202,202)';
+
   if (group.hover) {
-    ctx.strokeRect(x, y, scaleSize(group.w), scaleSize(group.h))
+    ctx.strokeStyle = 'rgb(61,49,49)';
   }
+
+  ctx.strokeRect(x, y, scaleSize(group.w), scaleSize(group.h))
 }
 
 export function drawGroupName(ctx: CanvasRenderingContext2D, group: Group) {
@@ -57,23 +73,62 @@ export function drawGroupName(ctx: CanvasRenderingContext2D, group: Group) {
   ctx.fillText(`区域名称：${group.group_name}`, x, y);
 }
 
+export function drawDragElement(ctx: CanvasRenderingContext2D) {
+  const currentDragEl = store.getState('currentDragEl')
+
+  if (currentDragEl) {
+
+    const [x, y] = canvasToScreen(currentDragEl.dX, currentDragEl.dY);
+
+    ctx.drawImage(AssetsLoader.unSeat.bitmap, x, y, scaleSize(currentDragEl.width), scaleSize(currentDragEl.height))
+
+    drawGroupElementIndex(ctx, currentDragEl, x, y);
+  }
+}
+
 export function drawGroupElement(ctx: CanvasRenderingContext2D, element: Element, group: Group) {
-  const [x, y] = canvasToScreen(group.x + element.x, group.y + element.y);
-  ctx.drawImage(AssetsLoader.unSeat.bitmap, x, y, scaleSize(element.width), scaleSize(element.height))
-  // ctx.strokeRect(x, y, scaleSize(element.width), scaleSize(element.height))
+
+  if (!element.isDragging) {
+    const [x, y] = canvasToScreen(group.x + element.x, group.y + element.y);
+
+    const width = scaleSize(element.width)
+    const height = scaleSize(element.height)
+    ctx.drawImage(AssetsLoader.unSeat.bitmap, x, y, width, height)
+
+
+    // 当前拖拽的元素在目标元素范围内提示
+    const currentDragEl = store.getState('currentDragEl')
+    if (currentDragEl) {
+      const dxy = canvasToScreen(currentDragEl.dX, currentDragEl.dY);
+      if (
+        dxy[0] + width / 2 >= x &&
+        dxy[0] + width / 2 <= x + width &&
+        dxy[1] + height / 2 >= y &&
+        dxy[1] + height / 2 <= y + height
+      ) {
+        ctx.lineWidth = scaleSize(1);
+        ctx.strokeStyle = 'rgb(0,49,251)';
+        ctx.strokeRect(x, y, width, height)
+      }
+    }
+
+    drawGroupElementIndex(ctx, element, x, y);
+  }
 }
 
 const INDEX_TEXT_MARGIN = MATRIX_GAP + 5
 
-export function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: Element, group: Group) {
+export function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number) {
+
+  const dx = x + scaleSize(element.width / 2)
+
   setCtxFont(ctx, '#000', 'center')
-  const [x, y] = canvasToScreen(group.x + element.x + element.width / 2, group.y + element.y + INDEX_TEXT_MARGIN);
-  ctx.fillText(String(element.index), x, y);
+
+  ctx.fillText(String(element.index), dx, y + scaleSize(INDEX_TEXT_MARGIN));
 
   if (element.text) {
     setCtxFont(ctx, '#000', 'center', 'middle', 10)
-    const [x, y] = canvasToScreen(group.x + element.x + element.width / 2, group.y + element.y + element.height / 2 + 2);
-    ctx.fillText(element.text, x, y);
+    ctx.fillText(element.text, dx, y + scaleSize(element.height / 2 + 2));
   }
 
 }

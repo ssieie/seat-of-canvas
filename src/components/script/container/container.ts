@@ -1,5 +1,5 @@
 import type {Canvaser} from "../core/core.types.ts";
-import PubSub from "../../../utils/pubSub.ts";
+import PubSub from "../utils/pubSub.ts";
 import type {ContainerTransformState} from "./container.type.ts";
 import RuntimeStore from "../runtimeStore/runtimeStore.ts";
 import {setTransformFrame} from "../transform/keyframe.ts";

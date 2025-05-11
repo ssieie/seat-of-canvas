@@ -1,3 +1,5 @@
+import type {Element} from "../graphic/graphic.types.ts";
+
 // 节流
 export function throttle(func: Function, wait: number, options?: { leading?: boolean, trailing?: boolean }) {
   let timeout: any, context: any, args: any
@@ -74,4 +76,43 @@ export function deepCopy(obj: any, cache = new WeakMap()) {
   }
 
   return result
+}
+
+export function swapInArrayFlexible<T>(arr: T[], a: T, b: T): T[] {
+  return arr.map(item => (item === a ? b : item));
+}
+
+export function swapElement(e1: Element, e2: Element) {
+  const temp: Element = {
+    id: e1.id,
+    group_by: e1.group_by,
+    index: e1.index,
+    x: e1.x,
+    y: e1.y,
+    isDragging: e1.isDragging,
+    dX: e1.dX,
+    dY: e1.dY,
+    width: e1.width,
+    height: e1.height,
+    pos: e1.pos ? [...e1.pos] : undefined,
+    text: e1.text
+  }
+
+  copyElement(e1, e2)
+  copyElement(e2, temp)
+}
+
+export function copyElement(e1: Element, e2: Element) {
+  // e1.id = e2.id
+  e1.group_by = e2.group_by
+  e1.index = e2.index
+  e1.x = e2.x
+  e1.y = e2.y
+  e1.isDragging = e2.isDragging
+  e1.dX = e2.dX
+  e1.dY = e2.dY
+  e1.width = e2.width
+  e1.height = e2.height
+  e1.pos = e2.pos ? [...e2.pos] : undefined
+  // e1.text = e2.text
 }

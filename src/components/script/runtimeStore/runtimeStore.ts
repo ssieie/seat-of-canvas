@@ -1,11 +1,12 @@
 import type {ContainerTransformState} from "../container/container.type.ts";
-import type {Graphic, Group, GroupType, RBushGroupItem} from "../graphic/graphic.types.ts";
+import type {Element, Graphic, Group, GroupType, RBushGroupItem} from "../graphic/graphic.types.ts";
 import RBush from 'rbush';
 
 export const allGraphicGroups: GroupType[] = ['rectangle', 'circle', 'ellipse'];
 
 type RuntimeState = {
   highlightElements: boolean
+  currentDragEl: Element | null
   cvs: HTMLCanvasElement | null;
   containerTransformState: ContainerTransformState
   graphicMatrix: Graphic
@@ -15,6 +16,7 @@ type RuntimeState = {
 function initRuntimeState(): RuntimeState {
   return {
     highlightElements: true,
+    currentDragEl: null,
     cvs: null,
     containerTransformState: {
       lastX: 0,
@@ -162,8 +164,13 @@ class RuntimeStore {
         }
       }
     }
-
     return null;
+  }
+
+  // 获取指定组下的元素
+  getGraphicGroupElementsById(groupId: string): Element[] {
+    const eIds = this.state.graphicMatrix.groupElements[groupId]
+    return eIds.map(eId => this.state.graphicMatrix.elements[eId])
   }
 
   reset() {

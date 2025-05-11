@@ -26,8 +26,13 @@ export interface Element {
   id: string;
   group_by: string
   index: number;
+  // 组内坐标用于正常渲染
   x: number;
   y: number;
+  // 拖拽时坐标
+  isDragging: boolean;
+  dX: number
+  dY: number
   width: number;
   height: number;
   // 矩阵组特有

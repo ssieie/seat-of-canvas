@@ -1,5 +1,5 @@
-import PubSub from '../../../utils/pubSub.ts'
-import {didNotHitAnyElement, mousemoveTargetThrottleHandler} from "./tool/hitTargetDetection.ts";
+import PubSub from '../utils/pubSub.ts'
+import {didNotHitAnyElement, hitElement, mousemoveTargetThrottleHandler} from "./tool/hitTargetDetection.ts";
 
 const mousedownHandler = (e: MouseEvent) => {
 
@@ -8,7 +8,15 @@ const mousedownHandler = (e: MouseEvent) => {
   if (!dnh) {
     PubSub.publish('mousedown_dnh', e)
   } else {
-    PubSub.publish('mousedown_group', e, dnh.group_id)
+    // 判断是否命中的元素
+    const element = hitElement(e, dnh)
+
+    if (element) {
+      PubSub.publish('mousedown_element', e, element, dnh)
+    } else {
+      // 命中组
+      PubSub.publish('mousedown_group', e, dnh.group_id)
+    }
   }
 
   PubSub.publish('mousedown', e)

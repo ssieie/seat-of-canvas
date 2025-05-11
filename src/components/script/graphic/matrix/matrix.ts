@@ -1,10 +1,10 @@
 import type {Canvaser} from "../../core/core.types.ts";
 import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
 import type {Graphic, Group, GroupType} from "../graphic.types.ts";
-import {generateUuid} from "../../../../utils/common.ts";
+import {generateUuid} from "../../utils/common.ts";
 import {
   drawGroup,
-  drawGroupElement, drawGroupElementIndex,
+  drawGroupElement,
   drawGroupName,
   fillMatrixElement,
   getMatrixRect,
@@ -86,9 +86,6 @@ class Matrix {
       for (const elementId of elements) {
         const element = this.graphicData.elements[elementId]
         drawGroupElement(ctx, element, group)
-
-        // 元素序号
-        drawGroupElementIndex(ctx, element, group)
       }
     }
   }
