@@ -2,8 +2,8 @@ import type {Canvaser} from "../core/core.types.ts";
 import PubSub from "../utils/pubSub.ts";
 import RuntimeStore, {rebuildGroupTree} from "../runtimeStore/runtimeStore.ts";
 import type {Element, Group} from "./graphic.types.ts";
-import {toCanvasCoords, updateHoverState} from "../eventCenter/tool/hitTargetDetection.ts";
-import {exchangeElements, withinCanvas} from "./graphicUtils.ts";
+import {updateHoverState} from "../eventCenter/tool/hitTargetDetection.ts";
+import {exchangeElements, withinCanvas, toCanvasCoords} from "./graphicUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -11,8 +11,10 @@ class OperateGraphic {
   canvas: HTMLCanvasElement | null = null
   ctx: CanvasRenderingContext2D | null = null
   lastMousePos: { x: number, y: number } | null = null;
+
   private currentGroup: Group | null = null;
   private dragging = false
+
   private currentElement: Element | null = null;
   private elDragging = false
 
@@ -59,7 +61,8 @@ class OperateGraphic {
 
 
       if (!withinCanvas(e)) {
-        this.stopDraggingHandler()
+        this.currentGroup!.hover = false;
+        this.stopDraggingHandler(e, true)
         return; // 停止处理拖动
       }
 
@@ -147,13 +150,19 @@ class OperateGraphic {
     }
   }
 
-  stopDraggingHandler() {
+  stopDraggingHandler(_e: MouseEvent, offScreen = false) {
 
     this.lastMousePos = null;
 
     if (this.dragging) {
 
-      store.updateState('highlightElements', true)
+      if (offScreen) {
+        setTimeout(() => {
+          store.updateState('highlightElements', true)
+        }, 500)
+      } else {
+        store.updateState('highlightElements', true)
+      }
 
       this.dragging = false
 

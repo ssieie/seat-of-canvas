@@ -6,6 +6,7 @@ import {cancelAllEvents, registerAllEvents} from "../eventCenter/eventCenter.ts"
 import RuntimeStore from "../runtimeStore/runtimeStore.ts";
 import initGraphicInstances from "./graphicRegister.ts";
 import AssetsLoader from "../assetsLoader/assetsLoader.ts";
+import {graphicUtilsClear, graphicUtilsInit} from "../graphic/graphicUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -48,6 +49,8 @@ export async function init(
 
   MY_CANVAS.pen = MY_CANVAS.cvs.getContext('2d')
 
+  graphicUtilsInit()
+
   ContainerInstance = new Container(target.clientWidth, target.clientHeight, MY_CANVAS)
 
   target.appendChild(MY_CANVAS.cvs)
@@ -58,7 +61,7 @@ export async function init(
 
   initRender(fps);
 
-  registerAllEvents()
+  registerAllEvents(MY_CANVAS.cvs)
 
   return func
 }
@@ -67,7 +70,7 @@ export function exit() {
   ContainerInstance?.clear();
   ContainerInstance = null;
 
-  store.unsubscribeAll()
+  graphicUtilsClear()
 
   RenderInstance?.clear();
 
@@ -77,5 +80,13 @@ export function exit() {
 
   RenderInstance = null;
 
-  cancelAllEvents()
+  RuntimeStore.getInstance().reset()
+
+  store.unsubscribeAll()
+
+  cancelAllEvents(MY_CANVAS.cvs!)
+
+  MY_CANVAS.cvs!.remove()
+  MY_CANVAS.cvs = null;
+  MY_CANVAS.pen = null;
 }

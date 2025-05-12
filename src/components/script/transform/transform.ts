@@ -2,6 +2,8 @@ import RuntimeStore from "../runtimeStore/runtimeStore.ts";
 
 const store = RuntimeStore.getInstance();
 
+export const getCanvas = () => store.getState('cvs');
+
 export function getTransformState() {
   return store.getState('containerTransformState');
 }

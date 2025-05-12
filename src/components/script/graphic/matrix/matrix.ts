@@ -52,7 +52,7 @@ class Matrix {
       h: h,
       hover: false,
       size: row * col,
-      type: 'rectangle',
+      type: GRAPHIC_TYPE,
     }
 
     const elements = fillMatrixElement(groupId, row, col, [basicX, basicY])

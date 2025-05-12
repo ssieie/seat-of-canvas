@@ -1,5 +1,13 @@
 import type {Element, Group} from "../graphic.types.ts";
-import {ELEMENT_HEIGHT, ELEMENT_WIDTH} from "../constant.ts";
+import {
+  BOTTOM_TEXT_HEIGHT,
+  E_GAP, ELEMENT_DESC_COLOR,
+  ELEMENT_HEIGHT, ELEMENT_MOVE_IN_BD_COLOR, ELEMENT_NO_COLOR,
+  ELEMENT_WIDTH,
+  GROUP_BD_COLOR,
+  GROUP_BG_COLOR, GROUP_HOVER_BD_COLOR, GROUP_NAME_COLOR,
+  MATRIX_GAP
+} from "../constant.ts";
 import {canvasToScreen, scaleSize} from "../../transform/transform.ts";
 import {setCtxFont} from "../graphicUtils.ts";
 import AssetsLoader from "../../assetsLoader/assetsLoader.ts";
@@ -7,16 +15,10 @@ import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
 
 const store = RuntimeStore.getInstance();
 
-const BOTTOM_TEXT_HEIGHT = 30;
-
-export const MATRIX_GAP = 10
-
 // 获取初始化矩阵的宽高，后续用来获取放在画布中的位置，得到此组基准位置
 export function getMatrixRect(row: number, col: number): [w: number, h: number] {
   return [col * ELEMENT_WIDTH + (col - 1) * MATRIX_GAP + MATRIX_GAP * 3, row * ELEMENT_HEIGHT + (row - 1) * MATRIX_GAP + BOTTOM_TEXT_HEIGHT + MATRIX_GAP * 2];
 }
-
-const E_GAP = MATRIX_GAP * 1.5
 
 export function fillMatrixElement(groupId: string, row: number, col: number, _basicPos: [number, number]): {
   [s: string]: Element,
@@ -52,23 +54,23 @@ export function fillMatrixElement(groupId: string, row: number, col: number, _ba
 }
 
 export function drawGroup(ctx: CanvasRenderingContext2D, group: Group) {
-  ctx.fillStyle = 'rgb(242, 242, 242)'
+  ctx.fillStyle = GROUP_BG_COLOR
   const [x, y] = canvasToScreen(group.x, group.y);
   ctx.fillRect(x, y, scaleSize(group.w), scaleSize(group.h))
 
   ctx.lineWidth = scaleSize(1);
 
-  ctx.strokeStyle = 'rgb(219,202,202)';
+  ctx.strokeStyle = GROUP_BD_COLOR;
 
   if (group.hover) {
-    ctx.strokeStyle = 'rgb(61,49,49)';
+    ctx.strokeStyle = GROUP_HOVER_BD_COLOR;
   }
 
   ctx.strokeRect(x, y, scaleSize(group.w), scaleSize(group.h))
 }
 
 export function drawGroupName(ctx: CanvasRenderingContext2D, group: Group) {
-  setCtxFont(ctx, '#000', 'center')
+  setCtxFont(ctx, GROUP_NAME_COLOR, 'center')
   const [x, y] = canvasToScreen(group.x + group.w / 2, group.y + group.h - MATRIX_GAP);
   ctx.fillText(`区域名称：${group.group_name}`, x, y);
 }
@@ -107,7 +109,7 @@ export function drawGroupElement(ctx: CanvasRenderingContext2D, element: Element
         dxy[1] + height / 2 <= y + height
       ) {
         ctx.lineWidth = scaleSize(1);
-        ctx.strokeStyle = 'rgb(0,49,251)';
+        ctx.strokeStyle = ELEMENT_MOVE_IN_BD_COLOR;
         ctx.strokeRect(x, y, width, height)
       }
     }
@@ -122,12 +124,12 @@ export function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: El
 
   const dx = x + scaleSize(element.width / 2)
 
-  setCtxFont(ctx, '#000', 'center')
+  setCtxFont(ctx, ELEMENT_NO_COLOR, 'center')
 
   ctx.fillText(String(element.index), dx, y + scaleSize(INDEX_TEXT_MARGIN));
 
   if (element.text) {
-    setCtxFont(ctx, '#000', 'center', 'middle', 10)
+    setCtxFont(ctx, ELEMENT_DESC_COLOR, 'center', 'middle', 10)
     ctx.fillText(element.text, dx, y + scaleSize(element.height / 2 + 2));
   }
 

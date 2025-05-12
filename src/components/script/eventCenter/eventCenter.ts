@@ -34,18 +34,18 @@ const wheelHandler = (e: WheelEvent) => {
   PubSub.publish('wheel', e)
 }
 
-export function registerAllEvents() {
-  window.addEventListener('mousedown', mousedownHandler)
-  window.addEventListener('mousemove', mousemoveHandler)
-  window.addEventListener('mouseup', mouseupHandler)
-  window.addEventListener('wheel', wheelHandler, {passive: false})
+export function registerAllEvents(cvs: HTMLCanvasElement) {
+  cvs.addEventListener('mousedown', mousedownHandler)
+  cvs.addEventListener('mousemove', mousemoveHandler)
+  cvs.addEventListener('mouseup', mouseupHandler)
+  cvs.addEventListener('wheel', wheelHandler, {passive: false})
 }
 
-export function cancelAllEvents() {
-  window.removeEventListener('mousedown', mousedownHandler)
-  window.removeEventListener('mousemove', mousemoveHandler)
-  window.removeEventListener('mouseup', mouseupHandler)
-  window.removeEventListener('wheel', wheelHandler)
+export function cancelAllEvents(cvs: HTMLCanvasElement) {
+  cvs.removeEventListener('mousedown', mousedownHandler)
+  cvs.removeEventListener('mousemove', mousemoveHandler)
+  cvs.removeEventListener('mouseup', mouseupHandler)
+  cvs.removeEventListener('wheel', wheelHandler)
 
   PubSub.clearAll()
 }

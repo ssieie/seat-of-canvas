@@ -1,33 +1,9 @@
 import {throttle} from "../../utils/common.ts";
 import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
-import {getTransformState} from "../../transform/transform.ts";
 import type {Element, RBushGroupItem} from "../../graphic/graphic.types.ts";
+import {toCanvasCoords} from "../../graphic/graphicUtils.ts";
 
 const store = RuntimeStore.getInstance();
-
-export const getCanvas = () => store.getState('cvs');
-
-// 把鼠标坐标转换到画布坐标
-export const toCanvasCoords = (e: MouseEvent) => {
-  const {offsetX, offsetY, scale} = getTransformState();
-  const canvas = getCanvas()
-
-  if (canvas) {
-    const rect = canvas.getBoundingClientRect();
-    // DOM -> 像素坐标
-    const px = (e.clientX - rect.left) * (canvas.width / rect.width);
-    const py = (e.clientY - rect.top) * (canvas.height / rect.height);
-
-    // 像素坐标 -> 逻辑坐标（反变换）
-    const mx = (px - offsetX) / scale;
-    const my = (py - offsetY) / scale;
-
-    return {mx, my};
-  }
-
-  return null
-}
-
 
 export const mousemoveTargetHandler = (e: MouseEvent) => {
   if (store.getState('highlightElements')) {

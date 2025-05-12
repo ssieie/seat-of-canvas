@@ -2,6 +2,7 @@ import behaviorTasksInstance from "../behaviorTasks/behaviorTasks.ts";
 import type {ContainerTransformState} from "../container/container.type.ts";
 import {getTransformState} from "./transform.ts";
 import RuntimeStore from "../runtimeStore/runtimeStore.ts";
+import {delBehavior} from "../behaviorTasks/behaviorController.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -27,7 +28,7 @@ export function setTransformFrame(endState: { offsetX: number, offsetY: number, 
 
       // 动画完成时移除任务
       if (t >= 1) {
-        behaviorTasksInstance.delBehavior("resetTransform");
+        delBehavior("resetTransform");
       }
 
       return {

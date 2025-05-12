@@ -1,7 +1,7 @@
 import {getTransformState, scaleSize} from "../transform/transform.ts";
 import RuntimeStore, {allGraphicGroups} from "../runtimeStore/runtimeStore.ts";
 import type {Element, Group, GroupType} from "./graphic.types.ts";
-import {didNotHitAnyElement, getCanvas, hitElement} from "../eventCenter/tool/hitTargetDetection.ts";
+import {didNotHitAnyElement, hitElement} from "../eventCenter/tool/hitTargetDetection.ts";
 import {swapElement, swapInArrayFlexible} from "../utils/common.ts";
 
 const store = RuntimeStore.getInstance();
@@ -21,7 +21,6 @@ export function setCtxFont(ctx: CanvasRenderingContext2D, color: string, textAli
   ctx.textAlign = textAlign;
   ctx.textBaseline = textBaseline;
 }
-
 
 // 矩形是否重叠
 function isOverlap(newRect: Pick<Group, 'x' | 'y' | 'w' | 'h'>, existingRects: Map<string, Group>): boolean {
@@ -64,27 +63,52 @@ export function getBasicPos(w: number, h: number, cvs: HTMLCanvasElement): [numb
   }
 }
 
+let canvasRect: DOMRect | null = null;
+let cvsInstance: HTMLCanvasElement | null = null;
+
+function cvsChange(cvs: HTMLCanvasElement | null) {
+  cvsInstance = cvs
+  canvasRect = cvs!.getBoundingClientRect()
+}
+
 export function withinCanvas(e: MouseEvent) {
   // 获取鼠标在 canvas 上的相对位置
-  const canvas = getCanvas()
+  // const canvas = getCanvas()
 
-  if (canvas) {
-    const rect = canvas.getBoundingClientRect();
+  if (canvasRect) {
+    // const rect = canvas.getBoundingClientRect();
     const mouseX = e.clientX;
     const mouseY = e.clientY;
-
     // 判断是否在 canvas 内
     const withinCanvas = (
-      mouseX >= rect.left &&
-      mouseX <= rect.right &&
-      mouseY >= rect.top &&
-      mouseY <= rect.bottom
+      mouseX - 8 >= canvasRect.left &&
+      mouseX + 8 <= canvasRect.right &&
+      mouseY - 8 >= canvasRect.top &&
+      mouseY + 8 <= canvasRect.bottom
     );
 
     return withinCanvas
   }
 
   return false
+}
+
+// 把鼠标坐标转换到画布坐标
+export const toCanvasCoords = (e: MouseEvent) => {
+  const {offsetX, offsetY, scale} = getTransformState();
+  if (canvasRect && cvsInstance) {
+    // DOM -> 像素坐标
+    const px = (e.clientX - canvasRect.left) * (cvsInstance.width / canvasRect.width);
+    const py = (e.clientY - canvasRect.top) * (cvsInstance.height / canvasRect.height);
+
+    // 像素坐标 -> 逻辑坐标（反变换）
+    const mx = (px - offsetX) / scale;
+    const my = (py - offsetY) / scale;
+
+    return {mx, my};
+  }
+
+  return null
 }
 
 // 释放元素是否交换元素如果有
@@ -112,4 +136,14 @@ export function exchangeElements(e: MouseEvent, dragEl: Element) {
     }
   }
 
+}
+
+export function graphicUtilsInit() {
+  store.subscribe('cvs', cvsChange)
+}
+
+export function graphicUtilsClear() {
+  store.unsubscribe('cvs', cvsChange)
+  cvsInstance = null
+  canvasRect = null
 }

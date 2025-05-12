@@ -2,6 +2,7 @@ import type {RenderTargetInstances} from "./render.types.ts";
 import type {Canvaser} from "../core/core.types.ts";
 import behaviorTasksInstance from "../behaviorTasks/behaviorTasks.ts";
 import drawGrid from "./drawGrid.ts";
+import {delBehaviorAll} from "../behaviorTasks/behaviorController.ts";
 
 class Render {
   cvs: HTMLCanvasElement;
@@ -43,6 +44,8 @@ class Render {
 
   clear() {
     this.frame && window.cancelAnimationFrame(this.frame);
+
+    delBehaviorAll()
   }
 
   private clearScreen() {

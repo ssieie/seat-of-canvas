@@ -98,7 +98,6 @@ class RuntimeStore {
   updateState<K extends keyof RuntimeState>(key: K, value: RuntimeState[K]) {
 
     const oldValue = this.state[key];
-
     this.state[key] = value;
     if (key === 'graphicMatrix') {
       rebuildGroupTree(RuntimeStore.getInstance());

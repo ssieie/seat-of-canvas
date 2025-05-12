@@ -3,6 +3,7 @@ import PubSub from "../utils/pubSub.ts";
 import type {ContainerTransformState} from "./container.type.ts";
 import RuntimeStore from "../runtimeStore/runtimeStore.ts";
 import {setTransformFrame} from "../transform/keyframe.ts";
+import {withinCanvas} from "../graphic/graphicUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -52,7 +53,6 @@ class Container {
       }
     })
 
-
     PubSub.subscribe('mousedown_dnh', (e) => {
       if (e.button === 0) {
         this.dragging = true
@@ -66,6 +66,12 @@ class Container {
 
     PubSub.subscribe('mousemove', (e) => {
       if (!this.dragging) return
+
+      if (!withinCanvas(e)) {
+        this.dragging = false
+        return; // 停止处理拖动
+      }
+
       const dx = e.clientX - this.transformState.lastX
       const dy = e.clientY - this.transformState.lastY
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref} from 'vue'
+import {onMounted, onBeforeUnmount, ref} from 'vue'
 import {init, exit, resize} from "./script/core/core.ts";
 import {throttle} from './script/utils/common.ts'
 import type {OperateFunc} from "./script/core/core.types.ts";
@@ -47,7 +47,7 @@ onMounted(async () => {
   }
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
   if (wrapperRef.value) {
     resizeObserver.unobserve(wrapperRef.value)
     exit()
@@ -63,7 +63,9 @@ onUnmounted(() => {
     <div class="btn" @click="addM(6,4)">+矩形6*4</div>
     <div class="btn" @click="addMTest(6,4)">+矩形6*4 * 100</div>
   </div>
-  <div class="wrapper" @contextmenu.prevent ref="wrapperRef"></div>
+  <div class="content">
+    <div class="wrapper" @contextmenu.prevent ref="wrapperRef"></div>
+  </div>
 </template>
 
 <style scoped>
@@ -83,9 +85,16 @@ onUnmounted(() => {
   cursor: pointer;
 }
 
+.content {
+  width: 90%;
+  height: calc(100vh - 90px);
+  margin: 0 auto;
+  border: 1px solid #ccc;
+}
+
 .wrapper {
-  width: 100vw;
-  height: calc(100vh - 40px);
+  width: 100%;
+  height: 100%;
   overflow: hidden;
 }
 </style>
