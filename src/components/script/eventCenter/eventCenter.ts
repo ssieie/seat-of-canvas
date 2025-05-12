@@ -10,7 +10,7 @@ const mousedownHandler = (e: MouseEvent) => {
   } else {
     // 判断是否命中的元素
     const element = hitElement(e, dnh)
-
+    console.log(element)
     if (element) {
       PubSub.publish('mousedown_element', e, element, dnh)
     } else {

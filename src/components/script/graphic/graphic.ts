@@ -4,7 +4,7 @@ import OperateGraphic from "./operateGraphic.ts";
 import {drawDragElement, drawGroupMatrixElement, drawMatrixGroup} from "./matrix/matrixUtils.ts";
 import Circle from "./circle/circle.ts";
 import RuntimeStore from "../runtimeStore/runtimeStore.ts";
-import {drawCircleGroup} from "./circle/circleUtils.ts";
+import {drawCircleGroup, drawGroupCircleElement} from "./circle/circleUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -55,6 +55,7 @@ class GraphicMain extends OperateGraphic {
             drawGroupMatrixElement(ctx, element, group)
             break;
           case "circle":
+            drawGroupCircleElement(ctx, element, group)
             break;
           case "ellipse":
             break

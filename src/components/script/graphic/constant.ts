@@ -19,3 +19,5 @@ export const ELEMENT_MOVE_IN_BD_COLOR = 'rgb(0,49,251)'
 
 export const ELEMENT_NO_COLOR = 'rgb(0,0,0)'
 export const ELEMENT_DESC_COLOR = 'rgb(0,0,0)'
+
+export const CIRCLE_COLOR = 'rgb(255,255,255)'

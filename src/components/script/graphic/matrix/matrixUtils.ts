@@ -90,10 +90,18 @@ export function drawDragElement(ctx: CanvasRenderingContext2D) {
   }
 }
 
+export function matrixElementPosInGroup(group: Group, element: Element) {
+  return {
+    x: group.x + element.x,
+    y: group.y + element.y
+  }
+}
+
 export function drawGroupMatrixElement(ctx: CanvasRenderingContext2D, element: Element, group: Group) {
 
   if (!element.isDragging) {
-    const [x, y] = canvasToScreen(group.x + element.x, group.y + element.y);
+    const pos = matrixElementPosInGroup(group, element)
+    const [x, y] = canvasToScreen(pos.x, pos.y);
 
     const width = scaleSize(element.width)
     const height = scaleSize(element.height)

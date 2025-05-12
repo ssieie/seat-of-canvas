@@ -2,6 +2,8 @@ import {throttle} from "../../utils/common.ts";
 import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
 import type {Element, RBushGroupItem} from "../../graphic/graphic.types.ts";
 import {toCanvasCoords} from "../../graphic/graphicUtils.ts";
+import {matrixElementPosInGroup} from "../../graphic/matrix/matrixUtils.ts";
+import {circleElementPosInGroup} from "../../graphic/circle/circleUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -111,9 +113,24 @@ export const hitElement = (e: MouseEvent, group: RBushGroupItem): Element | null
   if (pos) {
     const {mx, my} = pos;
     const elements = store.getGraphicGroupElementsById(group.group_id)
+
     for (const element of elements) {
-      const {x: oX, y: oY, width, height} = element;
-      const [x, y] = [group.x + oX, group.y + oY]
+      const {width, height} = element;
+
+      let x = 0
+      let y = 0
+
+      switch (group.type) {
+        case "rectangle":
+          ({x, y} = matrixElementPosInGroup(group, element));
+          break;
+        case "circle":
+          ({x, y} = circleElementPosInGroup(group, element));
+          break
+        case "ellipse":
+          break
+      }
+
       if (
         mx >= x &&
         mx <= x + width &&

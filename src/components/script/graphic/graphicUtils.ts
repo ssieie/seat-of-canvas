@@ -52,6 +52,10 @@ export function getBasicPos(w: number, h: number): [number, number] {
   const xBoundary = startX + screenW - w;
   const step = 10; // 步进像素
 
+  if (startX > xBoundary){
+    throw new Error("当前形状超出画布大小,缩小画布后添加");
+  }
+
   for (let y = startY; ; y += step) {
     for (let x = startX; x < xBoundary; x += step) {
       if (isOverlap({x, y, w, h}, allGraphicGroups)) {

@@ -17,7 +17,8 @@ export interface Group {
   hover: boolean
   size: number;
   type: GroupType;
-  //
+  // 圆形专有
+  radius?: number
 }
 
 export type RBushGroupItem = Group & { minX: number, minY: number, maxX: number, maxY: number };

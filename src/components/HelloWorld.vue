@@ -49,6 +49,8 @@ onMounted(async () => {
     resizeObserver.observe(wrapperRef.value)
 
     addM(2, 2)
+
+    addC(8)
   }
 })
 
@@ -68,7 +70,7 @@ onBeforeUnmount(() => {
     <!--    <div class="btn" @click="addM(3,3)">+矩形3*3</div>-->
     <div class="btn" @click="addM(6,4)">+矩形6*4</div>
     <div class="btn" @click="addMTest(6,4)">+矩形6*4 * 100</div>
-    <div class="btn" style="background-color: green" @click="addC(5)">+圆形</div>
+    <div class="btn" style="background-color: green" @click="addC(6)">+圆形(5)</div>
   </div>
   <div class="content">
     <div class="wrapper" @contextmenu.prevent ref="wrapperRef"></div>

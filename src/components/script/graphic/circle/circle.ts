@@ -2,7 +2,7 @@ import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
 import type {Graphic, Group, GroupType} from "../graphic.types.ts";
 import {generateUuid} from "../../utils/common.ts";
 import {getBasicPos} from "../graphicUtils.ts";
-import {getCircleRect} from "./circleUtils.ts";
+import {fillCircleElement, getCircleRect} from "./circleUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -34,19 +34,19 @@ class Circle {
       hover: false,
       size: num,
       type: GRAPHIC_TYPE,
+      radius,
     }
 
-    // const elements = fillMatrixElement(groupId, row, col, [basicX, basicY])
+    const elements = fillCircleElement(group)
 
     graphicMatrix.groups[GRAPHIC_TYPE][groupId] = group
 
-    // graphicMatrix.elements = {
-    //   ...graphicMatrix.elements,
-    //   ...elements,
-    // }
+    graphicMatrix.elements = {
+      ...graphicMatrix.elements,
+      ...elements,
+    }
 
-    // graphicMatrix.groupElements[groupId] = Object.keys(elements)
-    graphicMatrix.groupElements[groupId] = []
+    graphicMatrix.groupElements[groupId] = Object.keys(elements)
 
     store.updateState('graphicMatrix', graphicMatrix)
   }
