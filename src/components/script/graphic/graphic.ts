@@ -1,26 +1,67 @@
 import type {Canvaser, GraphicOperateFunc} from "../core/core.types.ts";
 import Matrix from "./matrix/matrix.ts";
 import OperateGraphic from "./operateGraphic.ts";
-import {drawDragElement} from "./matrix/matrixUtils.ts";
+import {drawDragElement, drawGroupMatrixElement, drawMatrixGroup} from "./matrix/matrixUtils.ts";
+import Circle from "./circle/circle.ts";
+import RuntimeStore from "../runtimeStore/runtimeStore.ts";
+import {drawCircleGroup} from "./circle/circleUtils.ts";
 
-class Graphic extends OperateGraphic {
+const store = RuntimeStore.getInstance();
+
+class GraphicMain extends OperateGraphic {
   canvas: HTMLCanvasElement | null = null
   ctx: CanvasRenderingContext2D | null = null
 
   matrix: Matrix
+  circle: Circle
 
   constructor(cv: Canvaser) {
     super(cv);
     this.canvas = cv.cvs
     this.ctx = cv.pen
 
-    this.matrix = new Matrix(cv)
+    this.matrix = new Matrix()
+    this.circle = new Circle()
   }
 
   draw() {
     if (!this.ctx) return
 
-    this.matrix.draw()
+    const ctx = this.ctx!
+    // 绘制矩形组
+    const allGroup = store.getGraphicGroupsArr()
+
+
+    for (const group of allGroup.sort((a, b) => a.z_index - b.z_index)) {
+
+      switch (group.type) {
+        case "rectangle":
+          drawMatrixGroup(ctx, group)
+          break;
+        case "circle":
+          drawCircleGroup(ctx, group)
+          break;
+        case "ellipse":
+          break
+      }
+
+      // 组内元素
+      const elements = store.getGraphicGroupElementsById(group.group_id)
+
+      for (const element of elements) {
+
+        switch (group.type) {
+          case "rectangle":
+            drawGroupMatrixElement(ctx, element, group)
+            break;
+          case "circle":
+            break;
+          case "ellipse":
+            break
+        }
+
+      }
+    }
 
     drawDragElement(this.ctx)
   }
@@ -28,13 +69,15 @@ class Graphic extends OperateGraphic {
   clear() {
     super.clear()
     this.matrix.clear()
+    this.circle.clear()
   }
 
   operate(): GraphicOperateFunc {
     return {
-      addMatrixGraphic: this.matrix.addMatrixGraphic!.bind(this.matrix)
+      addMatrixGraphic: this.matrix.addMatrixGraphic!.bind(this.matrix),
+      addCircleGraphic: this.circle.addCircleGraphic!.bind(this.circle)
     }
   }
 }
 
-export default Graphic
+export default GraphicMain

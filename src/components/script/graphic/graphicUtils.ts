@@ -1,4 +1,4 @@
-import {getTransformState, scaleSize} from "../transform/transform.ts";
+import {getCanvas, getTransformState, scaleSize} from "../transform/transform.ts";
 import RuntimeStore, {allGraphicGroups} from "../runtimeStore/runtimeStore.ts";
 import type {Element, Group, GroupType} from "./graphic.types.ts";
 import {didNotHitAnyElement, hitElement} from "../eventCenter/tool/hitTargetDetection.ts";
@@ -39,10 +39,10 @@ function isOverlap(newRect: Pick<Group, 'x' | 'y' | 'w' | 'h'>, existingRects: M
 }
 
 // 根据画布矩形分布情况返回新矩形可用的基准Pos --以下为简单实现性能欠佳
-export function getBasicPos(w: number, h: number, cvs: HTMLCanvasElement): [number, number] {
+export function getBasicPos(w: number, h: number): [number, number] {
   const {scale, offsetX, offsetY} = getTransformState();
   // 屏幕转换后的宽
-  const screenW = cvs.width / scale;
+  const screenW = getCanvas()!.width / scale;
   // 已存在的所有组
   const allGraphicGroups = getGraphicGroups();
 

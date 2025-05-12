@@ -153,6 +153,17 @@ class RuntimeStore {
     return res
   }
 
+  // 获取画布上已有的全部组 arr
+  getGraphicGroupsArr(): Group[] {
+    const res: Group[] = [];
+    for (const key of allGraphicGroups) {
+      for (const [_id, group] of Object.entries(this.state.graphicMatrix.groups[key])) {
+        res.push(group);
+      }
+    }
+    return res
+  }
+
   // 获取指定组
   getGraphicGroupsById(groupId: string): Group | null {
     if (!groupId) return null;

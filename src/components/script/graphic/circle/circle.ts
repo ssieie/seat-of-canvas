@@ -1,31 +1,25 @@
 import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
 import type {Graphic, Group, GroupType} from "../graphic.types.ts";
 import {generateUuid} from "../../utils/common.ts";
-import {
-  fillMatrixElement,
-  getMatrixRect,
-} from "./matrixUtils.ts";
 import {getBasicPos} from "../graphicUtils.ts";
+import {getCircleRect} from "./circleUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
-const GRAPHIC_TYPE: GroupType = 'rectangle'
+const GRAPHIC_TYPE: GroupType = 'circle'
 
-class Matrix {
+class Circle {
 
   graphicData: Graphic
 
   constructor() {
-
     this.graphicData = store.getState('graphicMatrix')
   }
 
-  async addMatrixGraphic(name: string, row: number, col: number) {
-    // 新建一个矩形组
-    // const graphicMatrix: Graphic = deepCopy()
+  async addCircleGraphic(name: string, num: number) {
     const graphicMatrix: Graphic = this.graphicData
     const groupId = generateUuid()
-    const [w, h] = getMatrixRect(row, col)
+    const {radius, w, h} = getCircleRect(num)
 
     const [basicX, basicY] = getBasicPos(w, h)
 
@@ -38,20 +32,21 @@ class Matrix {
       w: w,
       h: h,
       hover: false,
-      size: row * col,
+      size: num,
       type: GRAPHIC_TYPE,
     }
 
-    const elements = fillMatrixElement(groupId, row, col, [basicX, basicY])
+    // const elements = fillMatrixElement(groupId, row, col, [basicX, basicY])
 
     graphicMatrix.groups[GRAPHIC_TYPE][groupId] = group
 
-    graphicMatrix.elements = {
-      ...graphicMatrix.elements,
-      ...elements,
-    }
+    // graphicMatrix.elements = {
+    //   ...graphicMatrix.elements,
+    //   ...elements,
+    // }
 
-    graphicMatrix.groupElements[groupId] = Object.keys(elements)
+    // graphicMatrix.groupElements[groupId] = Object.keys(elements)
+    graphicMatrix.groupElements[groupId] = []
 
     store.updateState('graphicMatrix', graphicMatrix)
   }
@@ -60,4 +55,4 @@ class Matrix {
   }
 }
 
-export default Matrix
+export default Circle

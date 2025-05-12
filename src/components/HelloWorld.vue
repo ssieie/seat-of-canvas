@@ -24,6 +24,11 @@ const addM = (row: number, col: number) => {
     cFunc.graphicOperateFunc.addMatrixGraphic('测试1', row, col)
   }
 }
+const addC = (num: number) => {
+  if (cFunc) {
+    cFunc.graphicOperateFunc.addCircleGraphic('测试circle', num)
+  }
+}
 
 const addMTest = (row: number, col: number) => {
   if (cFunc) {
@@ -51,6 +56,7 @@ onBeforeUnmount(() => {
   if (wrapperRef.value) {
     resizeObserver.unobserve(wrapperRef.value)
     exit()
+    cFunc = null
   }
 })
 
@@ -59,9 +65,10 @@ onBeforeUnmount(() => {
 <template>
   <div class="btns">
     <div class="btn" @click="addM(2,2)">+矩形2*2</div>
-    <div class="btn" @click="addM(3,3)">+矩形3*3</div>
+    <!--    <div class="btn" @click="addM(3,3)">+矩形3*3</div>-->
     <div class="btn" @click="addM(6,4)">+矩形6*4</div>
     <div class="btn" @click="addMTest(6,4)">+矩形6*4 * 100</div>
+    <div class="btn" style="background-color: green" @click="addC(5)">+圆形</div>
   </div>
   <div class="content">
     <div class="wrapper" @contextmenu.prevent ref="wrapperRef"></div>
@@ -86,7 +93,7 @@ onBeforeUnmount(() => {
 }
 
 .content {
-  width: 90%;
+  width: 96%;
   height: calc(100vh - 90px);
   margin: 0 auto;
   border: 1px solid #ccc;

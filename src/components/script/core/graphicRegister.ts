@@ -1,7 +1,7 @@
 import type {Canvaser, GraphicOperateFunc, OperateFunc} from "./core.types.ts";
 import Test from "../test/test.ts";
 import type {RenderTargetInstances} from "../render/render.types.ts";
-import Graphic from "../graphic/graphic.ts";
+import GraphicMain from "../graphic/graphic.ts";
 
 export default function initGraphicInstances(canvas: Canvaser, instances: RenderTargetInstances): OperateFunc {
 
@@ -20,7 +20,7 @@ function initTest(canvas: Canvaser, instances: RenderTargetInstances) {
 }
 
 function initGraphic(canvas: Canvaser, instances: RenderTargetInstances): GraphicOperateFunc {
-  instances.Graphic = new Graphic(canvas);
+  instances.Graphic = new GraphicMain(canvas);
 
   return instances.Graphic.operate!.call(instances.Graphic)
 }

@@ -5,6 +5,7 @@ export type Canvaser = {
 
 export type GraphicOperateFunc = {
   addMatrixGraphic: (name: string, row: number, col: number) => void
+  addCircleGraphic: (name: string, num: number) => void
 }
 
 export type OperateFunc = {

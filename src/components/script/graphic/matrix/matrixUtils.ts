@@ -3,9 +3,7 @@ import {
   BOTTOM_TEXT_HEIGHT,
   E_GAP, ELEMENT_DESC_COLOR,
   ELEMENT_HEIGHT, ELEMENT_MOVE_IN_BD_COLOR, ELEMENT_NO_COLOR,
-  ELEMENT_WIDTH,
-  GROUP_BD_COLOR,
-  GROUP_BG_COLOR, GROUP_HOVER_BD_COLOR, GROUP_NAME_COLOR,
+  ELEMENT_WIDTH, GROUP_BD_COLOR, GROUP_BG_COLOR, GROUP_HOVER_BD_COLOR, GROUP_NAME_COLOR,
   MATRIX_GAP
 } from "../constant.ts";
 import {canvasToScreen, scaleSize} from "../../transform/transform.ts";
@@ -53,10 +51,13 @@ export function fillMatrixElement(groupId: string, row: number, col: number, _ba
   return elements
 }
 
-export function drawGroup(ctx: CanvasRenderingContext2D, group: Group) {
+export function drawMatrixGroup(ctx: CanvasRenderingContext2D, group: Group) {
   ctx.fillStyle = GROUP_BG_COLOR
   const [x, y] = canvasToScreen(group.x, group.y);
-  ctx.fillRect(x, y, scaleSize(group.w), scaleSize(group.h))
+  const w = scaleSize(group.w)
+  const h = scaleSize(group.h)
+
+  ctx.fillRect(x, y, w, h)
 
   ctx.lineWidth = scaleSize(1);
 
@@ -66,13 +67,14 @@ export function drawGroup(ctx: CanvasRenderingContext2D, group: Group) {
     ctx.strokeStyle = GROUP_HOVER_BD_COLOR;
   }
 
-  ctx.strokeRect(x, y, scaleSize(group.w), scaleSize(group.h))
+  ctx.strokeRect(x, y, w, h)
+
+  drawGroupName(ctx, group.group_name, x, y, w, h)
 }
 
-export function drawGroupName(ctx: CanvasRenderingContext2D, group: Group) {
+function drawGroupName(ctx: CanvasRenderingContext2D, name: string, x: number, y: number, w: number, h: number) {
   setCtxFont(ctx, GROUP_NAME_COLOR, 'center')
-  const [x, y] = canvasToScreen(group.x + group.w / 2, group.y + group.h - MATRIX_GAP);
-  ctx.fillText(`区域名称：${group.group_name}`, x, y);
+  ctx.fillText(`区域名称：${name}`, x + w / 2, y + h - scaleSize(MATRIX_GAP));
 }
 
 export function drawDragElement(ctx: CanvasRenderingContext2D) {
@@ -88,7 +90,7 @@ export function drawDragElement(ctx: CanvasRenderingContext2D) {
   }
 }
 
-export function drawGroupElement(ctx: CanvasRenderingContext2D, element: Element, group: Group) {
+export function drawGroupMatrixElement(ctx: CanvasRenderingContext2D, element: Element, group: Group) {
 
   if (!element.isDragging) {
     const [x, y] = canvasToScreen(group.x + element.x, group.y + element.y);
@@ -120,7 +122,7 @@ export function drawGroupElement(ctx: CanvasRenderingContext2D, element: Element
 
 const INDEX_TEXT_MARGIN = MATRIX_GAP + 5
 
-export function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number) {
+function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number) {
 
   const dx = x + scaleSize(element.width / 2)
 
