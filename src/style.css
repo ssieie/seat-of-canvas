@@ -60,7 +60,6 @@ button:focus-visible {
 
 #app {
   width: 100%;
-  max-width: 1280px;
   margin: 0 auto;
   text-align: center;
 }
@@ -76,12 +75,4 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
-}
-
-/* 画布相关 */
-.z-custom-context-menu-item:hover {
-  background-color: rgb(243, 243, 244);
-}
-.z-custom-context-menu > li:hover > .z-custom-context-submenu {
-  display: block;
 }

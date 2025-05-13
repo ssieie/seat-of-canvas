@@ -1,7 +1,6 @@
 import type {ContainerTransformState} from "../container/container.type.ts";
 import type {Element, Graphic, Group, GroupType, RBushGroupItem} from "../graphic/graphic.types.ts";
 import RBush from 'rbush';
-import ContextMenu from "../contextMenu/contextMenu.ts";
 
 export const allGraphicGroups: GroupType[] = ['rectangle', 'circle', 'strip'];
 
@@ -12,7 +11,6 @@ type RuntimeState = {
   containerTransformState: ContainerTransformState
   graphicMatrix: Graphic
   groupTree: RBush<RBushGroupItem>
-  ContextMenuInstance: ContextMenu
 };
 
 function initRuntimeState(): RuntimeState {
@@ -37,7 +35,6 @@ function initRuntimeState(): RuntimeState {
       groupElements: {}
     },
     groupTree: new RBush(),
-    ContextMenuInstance: ContextMenu.getInstance()
   }
 }
 
@@ -191,7 +188,6 @@ class RuntimeStore {
   }
 
   destroy() {
-    this.state.ContextMenuInstance.destroy()
   }
 }
 

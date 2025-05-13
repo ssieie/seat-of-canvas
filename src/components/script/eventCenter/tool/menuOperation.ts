@@ -1,10 +1,9 @@
 import type {Element, Group} from "../../graphic/graphic.types.ts";
-import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
+import ContextMenu from "../../contextMenu/contextMenu.ts";
 
-const store = RuntimeStore.getInstance();
+const menu = ContextMenu.getInstance();
 
 export function openMenu(e: MouseEvent, group: Group | null, element: Element | null): void {
-  const menu = store.getState('ContextMenuInstance')
 
   if (e.button === 2) {
     if (element) {

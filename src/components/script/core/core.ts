@@ -7,8 +7,11 @@ import RuntimeStore from "../runtimeStore/runtimeStore.ts";
 import initGraphicInstances from "./graphicRegister.ts";
 import AssetsLoader from "../assetsLoader/assetsLoader.ts";
 import {graphicUtilsClear, graphicUtilsInit} from "../graphic/graphicUtils.ts";
+import ContextMenu from "../contextMenu/contextMenu.ts";
+import {MY_CANVAS_BG} from "../graphic/constant.ts";
 
 const store = RuntimeStore.getInstance();
+const menu = ContextMenu.getInstance();
 
 const MY_CANVAS: Canvaser = {
   cvs: null,
@@ -19,19 +22,24 @@ let RenderInstance: Render | null = null;
 
 let ContainerInstance: Container | null = null;
 
+
 const instances: RenderTargetInstances = {
   Test: null,
   Graphic: null,
 };
 
 function initRender(fps: number) {
-  RenderInstance = new Render(fps, MY_CANVAS);
 
-  // 主渲染任务
-  RenderInstance.run(instances);
+  if (!RenderInstance) {
+    RenderInstance = new Render(fps, MY_CANVAS);
 
-  // 注册渲染期间任何自定义行为
-  // behaviorController();
+    // 主渲染任务
+    RenderInstance.run(instances);
+
+    // 注册渲染期间任何自定义行为
+    // behaviorController();
+  }
+
 }
 
 export function resize(w: number, h: number) {
@@ -46,6 +54,7 @@ export async function init(
   MY_CANVAS.cvs = document.createElement('canvas')
 
   MY_CANVAS.cvs.style.display = 'block'
+  MY_CANVAS.cvs.style.backgroundColor = MY_CANVAS_BG
 
   MY_CANVAS.pen = MY_CANVAS.cvs.getContext('2d')
 
@@ -63,9 +72,8 @@ export async function init(
 
   registerAllEvents(MY_CANVAS.cvs)
 
-  store.getState('ContextMenuInstance').init()
-
-  store.getState('ContextMenuInstance').generateContextMenuItem(func)
+  menu.init();
+  menu.generateContextMenuItem(func);
 
   return func
 }
@@ -77,12 +85,11 @@ export function exit() {
   graphicUtilsClear()
 
   RenderInstance?.clear();
+  RenderInstance = null;
 
   for (const key in instances) {
     instances[key]?.clear();
   }
-
-  RenderInstance = null;
 
   RuntimeStore.getInstance().destroy()
 
@@ -91,6 +98,8 @@ export function exit() {
   store.unsubscribeAll()
 
   cancelAllEvents(MY_CANVAS.cvs!)
+
+  menu.destroy();
 
   MY_CANVAS.cvs!.remove()
   MY_CANVAS.cvs = null;

@@ -1,3 +1,5 @@
+export const MY_CANVAS_BG = `rgb(254, 252, 252)`
+
 export const ELEMENT_WIDTH = 50
 
 export const ELEMENT_HEIGHT = 50

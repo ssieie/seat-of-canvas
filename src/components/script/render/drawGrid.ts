@@ -16,7 +16,7 @@ export default function drawGrid(
   const startX = offsetX % scaledSpacing;
   const startY = offsetY % scaledSpacing;
 
-  ctx.fillStyle = '#ccc';
+  ctx.fillStyle = '#dfdfe1';
 
   for (let x = startX; x < width; x += scaledSpacing) {
     for (let y = startY; y < height; y += scaledSpacing) {
