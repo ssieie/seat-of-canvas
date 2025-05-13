@@ -63,6 +63,10 @@ export async function init(
 
   registerAllEvents(MY_CANVAS.cvs)
 
+  store.getState('ContextMenuInstance').init()
+
+  store.getState('ContextMenuInstance').generateContextMenuItem(func)
+
   return func
 }
 
@@ -79,6 +83,8 @@ export function exit() {
   }
 
   RenderInstance = null;
+
+  RuntimeStore.getInstance().destroy()
 
   RuntimeStore.getInstance().reset()
 

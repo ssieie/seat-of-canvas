@@ -16,6 +16,8 @@ class Container {
   private dragging = false
   transformState: ContainerTransformState
 
+  onTransformStateChangeHandler: (newVal: ContainerTransformState) => void
+
   constructor(w: number, h: number, cv: Canvaser) {
     this.canvas = cv.cvs
     this.ctx = cv.pen
@@ -25,7 +27,9 @@ class Container {
 
     this.transformState = store.getState('containerTransformState')
 
-    store.subscribe('containerTransformState', this.onTransformStateChange.bind(this));
+    this.onTransformStateChangeHandler = this.onTransformStateChange.bind(this)
+
+    store.subscribe('containerTransformState', this.onTransformStateChangeHandler);
 
     this.addEvents()
   }
@@ -130,7 +134,7 @@ class Container {
 
   clear() {
     //
-    store.unsubscribe('containerTransformState', this.onTransformStateChange.bind(this));
+    store.unsubscribe('containerTransformState', this.onTransformStateChangeHandler);
   }
 }
 

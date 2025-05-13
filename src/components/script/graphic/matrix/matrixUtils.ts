@@ -18,13 +18,12 @@ export function getMatrixRect(row: number, col: number): [w: number, h: number] 
   return [col * ELEMENT_WIDTH + (col - 1) * MATRIX_GAP + MATRIX_GAP * 3, row * ELEMENT_HEIGHT + (row - 1) * MATRIX_GAP + BOTTOM_TEXT_HEIGHT + MATRIX_GAP * 2];
 }
 
-export function fillMatrixElement(groupId: string, row: number, col: number, _basicPos: [number, number]): {
+export function fillMatrixElement(groupId: string, row: number, col: number): {
   [s: string]: Element,
 } {
   const elements: {
     [s: string]: Element,
   } = {};
-  // const [baseX, baseY] = basicPos;
   let index = 1
   for (let y = 0; y < row; y++) {
     for (let x = 0; x < col; x++) {
@@ -48,7 +47,18 @@ export function fillMatrixElement(groupId: string, row: number, col: number, _ba
       index++
     }
   }
+  console.log(buildMatrixFromElements(Object.values(elements)))
   return elements
+}
+
+function buildMatrixFromElements(elements: Element[]): Element[][] {
+  const matrix: Element[][] = []
+  for (const el of elements) {
+    const [y, x] = el.pos!;
+    if (!matrix[y]) matrix[y] = []
+    matrix[y][x] = el
+  }
+  return matrix
 }
 
 export function drawMatrixGroup(ctx: CanvasRenderingContext2D, group: Group) {

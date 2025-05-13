@@ -77,3 +77,11 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* 画布相关 */
+.z-custom-context-menu-item:hover {
+  background-color: rgb(243, 243, 244);
+}
+.z-custom-context-menu > li:hover > .z-custom-context-submenu {
+  display: block;
+}

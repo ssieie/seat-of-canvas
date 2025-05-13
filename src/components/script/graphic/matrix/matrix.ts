@@ -20,11 +20,14 @@ class Matrix {
     this.graphicData = store.getState('graphicMatrix')
   }
 
-  async addMatrixGraphic(name: string, row: number, col: number) {
+  addMatrixGraphic(name: string, row: number, col: number, _element: Element[] = []) {
     // 新建一个矩形组
     // const graphicMatrix: Graphic = deepCopy()
     const graphicMatrix: Graphic = this.graphicData
     const groupId = generateUuid()
+
+    const elements = fillMatrixElement(groupId, row, col)
+    console.log(elements)
     const [w, h] = getMatrixRect(row, col)
 
     const [basicX, basicY] = getBasicPos(w, h)
@@ -41,8 +44,6 @@ class Matrix {
       size: row * col,
       type: GRAPHIC_TYPE,
     }
-
-    const elements = fillMatrixElement(groupId, row, col, [basicX, basicY])
 
     graphicMatrix.groups[GRAPHIC_TYPE][groupId] = group
 

@@ -1,15 +1,18 @@
 import PubSub from '../utils/pubSub.ts'
 import {didNotHitAnyElement, hitElement, mousemoveTargetThrottleHandler} from "./tool/hitTargetDetection.ts";
+import type {Element} from "../graphic/graphic.types.ts";
+import {openMenu} from "./tool/menuOperation.ts";
 
 const mousedownHandler = (e: MouseEvent) => {
 
   const dnh = didNotHitAnyElement(e)
+  let element: Element | null = null
 
   if (!dnh) {
     PubSub.publish('mousedown_dnh', e)
   } else {
     // 判断是否命中的元素
-    const element = hitElement(e, dnh)
+    element = hitElement(e, dnh)
     if (element) {
       PubSub.publish('mousedown_element', e, element, dnh)
     } else {
@@ -17,6 +20,8 @@ const mousedownHandler = (e: MouseEvent) => {
       PubSub.publish('mousedown_group', e, dnh.group_id)
     }
   }
+
+  openMenu(e, dnh, element)
 
   PubSub.publish('mousedown', e)
 }

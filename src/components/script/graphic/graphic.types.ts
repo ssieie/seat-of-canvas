@@ -2,6 +2,7 @@ export interface Graphic {
   groups: Record<GroupType, Record<string, Group>>; // group_id 作为 key
   elements: Record<string, Element>; // element_id 作为 key
   groupElements: Record<string, string[]>; // group_id -> element_id 列表
+  // groupElementsMatrix: Record<string, Element[][]>; // 方便矩阵操作更直观
 }
 
 export type GroupType = 'rectangle' | 'circle' | 'strip';
