@@ -1,8 +1,9 @@
-import {getCanvas, getTransformState, scaleSize} from "../transform/transform.ts";
+import {canvasToScreen, getCanvas, getTransformState, scaleSize} from "../transform/transform.ts";
 import RuntimeStore, {allGraphicGroups} from "../runtimeStore/runtimeStore.ts";
 import type {Element, Group, GroupType} from "./graphic.types.ts";
 import {didNotHitAnyElement, hitElement} from "../eventCenter/tool/hitTargetDetection.ts";
 import {swapElement, swapInArrayFlexible} from "../utils/common.ts";
+import {ELEMENT_MOVE_IN_BD_COLOR} from "./constant.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -52,8 +53,9 @@ export function getBasicPos(w: number, h: number): [number, number] {
   const xBoundary = startX + screenW - w;
   const step = 10; // 步进像素
 
-  if (startX > xBoundary){
-    throw new Error("当前形状超出画布大小,缩小画布后添加");
+  if (startX > xBoundary) {
+    alert("当前形状超出画布大小,缩小画布后添加")
+    throw new Error();
   }
 
   for (let y = startY; ; y += step) {
@@ -140,6 +142,24 @@ export function exchangeElements(e: MouseEvent, dragEl: Element) {
     }
   }
 
+}
+
+export function moveInHighlight(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number) {
+  // 当前拖拽的元素在目标元素范围内提示
+  const currentDragEl = store.getState('currentDragEl')
+  if (currentDragEl) {
+    const dxy = canvasToScreen(currentDragEl.dX, currentDragEl.dY);
+    if (
+      dxy[0] + width / 2 >= x &&
+      dxy[0] + width / 2 <= x + width &&
+      dxy[1] + height / 2 >= y &&
+      dxy[1] + height / 2 <= y + height
+    ) {
+      ctx.lineWidth = scaleSize(1);
+      ctx.strokeStyle = ELEMENT_MOVE_IN_BD_COLOR;
+      ctx.strokeRect(x, y, width, height)
+    }
+  }
 }
 
 export function graphicUtilsInit() {

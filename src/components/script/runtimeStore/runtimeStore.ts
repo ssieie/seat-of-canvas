@@ -2,7 +2,7 @@ import type {ContainerTransformState} from "../container/container.type.ts";
 import type {Element, Graphic, Group, GroupType, RBushGroupItem} from "../graphic/graphic.types.ts";
 import RBush from 'rbush';
 
-export const allGraphicGroups: GroupType[] = ['rectangle', 'circle', 'ellipse'];
+export const allGraphicGroups: GroupType[] = ['rectangle', 'circle','strip'];
 
 type RuntimeState = {
   highlightElements: boolean
@@ -29,7 +29,7 @@ function initRuntimeState(): RuntimeState {
       groups: {
         rectangle: {},
         circle: {},
-        ellipse: {},
+        strip: {},
       },
       elements: {},
       groupElements: {}

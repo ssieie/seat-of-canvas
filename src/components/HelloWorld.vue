@@ -29,6 +29,11 @@ const addC = (num: number) => {
     cFunc.graphicOperateFunc.addCircleGraphic('测试circle', num)
   }
 }
+const addS = (sNum: number, lNum: number) => {
+  if (cFunc) {
+    cFunc.graphicOperateFunc.addStripGraphic('测试Strip', sNum, lNum)
+  }
+}
 
 const addMTest = (row: number, col: number) => {
   if (cFunc) {
@@ -51,6 +56,8 @@ onMounted(async () => {
     addM(2, 2)
 
     addC(8)
+
+    addS(3, 4)
   }
 })
 

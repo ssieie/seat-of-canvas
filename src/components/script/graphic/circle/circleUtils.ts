@@ -1,6 +1,6 @@
 // 获取新建组的宽高
 import {
-  CIRCLE_COLOR, ELEMENT_DESC_COLOR, ELEMENT_HEIGHT, ELEMENT_MOVE_IN_BD_COLOR, ELEMENT_NO_COLOR,
+  CIRCLE_COLOR, ELEMENT_DESC_COLOR, ELEMENT_HEIGHT, ELEMENT_NO_COLOR,
   ELEMENT_WIDTH,
   GROUP_BD_COLOR,
   GROUP_BG_COLOR,
@@ -10,11 +10,8 @@ import {
 } from "../constant.ts";
 import type {Element, Group} from "../graphic.types.ts";
 import {canvasToScreen, scaleSize} from "../../transform/transform.ts";
-import {setCtxFont} from "../graphicUtils.ts";
+import {moveInHighlight, setCtxFont} from "../graphicUtils.ts";
 import AssetsLoader from "../../assetsLoader/assetsLoader.ts";
-import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
-
-const store = RuntimeStore.getInstance();
 
 const CIRCLE_DISTANCE = ELEMENT_WIDTH + MATRIX_GAP * 2
 const ELE_DISTANCE = 40
@@ -119,22 +116,8 @@ export function drawGroupCircleElement(ctx: CanvasRenderingContext2D, element: E
 
     ctx.drawImage(AssetsLoader.unSeat.bitmap, x, y, width, height)
 
-
     // 当前拖拽的元素在目标元素范围内提示
-    const currentDragEl = store.getState('currentDragEl')
-    if (currentDragEl) {
-      const dxy = canvasToScreen(currentDragEl.dX, currentDragEl.dY);
-      if (
-        dxy[0] + width / 2 >= x &&
-        dxy[0] + width / 2 <= x + width &&
-        dxy[1] + height / 2 >= y &&
-        dxy[1] + height / 2 <= y + height
-      ) {
-        ctx.lineWidth = scaleSize(1);
-        ctx.strokeStyle = ELEMENT_MOVE_IN_BD_COLOR;
-        ctx.strokeRect(x, y, width, height)
-      }
-    }
+    moveInHighlight(ctx, x, y, width, height)
 
     drawGroupElementIndex(ctx, element, x, y);
   }

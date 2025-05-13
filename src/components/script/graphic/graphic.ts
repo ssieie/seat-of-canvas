@@ -5,6 +5,7 @@ import {drawDragElement, drawGroupMatrixElement, drawMatrixGroup} from "./matrix
 import Circle from "./circle/circle.ts";
 import RuntimeStore from "../runtimeStore/runtimeStore.ts";
 import {drawCircleGroup, drawGroupCircleElement} from "./circle/circleUtils.ts";
+import Strip from "./strip/strip.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -14,6 +15,7 @@ class GraphicMain extends OperateGraphic {
 
   matrix: Matrix
   circle: Circle
+  strip: Strip
 
   constructor(cv: Canvaser) {
     super(cv);
@@ -22,6 +24,7 @@ class GraphicMain extends OperateGraphic {
 
     this.matrix = new Matrix()
     this.circle = new Circle()
+    this.strip = new Strip()
   }
 
   draw() {
@@ -41,7 +44,7 @@ class GraphicMain extends OperateGraphic {
         case "circle":
           drawCircleGroup(ctx, group)
           break;
-        case "ellipse":
+        case "strip":
           break
       }
 
@@ -57,7 +60,7 @@ class GraphicMain extends OperateGraphic {
           case "circle":
             drawGroupCircleElement(ctx, element, group)
             break;
-          case "ellipse":
+          case "strip":
             break
         }
 
@@ -71,12 +74,14 @@ class GraphicMain extends OperateGraphic {
     super.clear()
     this.matrix.clear()
     this.circle.clear()
+    this.strip.clear()
   }
 
   operate(): GraphicOperateFunc {
     return {
       addMatrixGraphic: this.matrix.addMatrixGraphic!.bind(this.matrix),
-      addCircleGraphic: this.circle.addCircleGraphic!.bind(this.circle)
+      addCircleGraphic: this.circle.addCircleGraphic!.bind(this.circle),
+      addStripGraphic: this.strip.addStripGraphic!.bind(this.circle)
     }
   }
 }

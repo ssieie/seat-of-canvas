@@ -127,7 +127,7 @@ export const hitElement = (e: MouseEvent, group: RBushGroupItem): Element | null
         case "circle":
           ({x, y} = circleElementPosInGroup(group, element));
           break
-        case "ellipse":
+        case "strip":
           break
       }
 

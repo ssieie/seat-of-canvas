@@ -2,12 +2,12 @@ import type {Element, Group} from "../graphic.types.ts";
 import {
   BOTTOM_TEXT_HEIGHT,
   E_GAP, ELEMENT_DESC_COLOR,
-  ELEMENT_HEIGHT, ELEMENT_MOVE_IN_BD_COLOR, ELEMENT_NO_COLOR,
+  ELEMENT_HEIGHT, ELEMENT_NO_COLOR,
   ELEMENT_WIDTH, GROUP_BD_COLOR, GROUP_BG_COLOR, GROUP_HOVER_BD_COLOR, GROUP_NAME_COLOR,
   MATRIX_GAP
 } from "../constant.ts";
 import {canvasToScreen, scaleSize} from "../../transform/transform.ts";
-import {setCtxFont} from "../graphicUtils.ts";
+import {moveInHighlight, setCtxFont} from "../graphicUtils.ts";
 import AssetsLoader from "../../assetsLoader/assetsLoader.ts";
 import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
 
@@ -107,22 +107,8 @@ export function drawGroupMatrixElement(ctx: CanvasRenderingContext2D, element: E
     const height = scaleSize(element.height)
     ctx.drawImage(AssetsLoader.unSeat.bitmap, x, y, width, height)
 
-
     // 当前拖拽的元素在目标元素范围内提示
-    const currentDragEl = store.getState('currentDragEl')
-    if (currentDragEl) {
-      const dxy = canvasToScreen(currentDragEl.dX, currentDragEl.dY);
-      if (
-        dxy[0] + width / 2 >= x &&
-        dxy[0] + width / 2 <= x + width &&
-        dxy[1] + height / 2 >= y &&
-        dxy[1] + height / 2 <= y + height
-      ) {
-        ctx.lineWidth = scaleSize(1);
-        ctx.strokeStyle = ELEMENT_MOVE_IN_BD_COLOR;
-        ctx.strokeRect(x, y, width, height)
-      }
-    }
+    moveInHighlight(ctx, x, y, width, height)
 
     drawGroupElementIndex(ctx, element, x, y);
   }

@@ -4,7 +4,7 @@ export interface Graphic {
   groupElements: Record<string, string[]>; // group_id -> element_id 列表
 }
 
-export type GroupType = 'rectangle' | 'circle' | 'ellipse';
+export type GroupType = 'rectangle' | 'circle' | 'strip';
 
 export interface Group {
   group_id: string;
