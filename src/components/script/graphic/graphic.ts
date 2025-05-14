@@ -1,4 +1,4 @@
-import type {Canvaser, GraphicOperateFunc} from "../core/core.types.ts";
+import type {Canvaser, ContextMenuOperateFunc, GraphicOperateFunc} from "../core/core.types.ts";
 import Matrix from "./matrix/matrix.ts";
 import OperateGraphic from "./operateGraphic.ts";
 import {drawDragElement, drawGroupMatrixElement, drawMatrixGroup} from "./matrix/matrixUtils.ts";
@@ -85,6 +85,12 @@ class GraphicMain extends OperateGraphic {
       addMatrixGraphic: this.matrix.addMatrixGraphic!.bind(this.matrix),
       addCircleGraphic: this.circle.addCircleGraphic!.bind(this.circle),
       addStripGraphic: this.strip.addStripGraphic!.bind(this.circle)
+    }
+  }
+
+  contextMenuOperate(): ContextMenuOperateFunc {
+    return {
+      delGroup: super.delGroup
     }
   }
 }

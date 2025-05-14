@@ -172,6 +172,29 @@ class OperateGraphic {
     }
   }
 
+  delGroup(group: Group) {
+    let result = true
+
+    const graphicMatrix = store.getState('graphicMatrix')
+
+    result = Reflect.deleteProperty(graphicMatrix.groups[group.type], group.group_id)
+    if (!result) return result
+
+    result = Reflect.deleteProperty(graphicMatrix.groupElements, group.group_id)
+    if (!result) return result
+
+    for (const [e_id, element] of Object.entries(graphicMatrix.elements)) {
+      if (element.group_by === group.group_id) {
+        result = Reflect.deleteProperty(graphicMatrix.elements, e_id)
+        if (!result) return result
+      }
+    }
+
+    store.updateState('graphicMatrix', graphicMatrix)
+
+    return result
+  }
+
   clear() {
   }
 }

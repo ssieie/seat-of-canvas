@@ -72,7 +72,7 @@ export async function init(
 
   registerAllEvents(MY_CANVAS.cvs)
 
-  menu.init();
+  menu.init(instances);
   menu.generateContextMenuItem(func);
 
   return func

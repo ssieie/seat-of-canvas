@@ -1,5 +1,7 @@
 import type {ContextMenuItem} from "./contextMenu.types.ts";
 import type {OperateFunc} from "../core/core.types.ts";
+import type {Element, Group} from "../graphic/graphic.types.ts";
+import type {RenderTargetInstances} from "../render/render.types.ts";
 
 type ContextMenuType = 'group' | 'element'
 
@@ -7,6 +9,11 @@ export class ContextMenu {
   private static instance: ContextMenu;
   private menuElement: HTMLUListElement | null = null;
   private readonly handleDocumentClick: ((e: MouseEvent) => void);
+
+  currentContextMenuGroup: Group | null = null;
+  currentContextMenuElement: Element | null = null;
+
+  private instances: RenderTargetInstances | null = null;
 
   contextMenuItems: Record<ContextMenuType, ContextMenuItem[]> | null = null
 
@@ -21,8 +28,9 @@ export class ContextMenu {
     return ContextMenu.instance;
   }
 
-  public init() {
+  public init(instances: RenderTargetInstances) {
     if (this.menuElement) return;
+    this.instances = instances;
     this.menuElement = this.createMenuElement();
     document.body.appendChild(this.menuElement);
     this.bindGlobalEvents();
@@ -86,8 +94,10 @@ export class ContextMenu {
     });
   }
 
-  public show(x: number, y: number, type: ContextMenuType): void {
+  public show(x: number, y: number, type: ContextMenuType, group: Group | null, element: Element | null): void {
     if (!this.menuElement || !this.contextMenuItems) return;
+    this.currentContextMenuGroup = group;
+    this.currentContextMenuElement = element;
     this.populateMenuItems(this.contextMenuItems?.[type] || []);
 
     if (this.menuElement) {
@@ -121,7 +131,11 @@ export class ContextMenu {
   public generateContextMenuItem(func: OperateFunc) {
     this.contextMenuItems = {
       group: [
-        {label: '删除区域', type: 'default', onClick: () => console.log('删除区域')},
+        {
+          label: '删除区域',
+          type: 'default',
+          onClick: () => func!.contextMenuOperateFunc.delGroup.call(this.instances!.Graphic, ContextMenu.instance.currentContextMenuGroup!)
+        },
       ],
       element: [
         {label: '编辑人员', type: 'default', onClick: () => console.log('编辑人员')},

@@ -7,11 +7,11 @@ export function openMenu(e: MouseEvent, group: Group | null, element: Element | 
 
   if (e.button === 2) {
     if (element) {
-      menu.show(e.clientX, e.clientY, 'element')
+      menu.show(e.clientX, e.clientY, 'element', group, element)
       return
     }
     if (group) {
-      menu.show(e.clientX, e.clientY, 'group')
+      menu.show(e.clientX, e.clientY, 'group', group, element)
     }
   }
 }

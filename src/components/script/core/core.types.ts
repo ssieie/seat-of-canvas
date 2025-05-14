@@ -1,4 +1,4 @@
-import type {Graphic} from "../graphic/graphic.types.ts";
+import type {Graphic, Group} from "../graphic/graphic.types.ts";
 
 export type Canvaser = {
   cvs: HTMLCanvasElement | null;
@@ -11,7 +11,12 @@ export type GraphicOperateFunc = {
   addStripGraphic: (name: string, shortNum: number, longNum: number) => void
 }
 
+export type ContextMenuOperateFunc = {
+  delGroup: (group: Group) => boolean
+}
+
 export type OperateFunc = {
   graphicOperateFunc: GraphicOperateFunc
+  contextMenuOperateFunc: ContextMenuOperateFunc
   getData: () => Graphic
 } | null
