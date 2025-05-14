@@ -16,12 +16,12 @@ export const INDEX_TEXT_MARGIN = MATRIX_GAP + 7
 
 export const E_GAP = MATRIX_GAP * 1.5
 
-export const GROUP_BG_COLOR = 'rgb(242, 242, 242)'
-export const GROUP_BD_COLOR = 'rgb(219,202,202)'
-export const GROUP_HOVER_BD_COLOR = 'rgb(133,124,124)'
+export const GROUP_BG_COLOR = '#EAEAEA'
+export const GROUP_BD_COLOR = '#E3D2C3'
+export const GROUP_HOVER_BD_COLOR = '#2DAA9E'
 export const GROUP_NAME_COLOR = 'rgb(0,0,0)'
 
-export const ELEMENT_MOVE_IN_BD_COLOR = 'rgb(0,49,251)'
+export const ELEMENT_MOVE_IN_BD_COLOR = '#074799'
 
 export const ELEMENT_NO_COLOR = 'rgb(0,0,0)'
 export const ELEMENT_DESC_COLOR = 'rgb(0,0,0)'

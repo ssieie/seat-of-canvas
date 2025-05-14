@@ -1,7 +1,7 @@
 export interface Graphic {
-  groups: Record<GroupType, Record<string, Group>>; // group_id 作为 key
-  elements: Record<string, Element>; // element_id 作为 key
-  groupElements: Record<string, string[]>; // group_id -> element_id 列表
+  groups: Record<GroupType, Record<string, Group>>; // 组ID与组的MAP
+  elements: Record<string, Element>; // 元素ID与元素的MAP
+  groupElements: Record<string, string[]>; // 组id与元素id[]的MAP
   // groupElementsMatrix: Record<string, Element[][]>; // 方便矩阵操作更直观
 }
 

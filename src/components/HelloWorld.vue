@@ -35,6 +35,10 @@ const addS = (sNum: number, lNum: number) => {
   }
 }
 
+const getData = () => {
+  console.log(cFunc?.getData())
+}
+
 const addMTest = (row: number, col: number) => {
   if (cFunc) {
     console.time('getBasicPos start')
@@ -80,7 +84,7 @@ onBeforeUnmount(() => {
     <div class="btn" style="background-color: green" @click="addC(50)">+圆形(6)</div>
     <div class="btn" style="background-color: orange" @click="addS(2,3)">+条(2,3)</div>
     <div class="btn" style="background-color: orange" @click="addS(3,5)">+条(3,5)</div>
-    <div class="btn" style="background-color: orange" @click="addS(4,3)">+条(4,3)</div>
+    <div class="btn" style="background-color: slateblue" @click="getData">获取当前数据</div>
   </div>
   <div class="content">
     <div class="wrapper" @contextmenu.prevent ref="wrapperRef"></div>

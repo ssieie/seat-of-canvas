@@ -1,3 +1,4 @@
+import type {Graphic} from "../graphic/graphic.types.ts";
 
 export type Canvaser = {
   cvs: HTMLCanvasElement | null;
@@ -12,4 +13,5 @@ export type GraphicOperateFunc = {
 
 export type OperateFunc = {
   graphicOperateFunc: GraphicOperateFunc
+  getData: () => Graphic
 } | null

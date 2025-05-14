@@ -2,6 +2,8 @@ import type {Canvaser, GraphicOperateFunc, OperateFunc} from "./core.types.ts";
 import Test from "../test/test.ts";
 import type {RenderTargetInstances} from "../render/render.types.ts";
 import GraphicMain from "../graphic/graphic.ts";
+import RuntimeStore from "../runtimeStore/runtimeStore.ts";
+import {deepCopy} from "../utils/common.ts";
 
 export default function initGraphicInstances(canvas: Canvaser, instances: RenderTargetInstances): OperateFunc {
 
@@ -10,7 +12,8 @@ export default function initGraphicInstances(canvas: Canvaser, instances: Render
   const graphicOperateFunc = initGraphic(canvas, instances)
 
   return {
-    graphicOperateFunc
+    graphicOperateFunc,
+    getData: () => deepCopy(RuntimeStore.getInstance().getState('graphicMatrix'))
   }
 
 }

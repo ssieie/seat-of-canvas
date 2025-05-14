@@ -94,7 +94,6 @@ export class ContextMenu {
       this.menuElement.style.left = `${x}px`;
       this.menuElement.style.top = `${y}px`;
       //
-      console.log(this.menuElement!.classList.contains('show'))
       setTimeout(() => {
         this.menuElement!.classList.add('show');
       }, this.menuElement!.classList.contains('show') ? 150 : 0)
