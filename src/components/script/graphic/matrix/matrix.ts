@@ -27,7 +27,7 @@ class Matrix {
     const groupId = generateUuid()
 
     const elements = fillMatrixElement(groupId, row, col)
-    console.log(elements)
+
     const [w, h] = getMatrixRect(row, col)
 
     const [basicX, basicY] = getBasicPos(w, h)

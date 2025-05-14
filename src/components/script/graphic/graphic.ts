@@ -6,6 +6,7 @@ import Circle from "./circle/circle.ts";
 import RuntimeStore from "../runtimeStore/runtimeStore.ts";
 import {drawCircleGroup, drawGroupCircleElement} from "./circle/circleUtils.ts";
 import Strip from "./strip/strip.ts";
+import {drawGroupStripElement, drawStripGroup} from "./strip/stripUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -45,6 +46,7 @@ class GraphicMain extends OperateGraphic {
           drawCircleGroup(ctx, group)
           break;
         case "strip":
+          drawStripGroup(ctx, group)
           break
       }
 
@@ -61,6 +63,7 @@ class GraphicMain extends OperateGraphic {
             drawGroupCircleElement(ctx, element, group)
             break;
           case "strip":
+            drawGroupStripElement(ctx, element, group)
             break
         }
 

@@ -5,6 +5,8 @@ export interface Graphic {
   // groupElementsMatrix: Record<string, Element[][]>; // 方便矩阵操作更直观
 }
 
+export type POS = { x: number, y: number }
+
 export type GroupType = 'rectangle' | 'circle' | 'strip';
 
 export interface Group {
@@ -37,6 +39,7 @@ export interface Element {
   dY: number
   width: number;
   height: number;
+  highlight?: boolean
   // 矩阵组特有
   pos?: [number, number]
   // 业务相关

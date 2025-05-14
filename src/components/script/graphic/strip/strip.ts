@@ -2,6 +2,7 @@ import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
 import type {Graphic, Group, GroupType} from "../graphic.types.ts";
 import {generateUuid} from "../../utils/common.ts";
 import {getBasicPos} from "../graphicUtils.ts";
+import {fillStripElement, getStripRect} from "./stripUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -18,36 +19,35 @@ class Strip {
   async addStripGraphic(name: string, shortNum: number, longNum: number) {
     const graphicMatrix: Graphic = this.graphicData
     const groupId = generateUuid()
-    // const {radius, w, h} = getCircleRect(num)
+    const [w, h] = getStripRect(shortNum, longNum)
 
-    // const [basicX, basicY] = getBasicPos(w, h)
-    //
-    // const group: Group = {
-    //   group_id: groupId,
-    //   group_name: name,
-    //   z_index: 0,
-    //   x: basicX,
-    //   y: basicY,
-    //   w: w,
-    //   h: h,
-    //   hover: false,
-    //   size: num,
-    //   type: GRAPHIC_TYPE,
-    //   radius,
-    // }
-    //
-    // const elements = fillCircleElement(group)
-    //
-    // graphicMatrix.groups[GRAPHIC_TYPE][groupId] = group
-    //
-    // graphicMatrix.elements = {
-    //   ...graphicMatrix.elements,
-    //   ...elements,
-    // }
-    //
-    // graphicMatrix.groupElements[groupId] = Object.keys(elements)
-    //
-    // store.updateState('graphicMatrix', graphicMatrix)
+    const [basicX, basicY] = getBasicPos(w, h)
+
+    const group: Group = {
+      group_id: groupId,
+      group_name: name,
+      z_index: 0,
+      x: basicX,
+      y: basicY,
+      w: w,
+      h: h,
+      hover: false,
+      size: shortNum * 2 + longNum * 2,
+      type: GRAPHIC_TYPE,
+    }
+
+    const elements = fillStripElement(groupId, shortNum, longNum)
+
+    graphicMatrix.groups[GRAPHIC_TYPE][groupId] = group
+
+    graphicMatrix.elements = {
+      ...graphicMatrix.elements,
+      ...elements,
+    }
+
+    graphicMatrix.groupElements[groupId] = Object.keys(elements)
+
+    store.updateState('graphicMatrix', graphicMatrix)
   }
 
   clear() {

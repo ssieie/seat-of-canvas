@@ -4,6 +4,7 @@ import type {Element, RBushGroupItem} from "../../graphic/graphic.types.ts";
 import {toCanvasCoords} from "../../graphic/graphicUtils.ts";
 import {matrixElementPosInGroup} from "../../graphic/matrix/matrixUtils.ts";
 import {circleElementPosInGroup} from "../../graphic/circle/circleUtils.ts";
+import {stripElementPosInGroup} from "../../graphic/strip/stripUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -128,6 +129,7 @@ export const hitElement = (e: MouseEvent, group: RBushGroupItem): Element | null
           ({x, y} = circleElementPosInGroup(group, element));
           break
         case "strip":
+          ({x, y} = stripElementPosInGroup(group, element));
           break
       }
 

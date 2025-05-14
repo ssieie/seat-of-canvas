@@ -50,12 +50,15 @@ export function getBasicPos(w: number, h: number): [number, number] {
   // 屏幕 (0, 0) 映射到画布逻辑坐标的起始点
   const startX = -offsetX / scale;
   const startY = -offsetY / scale;
-  const xBoundary = startX + screenW - w;
+  let xBoundary = startX + screenW - w;
   const step = 10; // 步进像素
 
   if (startX > xBoundary) {
-    alert("当前形状超出画布大小,缩小画布后添加")
-    throw new Error();
+    // console.log(startX)
+    // console.log(xBoundary)
+    xBoundary = w
+    // alert("当前形状超出画布大小,缩小画布后添加")
+    // throw new Error();
   }
 
   for (let y = startY; ; y += step) {
@@ -155,7 +158,7 @@ export function moveInHighlight(ctx: CanvasRenderingContext2D, x: number, y: num
       dxy[1] + height / 2 >= y &&
       dxy[1] + height / 2 <= y + height
     ) {
-      ctx.lineWidth = scaleSize(1);
+      // ctx.lineWidth = scaleSize(1);
       ctx.strokeStyle = ELEMENT_MOVE_IN_BD_COLOR;
       ctx.strokeRect(x, y, width, height)
     }

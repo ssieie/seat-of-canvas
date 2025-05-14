@@ -77,7 +77,10 @@ onBeforeUnmount(() => {
     <!--    <div class="btn" @click="addM(3,3)">+矩形3*3</div>-->
     <div class="btn" @click="addM(6,4)">+矩形6*4</div>
     <div class="btn" @click="addMTest(6,4)">+矩形6*4 * 100</div>
-    <div class="btn" style="background-color: green" @click="addC(6)">+圆形(5)</div>
+    <div class="btn" style="background-color: green" @click="addC(50)">+圆形(6)</div>
+    <div class="btn" style="background-color: orange" @click="addS(2,3)">+条(2,3)</div>
+    <div class="btn" style="background-color: orange" @click="addS(3,5)">+条(3,5)</div>
+    <div class="btn" style="background-color: orange" @click="addS(4,3)">+条(4,3)</div>
   </div>
   <div class="content">
     <div class="wrapper" @contextmenu.prevent ref="wrapperRef"></div>

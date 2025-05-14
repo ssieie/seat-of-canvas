@@ -3,7 +3,7 @@ import {
   BOTTOM_TEXT_HEIGHT,
   E_GAP, ELEMENT_DESC_COLOR,
   ELEMENT_HEIGHT, ELEMENT_NO_COLOR,
-  ELEMENT_WIDTH, GROUP_BD_COLOR, GROUP_BG_COLOR, GROUP_HOVER_BD_COLOR, GROUP_NAME_COLOR,
+  ELEMENT_WIDTH, GROUP_BD_COLOR, GROUP_BG_COLOR, GROUP_GAP, GROUP_HOVER_BD_COLOR, GROUP_NAME_COLOR, INDEX_TEXT_MARGIN,
   MATRIX_GAP
 } from "../constant.ts";
 import {canvasToScreen, scaleSize} from "../../transform/transform.ts";
@@ -15,7 +15,7 @@ const store = RuntimeStore.getInstance();
 
 // 获取初始化矩阵的宽高，后续用来获取放在画布中的位置，得到此组基准位置
 export function getMatrixRect(row: number, col: number): [w: number, h: number] {
-  return [col * ELEMENT_WIDTH + (col - 1) * MATRIX_GAP + MATRIX_GAP * 3, row * ELEMENT_HEIGHT + (row - 1) * MATRIX_GAP + BOTTOM_TEXT_HEIGHT + MATRIX_GAP * 2];
+  return [col * ELEMENT_WIDTH + (col - 1) * MATRIX_GAP + GROUP_GAP, row * ELEMENT_HEIGHT + (row - 1) * MATRIX_GAP + BOTTOM_TEXT_HEIGHT + MATRIX_GAP * 2];
 }
 
 export function fillMatrixElement(groupId: string, row: number, col: number): {
@@ -47,19 +47,19 @@ export function fillMatrixElement(groupId: string, row: number, col: number): {
       index++
     }
   }
-  console.log(buildMatrixFromElements(Object.values(elements)))
+  // console.log(buildMatrixFromElements(Object.values(elements)))
   return elements
 }
 
-function buildMatrixFromElements(elements: Element[]): Element[][] {
-  const matrix: Element[][] = []
-  for (const el of elements) {
-    const [y, x] = el.pos!;
-    if (!matrix[y]) matrix[y] = []
-    matrix[y][x] = el
-  }
-  return matrix
-}
+// function buildMatrixFromElements(elements: Element[]): Element[][] {
+//   const matrix: Element[][] = []
+//   for (const el of elements) {
+//     const [y, x] = el.pos!;
+//     if (!matrix[y]) matrix[y] = []
+//     matrix[y][x] = el
+//   }
+//   return matrix
+// }
 
 export function drawMatrixGroup(ctx: CanvasRenderingContext2D, group: Group) {
   ctx.fillStyle = GROUP_BG_COLOR
@@ -123,8 +123,6 @@ export function drawGroupMatrixElement(ctx: CanvasRenderingContext2D, element: E
     drawGroupElementIndex(ctx, element, x, y);
   }
 }
-
-const INDEX_TEXT_MARGIN = MATRIX_GAP + 5
 
 function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number) {
 

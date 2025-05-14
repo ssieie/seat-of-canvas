@@ -10,6 +10,10 @@ export const BOTTOM_TEXT_HEIGHT = 30;
 
 export const MATRIX_GAP = 10
 
+export const GROUP_GAP = MATRIX_GAP * 3
+
+export const INDEX_TEXT_MARGIN = MATRIX_GAP + 7
+
 export const E_GAP = MATRIX_GAP * 1.5
 
 export const GROUP_BG_COLOR = 'rgb(242, 242, 242)'

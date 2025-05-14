@@ -5,10 +5,10 @@ import {
   GROUP_BD_COLOR,
   GROUP_BG_COLOR,
   GROUP_HOVER_BD_COLOR,
-  GROUP_NAME_COLOR,
+  GROUP_NAME_COLOR, INDEX_TEXT_MARGIN,
   MATRIX_GAP
 } from "../constant.ts";
-import type {Element, Group} from "../graphic.types.ts";
+import type {Element, Group, POS} from "../graphic.types.ts";
 import {canvasToScreen, scaleSize} from "../../transform/transform.ts";
 import {moveInHighlight, setCtxFont} from "../graphicUtils.ts";
 import AssetsLoader from "../../assetsLoader/assetsLoader.ts";
@@ -39,8 +39,9 @@ export function fillCircleElement(group: Group): {
     [s: string]: Element,
   } = {};
 
-  for (let i = 1; i <= group.size; i++) {
-    const angle = (2 * Math.PI * i) / group.size;
+  for (let i = 0; i < group.size; i++) {
+    // const angle = (2 * Math.PI * i) / group.size;
+    const angle = (2 * Math.PI * i) / group.size - Math.PI / 2;
     const x = (group.radius! + ELE_DISTANCE) * Math.cos(angle) - ELEMENT_WIDTH / 2;
     const y = (group.radius! + ELE_DISTANCE) * Math.sin(angle) - ELEMENT_HEIGHT / 2;
 
@@ -48,7 +49,7 @@ export function fillCircleElement(group: Group): {
     elements[id] = {
       id,
       group_by: group.group_id,
-      index: i,
+      index: i + 1,
       x: x,
       y: y,
       isDragging: false,
@@ -70,15 +71,20 @@ export function drawCircleGroup(ctx: CanvasRenderingContext2D, group: Group) {
   const h = scaleSize(group.h)
   const radius = scaleSize(group.radius!)
 
+  const centerOfACirclePos: POS = {
+    x: x + w / 2,
+    y: y + h / 2,
+  }
+
   ctx.fillRect(x, y, w, h)
 
-  ctx.lineWidth = scaleSize(1);
+  // ctx.lineWidth = scaleSize(1);
 
   ctx.strokeStyle = GROUP_BD_COLOR;
 
   // 中心圆
   ctx.beginPath();
-  ctx.arc(x + w / 2, y + h / 2, radius, 0, 2 * Math.PI);
+  ctx.arc(centerOfACirclePos.x, centerOfACirclePos.y, radius, 0, 2 * Math.PI);
   ctx.stroke()
   ctx.fillStyle = CIRCLE_COLOR
   ctx.fill();
@@ -90,13 +96,13 @@ export function drawCircleGroup(ctx: CanvasRenderingContext2D, group: Group) {
   ctx.strokeRect(x, y, w, h)
 
   // 名字文本A
-  drawGroupName(ctx, group.group_name, x, y, w, h)
+  drawGroupName(ctx, group.group_name, centerOfACirclePos)
 
 }
 
-export function drawGroupName(ctx: CanvasRenderingContext2D, name: string, x: number, y: number, w: number, h: number) {
+export function drawGroupName(ctx: CanvasRenderingContext2D, name: string, centerOfACirclePos: POS) {
   setCtxFont(ctx, GROUP_NAME_COLOR, 'center', 'middle')
-  ctx.fillText(`${name}`, x + w / 2, y + h / 2);
+  ctx.fillText(`${name}`, centerOfACirclePos.x, centerOfACirclePos.y);
 }
 
 export function circleElementPosInGroup(group: Group, element: Element) {
@@ -122,8 +128,6 @@ export function drawGroupCircleElement(ctx: CanvasRenderingContext2D, element: E
     drawGroupElementIndex(ctx, element, x, y);
   }
 }
-
-const INDEX_TEXT_MARGIN = MATRIX_GAP + 5
 
 function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number) {
 
