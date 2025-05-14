@@ -132,6 +132,19 @@ export class ContextMenu {
     this.contextMenuItems = {
       group: [
         {
+          label: '区域编辑',
+          type: 'default',
+          onClick: () => {
+          }
+        },
+        {
+          label: '导出图片',
+          type: 'default',
+          onClick: () => {
+          }
+        },
+        {type: 'divider'},
+        {
           label: '删除区域',
           type: 'default',
           onClick: () => func!.contextMenuOperateFunc.delGroup.call(this.instances!.Graphic, ContextMenu.instance.currentContextMenuGroup!)
