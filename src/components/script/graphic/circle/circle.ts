@@ -35,6 +35,7 @@ class Circle {
       size: num,
       type: GRAPHIC_TYPE,
       radius,
+      baseFontSize: 13,
     }
 
     const elements = fillCircleElement(group)

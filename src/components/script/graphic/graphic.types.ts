@@ -20,6 +20,8 @@ export interface Group {
   hover: boolean
   size: number;
   type: GroupType;
+  //
+  baseFontSize: number
   // 圆形专有
   radius?: number
 }
@@ -47,4 +49,6 @@ export interface Element {
   // 业务相关
   status: ElementStatus
   text?: string
+  baseFontSize: number
+  nameFontSize: number
 }

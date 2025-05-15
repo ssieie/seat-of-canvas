@@ -43,7 +43,9 @@ export function fillMatrixElement(groupId: string, row: number, col: number): {
         height: ELEMENT_HEIGHT,
         pos: [y, x],
         text: Math.random().toString(36).substr(2, 2),
-        status: 'idle'
+        status: 'idle',
+        baseFontSize: 13,
+        nameFontSize: 10,
       }
       index++
     }
@@ -80,12 +82,12 @@ export function drawMatrixGroup(ctx: CanvasRenderingContext2D, group: Group) {
 
   ctx.strokeRect(x, y, w, h)
 
-  drawGroupName(ctx, group.group_name, x, y, w, h)
+  drawGroupName(ctx, group, x, y, w, h)
 }
 
-function drawGroupName(ctx: CanvasRenderingContext2D, name: string, x: number, y: number, w: number, h: number) {
-  setCtxFont(ctx, GROUP_NAME_COLOR, 'center')
-  ctx.fillText(`区域名称：${name}`, x + w / 2, y + h - scaleSize(MATRIX_GAP));
+function drawGroupName(ctx: CanvasRenderingContext2D, group: Group, x: number, y: number, w: number, h: number) {
+  setCtxFont(ctx, GROUP_NAME_COLOR, 'center', 'alphabetic', group.baseFontSize)
+  ctx.fillText(`区域名称：${group.group_name}`, x + w / 2, y + h - h * .06);
 }
 
 export function drawDragElement(ctx: CanvasRenderingContext2D) {
@@ -112,7 +114,7 @@ export function drawGroupMatrixElement(ctx: CanvasRenderingContext2D, element: E
 
   if (!element.isDragging) {
     const pos = matrixElementPosInGroup(group, element)
-    const [x, y] = canvasToScreen(pos.x, pos.y);
+    const [x, y] = canvasToScreen(pos.x, pos.y)
 
     const width = scaleSize(element.width)
     const height = scaleSize(element.height)

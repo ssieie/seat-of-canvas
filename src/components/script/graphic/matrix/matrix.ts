@@ -43,6 +43,7 @@ class Matrix {
       hover: false,
       size: row * col,
       type: GRAPHIC_TYPE,
+      baseFontSize: 13,
     }
 
     graphicMatrix.groups[GRAPHIC_TYPE][groupId] = group

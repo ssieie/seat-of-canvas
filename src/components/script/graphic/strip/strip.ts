@@ -34,6 +34,7 @@ class Strip {
       hover: false,
       size: shortNum * 2 + longNum * 2,
       type: GRAPHIC_TYPE,
+      baseFontSize: 13,
     }
 
     const elements = fillStripElement(groupId, shortNum, longNum)

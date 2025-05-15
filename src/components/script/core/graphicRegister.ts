@@ -3,7 +3,7 @@ import type {RenderTargetInstances} from "../render/render.types.ts";
 import GraphicMain from "../graphic/graphic.ts";
 import RuntimeStore from "../runtimeStore/runtimeStore.ts";
 import {deepCopy} from "../utils/common.ts";
-import {saveToImages} from "../graphic/graphicUtils.ts";
+import {saveToImages} from "../graphic/externalMethods.ts";
 
 export default function initGraphicInstances(canvas: Canvaser, instances: RenderTargetInstances): OperateFunc {
 

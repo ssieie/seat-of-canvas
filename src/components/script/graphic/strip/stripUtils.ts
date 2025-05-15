@@ -72,7 +72,9 @@ export function fillStripElement(groupId: string, shortNum: number, longNum: num
           height: ELEMENT_HEIGHT,
           pos: [y, x],
           text: Math.random().toString(36).substr(2, 2),
-          status: 'idle'
+          status: 'idle',
+          baseFontSize: 13,
+          nameFontSize: 10,
         }
         index++
       }
@@ -81,7 +83,7 @@ export function fillStripElement(groupId: string, shortNum: number, longNum: num
   return elements
 }
 
-export function drawStripGroup(ctx: CanvasRenderingContext2D, group: Group) {
+export function drawStripGroup(ctx: CanvasRenderingContext2D, group: Group, transformation = true) {
   ctx.fillStyle = GROUP_BG_COLOR
   const [x, y] = canvasToScreen(group.x, group.y);
   const w = scaleSize(group.w)
@@ -94,7 +96,7 @@ export function drawStripGroup(ctx: CanvasRenderingContext2D, group: Group) {
   ctx.strokeStyle = GROUP_BD_COLOR;
 
   // 空区域
-  drawStripGroupEmptyRegion(ctx, x, y, w, h)
+  drawStripGroupEmptyRegion(ctx, x, y, w, h, transformation)
 
   if (group.hover) {
     ctx.strokeStyle = GROUP_HOVER_BD_COLOR;
@@ -102,11 +104,11 @@ export function drawStripGroup(ctx: CanvasRenderingContext2D, group: Group) {
 
   ctx.strokeRect(x, y, w, h)
 
-  drawGroupName(ctx, group.group_name, x, y, w, h)
+  drawGroupName(ctx, group, x, y, w, h)
 }
 
-function drawStripGroupEmptyRegion(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
-  const elRect = scaleSize(ELEMENT_WIDTH + GROUP_GAP)
+function drawStripGroupEmptyRegion(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, transformation = true) {
+  const elRect = transformation ? scaleSize(ELEMENT_WIDTH + GROUP_GAP) : ELEMENT_WIDTH + GROUP_GAP
   const eRect = {
     x: x + elRect,
     y: y + elRect,
@@ -119,9 +121,9 @@ function drawStripGroupEmptyRegion(ctx: CanvasRenderingContext2D, x: number, y: 
   ctx.fillRect(eRect.x, eRect.y, eRect.w, eRect.h)
 }
 
-function drawGroupName(ctx: CanvasRenderingContext2D, name: string, x: number, y: number, w: number, h: number) {
-  setCtxFont(ctx, GROUP_NAME_COLOR, 'center', 'middle')
-  ctx.fillText(`${name}`, x + w / 2, y + h / 2);
+function drawGroupName(ctx: CanvasRenderingContext2D, group: Group, x: number, y: number, w: number, h: number) {
+  setCtxFont(ctx, GROUP_NAME_COLOR, 'center', 'middle', group.baseFontSize)
+  ctx.fillText(`${group.group_name}`, x + w / 2, y + h / 2);
 }
 
 export function stripElementPosInGroup(group: Group, element: Element) {

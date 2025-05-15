@@ -57,7 +57,9 @@ export function fillCircleElement(group: Group): {
       width: ELEMENT_WIDTH,
       height: ELEMENT_HEIGHT,
       text: Math.random().toString(36).substr(2, 2),
-      status: 'idle'
+      status: 'idle',
+      baseFontSize: 13,
+      nameFontSize: 10,
     }
   }
 
@@ -96,13 +98,13 @@ export function drawCircleGroup(ctx: CanvasRenderingContext2D, group: Group) {
   ctx.strokeRect(x, y, w, h)
 
   // 名字文本A
-  drawGroupName(ctx, group.group_name, centerOfACirclePos)
+  drawGroupName(ctx, group, centerOfACirclePos)
 
 }
 
-export function drawGroupName(ctx: CanvasRenderingContext2D, name: string, centerOfACirclePos: POS) {
-  setCtxFont(ctx, GROUP_NAME_COLOR, 'center', 'middle')
-  ctx.fillText(`${name}`, centerOfACirclePos.x, centerOfACirclePos.y);
+export function drawGroupName(ctx: CanvasRenderingContext2D, group: Group, centerOfACirclePos: POS) {
+  setCtxFont(ctx, GROUP_NAME_COLOR, 'center', 'middle', group.baseFontSize)
+  ctx.fillText(`${group.group_name}`, centerOfACirclePos.x, centerOfACirclePos.y);
 }
 
 export function circleElementPosInGroup(group: Group, element: Element) {

@@ -7,8 +7,8 @@ import {
   exchangeElements,
   withinCanvas,
   toCanvasCoords,
-  exportLogicalRegionToImage
 } from "./graphicUtils.ts";
+import {exportLogicalRegionToImage} from "./externalMethods.ts";
 
 const store = RuntimeStore.getInstance();
 
