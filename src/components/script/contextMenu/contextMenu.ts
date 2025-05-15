@@ -155,12 +155,14 @@ export class ContextMenu {
         {label: '删除人员', type: 'default', onClick: () => console.log('删除人员')},
         {
           label: '向前插入', type: 'default', children: [
-            {label: '插入一个', type: 'default', onClick: () => console.log('向前插入一个'),}
+            {label: '插入一个', type: 'default', onClick: () => console.log('向前插入一个'),},
+            {label: '任意数量', type: 'default', onClick: () => console.log('向前插入一个'),}
           ]
         },
         {
           label: '向后插入', type: 'default', children: [
-            {label: '插入一个', type: 'default', onClick: () => console.log('向后插入一个')}
+            {label: '插入一个', type: 'default', onClick: () => console.log('向后插入一个')},
+            {label: '任意数量', type: 'default', onClick: () => console.log('向前插入一个'),}
           ]
         },
         {type: 'divider'},

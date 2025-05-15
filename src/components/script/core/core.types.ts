@@ -20,4 +20,5 @@ export type OperateFunc = {
   graphicOperateFunc: GraphicOperateFunc
   contextMenuOperateFunc: ContextMenuOperateFunc
   getData: () => Graphic
+  saveToImages: () => void
 } | null

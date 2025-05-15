@@ -39,6 +39,10 @@ const getData = () => {
   console.log(cFunc?.getData())
 }
 
+const saveToImg = () => {
+  cFunc?.saveToImages()
+}
+
 const addMTest = (row: number, col: number) => {
   if (cFunc) {
     console.time('getBasicPos start')
@@ -85,6 +89,7 @@ onBeforeUnmount(() => {
     <div class="btn" style="background-color: orange" @click="addS(2,3)">+条(2,3)</div>
     <div class="btn" style="background-color: orange" @click="addS(3,5)">+条(3,5)</div>
     <div class="btn" style="background-color: slateblue" @click="getData">获取当前数据</div>
+    <div class="btn" style="background-color: slateblue" @click="saveToImg">保存为图片</div>
   </div>
   <div class="content">
     <div class="wrapper" @contextmenu.prevent ref="wrapperRef"></div>

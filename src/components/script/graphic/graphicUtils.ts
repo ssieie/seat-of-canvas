@@ -234,6 +234,11 @@ export function exportLogicalRegionToImage(
   }, 'image/png');
 }
 
+// 保存整个画布为图片
+export function saveToImages() {
+  
+}
+
 
 export function graphicUtilsInit() {
   store.subscribe('cvs', cvsChange)
