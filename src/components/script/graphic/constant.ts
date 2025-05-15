@@ -1,4 +1,4 @@
-export const MY_CANVAS_BG = `rgb(254, 252, 252)`
+export const MY_CANVAS_BG = `rgb(255, 255, 255)`
 
 export const ELEMENT_WIDTH = 50
 
@@ -16,7 +16,7 @@ export const INDEX_TEXT_MARGIN = MATRIX_GAP + 7
 
 export const E_GAP = MATRIX_GAP * 1.5
 
-export const GROUP_BG_COLOR = '#EAEAEA'
+export const GROUP_BG_COLOR = '#f6f6f6'
 export const GROUP_BD_COLOR = '#E3D2C3'
 export const GROUP_HOVER_BD_COLOR = '#2DAA9E'
 export const GROUP_NAME_COLOR = 'rgb(0,0,0)'

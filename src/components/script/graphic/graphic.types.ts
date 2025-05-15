@@ -26,6 +26,8 @@ export interface Group {
 
 export type RBushGroupItem = Group & { minX: number, minY: number, maxX: number, maxY: number };
 
+export type ElementStatus = 'idle' | 'occupy' | 'full';
+
 export interface Element {
   id: string;
   group_by: string
@@ -43,5 +45,6 @@ export interface Element {
   // 矩阵组特有
   pos?: [number, number]
   // 业务相关
+  status: ElementStatus
   text?: string
 }

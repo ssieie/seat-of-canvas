@@ -3,7 +3,12 @@ import PubSub from "../utils/pubSub.ts";
 import RuntimeStore, {rebuildGroupTree} from "../runtimeStore/runtimeStore.ts";
 import type {Element, Group} from "./graphic.types.ts";
 import {updateHoverState} from "../eventCenter/tool/hitTargetDetection.ts";
-import {exchangeElements, withinCanvas, toCanvasCoords} from "./graphicUtils.ts";
+import {
+  exchangeElements,
+  withinCanvas,
+  toCanvasCoords,
+  exportLogicalRegionToImage
+} from "./graphicUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -172,6 +177,7 @@ class OperateGraphic {
     }
   }
 
+  //
   delGroup(group: Group) {
     let result = true
 
@@ -193,6 +199,10 @@ class OperateGraphic {
     store.updateState('graphicMatrix', graphicMatrix)
 
     return result
+  }
+
+  exportToPng(group: Group) {
+    exportLogicalRegionToImage(this.canvas!, group.x, group.y, group.w, group.h, group.group_name);
   }
 
   clear() {

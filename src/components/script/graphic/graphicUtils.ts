@@ -1,9 +1,10 @@
 import {canvasToScreen, getCanvas, getTransformState, scaleSize} from "../transform/transform.ts";
 import RuntimeStore, {allGraphicGroups} from "../runtimeStore/runtimeStore.ts";
-import type {Element, Group, GroupType} from "./graphic.types.ts";
+import type {Element, ElementStatus, Group, GroupType} from "./graphic.types.ts";
 import {didNotHitAnyElement, hitElement} from "../eventCenter/tool/hitTargetDetection.ts";
 import {swapElement, swapInArrayFlexible} from "../utils/common.ts";
-import {ELEMENT_MOVE_IN_BD_COLOR} from "./constant.ts";
+import {ELEMENT_DESC_COLOR, ELEMENT_MOVE_IN_BD_COLOR, ELEMENT_NO_COLOR, INDEX_TEXT_MARGIN} from "./constant.ts";
+import AssetsLoader from "../assetsLoader/assetsLoader.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -164,6 +165,75 @@ export function moveInHighlight(ctx: CanvasRenderingContext2D, x: number, y: num
     }
   }
 }
+
+function getBitmap(type: ElementStatus) {
+  switch (type) {
+    case "idle":
+      return AssetsLoader.unSeat.bitmap
+    default:
+      return AssetsLoader.onSeat.bitmap
+  }
+}
+
+export function drawGroupBaseElement(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number, width: number, height: number) {
+
+  const bitmap = getBitmap(element.status)
+
+  ctx.drawImage(bitmap, x, y, width, height)
+
+  // 当前拖拽的元素在目标元素范围内提示
+  moveInHighlight(ctx, x, y, width, height)
+
+  drawGroupElementIndex(ctx, element, x, y);
+}
+
+export function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number) {
+
+  const dx = x + scaleSize(element.width / 2)
+
+  setCtxFont(ctx, ELEMENT_NO_COLOR, 'center')
+
+  ctx.fillText(String(element.index), dx, y + scaleSize(INDEX_TEXT_MARGIN));
+
+  if (element.text) {
+    setCtxFont(ctx, ELEMENT_DESC_COLOR, 'center', 'middle', 10)
+    ctx.fillText(element.text, dx, y + scaleSize(element.height / 2 + 2));
+  }
+
+}
+
+export function exportLogicalRegionToImage(
+  canvas: HTMLCanvasElement,
+  logicX: number,
+  logicY: number,
+  logicW: number,
+  logicH: number,
+  downloadName: string
+) {
+  const [srcX, srcY] = canvasToScreen(logicX, logicY)
+  const srcW = scaleSize(logicW);
+  const srcH = scaleSize(logicH);
+
+  const tempCanvas = document.createElement('canvas');
+  tempCanvas.width = logicW;
+  tempCanvas.height = logicH;
+
+  const ctx = tempCanvas.getContext('2d');
+  if (!ctx) throw new Error("无法获取上下文");
+
+  ctx.drawImage(canvas, srcX, srcY, srcW, srcH, 0, 0, logicW, logicH);
+
+  tempCanvas.toBlob((blob) => {
+    if (blob) {
+      const link = document.createElement('a');
+      link.download = `${downloadName}.png`;
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+  }, 'image/png');
+}
+
 
 export function graphicUtilsInit() {
   store.subscribe('cvs', cvsChange)

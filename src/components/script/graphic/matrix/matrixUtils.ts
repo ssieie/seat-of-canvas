@@ -1,13 +1,13 @@
 import type {Element, Group} from "../graphic.types.ts";
 import {
   BOTTOM_TEXT_HEIGHT,
-  E_GAP, ELEMENT_DESC_COLOR,
-  ELEMENT_HEIGHT, ELEMENT_NO_COLOR,
-  ELEMENT_WIDTH, GROUP_BD_COLOR, GROUP_BG_COLOR, GROUP_GAP, GROUP_HOVER_BD_COLOR, GROUP_NAME_COLOR, INDEX_TEXT_MARGIN,
+  E_GAP,
+  ELEMENT_HEIGHT,
+  ELEMENT_WIDTH, GROUP_BD_COLOR, GROUP_BG_COLOR, GROUP_GAP, GROUP_HOVER_BD_COLOR, GROUP_NAME_COLOR,
   MATRIX_GAP
 } from "../constant.ts";
 import {canvasToScreen, scaleSize} from "../../transform/transform.ts";
-import {moveInHighlight, setCtxFont} from "../graphicUtils.ts";
+import {drawGroupBaseElement, drawGroupElementIndex, setCtxFont} from "../graphicUtils.ts";
 import AssetsLoader from "../../assetsLoader/assetsLoader.ts";
 import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
 
@@ -42,7 +42,8 @@ export function fillMatrixElement(groupId: string, row: number, col: number): {
         width: ELEMENT_WIDTH,
         height: ELEMENT_HEIGHT,
         pos: [y, x],
-        text: Math.random().toString(36).substr(2, 2)
+        text: Math.random().toString(36).substr(2, 2),
+        status: 'idle'
       }
       index++
     }
@@ -115,26 +116,9 @@ export function drawGroupMatrixElement(ctx: CanvasRenderingContext2D, element: E
 
     const width = scaleSize(element.width)
     const height = scaleSize(element.height)
-    ctx.drawImage(AssetsLoader.unSeat.bitmap, x, y, width, height)
 
-    // 当前拖拽的元素在目标元素范围内提示
-    moveInHighlight(ctx, x, y, width, height)
-
-    drawGroupElementIndex(ctx, element, x, y);
+    drawGroupBaseElement(ctx, element, x, y, width, height)
   }
 }
 
-function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number) {
 
-  const dx = x + scaleSize(element.width / 2)
-
-  setCtxFont(ctx, ELEMENT_NO_COLOR, 'center')
-
-  ctx.fillText(String(element.index), dx, y + scaleSize(INDEX_TEXT_MARGIN));
-
-  if (element.text) {
-    setCtxFont(ctx, ELEMENT_DESC_COLOR, 'center', 'middle', 10)
-    ctx.fillText(element.text, dx, y + scaleSize(element.height / 2 + 2));
-  }
-
-}

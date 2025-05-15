@@ -140,8 +140,7 @@ export class ContextMenu {
         {
           label: '导出图片',
           type: 'default',
-          onClick: () => {
-          }
+          onClick: () => func!.contextMenuOperateFunc.exportToPng.call(this.instances!.Graphic, ContextMenu.instance.currentContextMenuGroup!)
         },
         {type: 'divider'},
         {

@@ -90,7 +90,8 @@ class GraphicMain extends OperateGraphic {
 
   contextMenuOperate(): ContextMenuOperateFunc {
     return {
-      delGroup: super.delGroup
+      delGroup: super.delGroup,
+      exportToPng: super.exportToPng
     }
   }
 }

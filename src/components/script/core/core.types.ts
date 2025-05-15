@@ -13,6 +13,7 @@ export type GraphicOperateFunc = {
 
 export type ContextMenuOperateFunc = {
   delGroup: (group: Group) => boolean
+  exportToPng: (group: Group) => void
 }
 
 export type OperateFunc = {
