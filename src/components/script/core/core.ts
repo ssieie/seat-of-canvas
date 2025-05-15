@@ -9,9 +9,11 @@ import AssetsLoader from "../assetsLoader/assetsLoader.ts";
 import {graphicUtilsClear, graphicUtilsInit} from "../graphic/graphicUtils.ts";
 import ContextMenu from "../contextMenu/contextMenu.ts";
 import {MY_CANVAS_BG} from "../graphic/constant.ts";
+import ZoomTool from "../canvasTool/zoomTool.ts";
 
 const store = RuntimeStore.getInstance();
 const menu = ContextMenu.getInstance();
+const zoomTool = ZoomTool.getInstance();
 
 const MY_CANVAS: Canvaser = {
   cvs: null,
@@ -53,6 +55,7 @@ export async function init(
 
   MY_CANVAS.cvs = document.createElement('canvas')
 
+  MY_CANVAS.cvs.setAttribute('id', 'zx-drag-canvas');
   MY_CANVAS.cvs.style.display = 'block'
   MY_CANVAS.cvs.style.backgroundColor = MY_CANVAS_BG
 
@@ -74,6 +77,8 @@ export async function init(
 
   menu.init(instances);
   menu.generateContextMenuItem(func);
+
+  zoomTool.init()
 
   return func
 }
@@ -100,6 +105,7 @@ export function exit() {
   cancelAllEvents(MY_CANVAS.cvs!)
 
   menu.destroy();
+  zoomTool.destroy()
 
   MY_CANVAS.cvs!.remove()
   MY_CANVAS.cvs = null;

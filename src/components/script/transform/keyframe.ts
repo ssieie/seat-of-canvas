@@ -3,6 +3,7 @@ import type {ContainerTransformState} from "../container/container.type.ts";
 import {getTransformState} from "./transform.ts";
 import RuntimeStore from "../runtimeStore/runtimeStore.ts";
 import {delBehavior} from "../behaviorTasks/behaviorController.ts";
+import PubSub from "../utils/pubSub.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -29,6 +30,7 @@ export function setTransformFrame(endState: { offsetX: number, offsetY: number, 
       // 动画完成时移除任务
       if (t >= 1) {
         delBehavior("resetTransform");
+        PubSub.publish('calculateProportion')
       }
 
       return {

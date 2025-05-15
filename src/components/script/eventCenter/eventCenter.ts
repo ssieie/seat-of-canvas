@@ -36,6 +36,8 @@ const mouseupHandler = (e: MouseEvent) => {
 }
 const wheelHandler = (e: WheelEvent) => {
   PubSub.publish('wheel', e)
+
+  PubSub.publish('calculateProportion')
 }
 
 export function registerAllEvents(cvs: HTMLCanvasElement) {

@@ -10,6 +10,7 @@ type MyEvents = {
   mousemove: [MouseEvent];
   mouseup: [MouseEvent];
   wheel: [WheelEvent];
+  calculateProportion: []; // 比例计算
 };
 
 class PubSub<Events extends Record<string, any[]>> {

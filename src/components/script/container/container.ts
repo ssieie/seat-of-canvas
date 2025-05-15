@@ -4,11 +4,23 @@ import type {ContainerTransformState} from "./container.type.ts";
 import RuntimeStore from "../runtimeStore/runtimeStore.ts";
 import {setTransformFrame} from "../transform/keyframe.ts";
 import {withinCanvas} from "../graphic/graphicUtils.ts";
+import {getTransformState} from "../transform/transform.ts";
 
 const store = RuntimeStore.getInstance();
 
 const MAX_SCALE = 3
 const MIN_SCALE = .2
+const BASE_SCALE = 1
+
+export function scaleToPercentage(): string {
+  const scale = getTransformState().scale
+  if (scale <= MIN_SCALE) return `1%`
+  if (scale >= BASE_SCALE) return `${Math.round((scale / BASE_SCALE) * 100)}%`
+
+  // 线性插值从 1% 到 100%
+  const percentage = ((scale - MIN_SCALE) / (BASE_SCALE - MIN_SCALE)) * 99 + 1
+  return `${Math.round(percentage)}%`
+}
 
 class Container {
   canvas: HTMLCanvasElement | null = null
