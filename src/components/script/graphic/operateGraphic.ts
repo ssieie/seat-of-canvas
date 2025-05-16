@@ -1,7 +1,7 @@
 import type {Canvaser} from "../core/core.types.ts";
 import PubSub from "../utils/pubSub.ts";
 import RuntimeStore, {rebuildGroupTree} from "../runtimeStore/runtimeStore.ts";
-import type {Element, Group} from "./graphic.types.ts";
+import type {Element, Group, IncreaseElementPos} from "./graphic.types.ts";
 import {updateHoverState} from "../eventCenter/tool/hitTargetDetection.ts";
 import {
   exchangeElements,
@@ -9,6 +9,7 @@ import {
   toCanvasCoords,
 } from "./graphicUtils.ts";
 import {exportLogicalRegionToImage} from "./externalMethods.ts";
+import {addCircleGroupElement, delCircleGroupElement} from "./circle/circleUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -177,7 +178,7 @@ class OperateGraphic {
     }
   }
 
-  //
+  // contextMenu
   delGroup(group: Group) {
     let result = true
 
@@ -203,6 +204,34 @@ class OperateGraphic {
 
   exportToPng(group: Group) {
     exportLogicalRegionToImage(this.canvas!, group.x, group.y, group.w, group.h, group.group_name);
+  }
+
+  increaseElement(group: Group, element: Element, type: IncreaseElementPos, num: number) {
+    switch (group.type) {
+      case "circle":
+        addCircleGroupElement(group, element,type,num)
+        break
+      case 'strip':
+        break
+      case "rectangle":
+        break
+    }
+  }
+
+  decreaseElement(group: Group, element: Element) {
+    switch (group.type) {
+      case "circle":
+        delCircleGroupElement(group, element)
+        break
+      case 'strip':
+        break
+      case "rectangle":
+        break
+    }
+
+    if (group.size === 1) {
+      this.delGroup(group)
+    }
   }
 
   clear() {

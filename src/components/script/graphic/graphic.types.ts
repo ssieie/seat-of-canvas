@@ -7,6 +7,8 @@ export interface Graphic {
 
 export type POS = { x: number, y: number }
 
+export type IncreaseElementPos = 'before' | 'after';
+
 export type GroupType = 'rectangle' | 'circle' | 'strip';
 
 export interface Group {

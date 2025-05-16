@@ -8,9 +8,13 @@ import {
   GROUP_NAME_COLOR,
   MATRIX_GAP
 } from "../constant.ts";
-import type {Element, Group, POS} from "../graphic.types.ts";
+import type {Element, Group, IncreaseElementPos, POS} from "../graphic.types.ts";
 import {canvasToScreen, scaleSize} from "../../transform/transform.ts";
 import {drawGroupBaseElement, setCtxFont} from "../graphicUtils.ts";
+import RuntimeStore, {rebuildGroupTree} from "../../runtimeStore/runtimeStore.ts";
+import {generateUuid} from "../../utils/common.ts";
+
+const store = RuntimeStore.getInstance();
 
 const CIRCLE_DISTANCE = ELEMENT_WIDTH + MATRIX_GAP * 2
 const ELE_DISTANCE = 40
@@ -31,6 +35,32 @@ export function getCircleRect(num: number) {
   }
 }
 
+function getCircleElementXy(group: Group, i: number) {
+  const angle = (2 * Math.PI * i) / group.size - Math.PI / 2;
+  const x = (group.radius! + ELE_DISTANCE) * Math.cos(angle) - ELEMENT_WIDTH / 2;
+  const y = (group.radius! + ELE_DISTANCE) * Math.sin(angle) - ELEMENT_HEIGHT / 2;
+  return [x, y]
+}
+
+function createEmptyElement(id: string, group: Group, index: number, x: number, y: number, name?: string): Element {
+  return {
+    id,
+    group_by: group.group_id,
+    index,
+    x: x,
+    y: y,
+    isDragging: false,
+    dX: 0,
+    dY: 0,
+    width: ELEMENT_WIDTH,
+    height: ELEMENT_HEIGHT,
+    text: name || Math.random().toString(36).substr(2, 2),
+    status: 'idle',
+    baseFontSize: 13,
+    nameFontSize: 10,
+  }
+}
+
 export function fillCircleElement(group: Group): {
   [s: string]: Element,
 } {
@@ -40,30 +70,77 @@ export function fillCircleElement(group: Group): {
 
   for (let i = 0; i < group.size; i++) {
     // const angle = (2 * Math.PI * i) / group.size;
-    const angle = (2 * Math.PI * i) / group.size - Math.PI / 2;
-    const x = (group.radius! + ELE_DISTANCE) * Math.cos(angle) - ELEMENT_WIDTH / 2;
-    const y = (group.radius! + ELE_DISTANCE) * Math.sin(angle) - ELEMENT_HEIGHT / 2;
-
+    const [x, y] = getCircleElementXy(group, i)
     const id = `${group.group_id}-${i}`;
-    elements[id] = {
-      id,
-      group_by: group.group_id,
-      index: i + 1,
-      x: x,
-      y: y,
-      isDragging: false,
-      dX: 0,
-      dY: 0,
-      width: ELEMENT_WIDTH,
-      height: ELEMENT_HEIGHT,
-      text: Math.random().toString(36).substr(2, 2),
-      status: 'idle',
-      baseFontSize: 13,
-      nameFontSize: 10,
-    }
+    elements[id] = createEmptyElement(id, group, i + 1, x, y)
   }
 
   return elements
+}
+
+export function delCircleGroupElement(groupTree: Group, element: Element) {
+  const graphicMatrix = store.getState('graphicMatrix')
+
+  Reflect.deleteProperty(graphicMatrix.elements, element.id)
+
+  graphicMatrix.groupElements[groupTree.group_id] = graphicMatrix.groupElements[groupTree.group_id].filter(v => v !== element.id)
+
+  updateCircleGroupLayout(groupTree.group_id)
+}
+
+export function addCircleGroupElement(groupTree: Group, element: Element, type: IncreaseElementPos, num: number) {
+  const graphicMatrix = store.getState('graphicMatrix')
+
+  const oldElementIds = store.getGraphicGroupElementsById(groupTree.group_id)
+  // 可能有移动元素，重新获取最新按index排序
+  const newElementIds = oldElementIds.sort((a, b) => a.index - b.index).map(v => v.id)
+  const elements: Element[] = []
+
+  for (let i = 0; i < num; i++) {
+    const id = generateUuid();
+    elements.push(createEmptyElement(id, groupTree, 0, 0, 0, `测试新增${i}`))
+  }
+
+  const targetIdx = newElementIds.indexOf(element.id)
+
+  newElementIds.splice(type === 'before' ? targetIdx : targetIdx + 1, 0, ...elements.map(v => v.id))
+
+  const elementMap: {
+    [s: string]: Element,
+  } = {}
+
+  graphicMatrix.elements = {
+    ...graphicMatrix.elements,
+    ...elements.reduce((acc, item: Element) => {
+      acc[item.id] = item;
+      return acc;
+    }, elementMap),
+  }
+
+  graphicMatrix.groupElements[groupTree.group_id] = newElementIds
+
+  updateCircleGroupLayout(groupTree.group_id)
+}
+
+export function updateCircleGroupLayout(groupId: string) {
+  const group = store.getGraphicGroupsById(groupId)
+  if (!group) return
+  const elements = store.getGraphicGroupElementsById(groupId)
+  const elementLen = elements.length;
+  const {radius, w, h} = getCircleRect(elementLen)
+  group.w = w
+  group.h = h
+  group.radius = radius
+  group.size = elementLen
+
+  for (let i = 0; i < group.size; i++) {
+    const [x, y] = getCircleElementXy(group, i)
+    elements[i].x = x
+    elements[i].y = y
+    elements[i].index = i + 1
+  }
+
+  rebuildGroupTree(store)
 }
 
 export function drawCircleGroup(ctx: CanvasRenderingContext2D, group: Group) {

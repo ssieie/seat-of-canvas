@@ -1,6 +1,6 @@
 import type {ContextMenuItem} from "./contextMenu.types.ts";
 import type {OperateFunc} from "../core/core.types.ts";
-import type {Element, Group} from "../graphic/graphic.types.ts";
+import type {Element, Group, IncreaseElementPos} from "../graphic/graphic.types.ts";
 import type {RenderTargetInstances} from "../render/render.types.ts";
 
 type ContextMenuType = 'group' | 'element'
@@ -129,6 +129,9 @@ export class ContextMenu {
   }
 
   public generateContextMenuItem(func: OperateFunc) {
+    const insertEl = (type: IncreaseElementPos, num = 1) => {
+      return func!.contextMenuOperateFunc.increaseElement.call(this.instances!.Graphic, ContextMenu.instance.currentContextMenuGroup!, ContextMenu.instance.currentContextMenuElement!, type, num)
+    }
     this.contextMenuItems = {
       group: [
         {
@@ -155,18 +158,33 @@ export class ContextMenu {
         {label: '删除人员', type: 'default', onClick: () => console.log('删除人员')},
         {
           label: '向前插入', type: 'default', children: [
-            {label: '插入一个', type: 'default', onClick: () => console.log('向前插入一个'),},
-            {label: '任意数量', type: 'default', onClick: () => console.log('向前插入一个'),}
+            {
+              label: '插入一个', type: 'default',
+              onClick: () => insertEl('before', 1)
+            },
+            {
+              label: '任意数量', type: 'default',
+              onClick: () => insertEl('before', 2)
+            }
           ]
         },
         {
           label: '向后插入', type: 'default', children: [
-            {label: '插入一个', type: 'default', onClick: () => console.log('向后插入一个')},
-            {label: '任意数量', type: 'default', onClick: () => console.log('向前插入一个'),}
+            {
+              label: '插入一个', type: 'default',
+              onClick: () => insertEl('after', 1)
+            },
+            {
+              label: '任意数量', type: 'default',
+              onClick: () => insertEl('after', 2)
+            }
           ]
         },
         {type: 'divider'},
-        {label: '删除座位', type: 'default', onClick: () => console.log('删除座位')},
+        {
+          label: '删除座位', type: 'default',
+          onClick: () => func!.contextMenuOperateFunc.decreaseElement.call(this.instances!.Graphic, ContextMenu.instance.currentContextMenuGroup!, ContextMenu.instance.currentContextMenuElement!)
+        },
       ],
     }
   }
