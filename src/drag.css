@@ -87,6 +87,28 @@
     background-size: 70%;
     background-repeat: no-repeat;
     background-position: center center;
+    border-radius: 4px;
+}
+
+.z-canvas-tool-zoom div:hover {
+    background-color: rgb(243, 243, 244);
+}
+
+.z-canvas-tool-zoom .zx-zoom-in-situ {
+    position: relative;
+    background-size: 80%;
+    background-position: center center;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAARBJREFUWEftlssNwjAQBSdF0ARwhyOcoALaQKIBoAEk2qACOMERCoB2QE9ypATWRIlNfCArRVE+9k7Wn0xG4sgS56cD8FVgBOwBnWPEDVgCOpfCAugD9xhZjT4GwKN43wI4AjNgCxzeGzQA0wctgDVwAuZVAE/3whS4NEhoNZkAZ/eg9NFWBXKA2CvE7LcDqFOBfAw1N76F773gIbA6ULIeMCwQ+eZQdICNW1rKrSWra0VrAEqWtAK+edBqBSyIVgGSDsH/TcLkG1HojzF4I/o/gA99CihBUfMqheTqZFT7u4wo1IpkQzqkZJLScZWSyYQF8YtQ8pIZ+7RLJds5OY0BIhldWYIb2/tqw3YAySvwApCaViE0AqtkAAAAAElFTkSuQmCC");
+}
+
+.z-canvas-tool-zoom .zx-zoom-in-situ:before {
+    content: "";
+    position: absolute;
+    right: -4px;
+    top: 4px;
+    height: 24px;
+    width: 1px;
+    background: rgb(18 17 42 / 7%);
 }
 
 .z-canvas-tool-zoom .zx-zoom-scale-up {

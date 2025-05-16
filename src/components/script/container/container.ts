@@ -8,18 +8,67 @@ import {getTransformState} from "../transform/transform.ts";
 
 const store = RuntimeStore.getInstance();
 
-const MAX_SCALE = 3
-const MIN_SCALE = .2
+export const MAX_SCALE = 3
+export const MIN_SCALE = .2
 const BASE_SCALE = 1
 
-export function scaleToPercentage(): string {
-  const scale = getTransformState().scale
-  if (scale <= MIN_SCALE) return `1%`
-  if (scale >= BASE_SCALE) return `${Math.round((scale / BASE_SCALE) * 100)}%`
+// scale到百分比
+export function scaleToPercentage(): number {
+  let scale = getTransformState().scale
+  if (scale <= MIN_SCALE) return 1
+  if (scale >= BASE_SCALE) {
+    scale = Math.min(scale, MAX_SCALE)
+    return Math.round((scale / BASE_SCALE) * 100)
+  }
 
   // 线性插值从 1% 到 100%
   const percentage = ((scale - MIN_SCALE) / (BASE_SCALE - MIN_SCALE)) * 99 + 1
-  return `${Math.round(percentage)}%`
+  return Math.round(percentage)
+}
+
+// 百分比到scale
+export function percentageToScale(percentage: number): number {
+  // 处理边界与不同区间
+  if (percentage <= 1) {
+    return MIN_SCALE; // 1%对应最小缩放
+  }
+
+  if (percentage >= 100) {
+    // 计算基准缩放以上的比例，并限制最大值
+    const scale = (percentage / 100) * BASE_SCALE;
+    return Math.min(scale, MAX_SCALE);
+  }
+
+  // 线性插值反向计算中间值
+  const scale = ((percentage - 1) / 99) * (BASE_SCALE - MIN_SCALE) + MIN_SCALE;
+  return scale;
+}
+
+export function scaleContainerHandler(e: WheelEvent) {
+  let {offsetX, offsetY, scale} = getTransformState();
+
+  const zoomFactor = 1.09
+  const oldScale = scale
+  const mouseX = e.offsetX
+  const mouseY = e.offsetY
+
+  if (e.deltaY < 0) {
+    if (scale > MAX_SCALE) return
+    scale *= zoomFactor
+  } else {
+    if (scale < MIN_SCALE) return
+    scale /= zoomFactor
+  }
+
+  // 保持缩放中心在鼠标位置
+  const scaleChange = scale / oldScale
+
+  store.updateState('containerTransformState', {
+    ...store.getState('containerTransformState'),
+    scale: scale,
+    offsetX: mouseX - (mouseX - offsetX) * scaleChange,
+    offsetY: mouseY - (mouseY - offsetY) * scaleChange,
+  });
 }
 
 class Container {
@@ -111,32 +160,7 @@ class Container {
     PubSub.subscribe('wheel', (e) => {
       e.preventDefault()
 
-      let scale = this.transformState.scale
-      let offsetX = this.transformState.offsetX
-      let offsetY = this.transformState.offsetY
-
-      const zoomFactor = 1.09
-      const oldScale = scale
-      const mouseX = e.offsetX
-      const mouseY = e.offsetY
-
-      if (e.deltaY < 0) {
-        if (scale > MAX_SCALE) return
-        scale *= zoomFactor
-      } else {
-        if (scale < MIN_SCALE) return
-        scale /= zoomFactor
-      }
-
-      // 保持缩放中心在鼠标位置
-      const scaleChange = scale / oldScale
-
-      store.updateState('containerTransformState', {
-        ...this.transformState,
-        scale: scale,
-        offsetX: mouseX - (mouseX - offsetX) * scaleChange,
-        offsetY: mouseY - (mouseY - offsetY) * scaleChange,
-      });
+      scaleContainerHandler(e)
     })
   }
 

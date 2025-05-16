@@ -1,5 +1,7 @@
-import {scaleToPercentage} from "../container/container.ts";
+import {MAX_SCALE, percentageToScale, scaleToPercentage} from "../container/container.ts";
 import PubSub from "../utils/pubSub.ts";
+import {setTransformFrame} from "../transform/keyframe.ts";
+import {getCanvas, getTransformState} from "../transform/transform.ts";
 
 class ZoomTool {
   private static instance: ZoomTool;
@@ -22,7 +24,39 @@ class ZoomTool {
   public onTransformStateChangeHandler() {
     const scaleProportion = document.querySelector('.zx-zoom-scale-proportion')
     if (scaleProportion) {
-      scaleProportion.textContent = scaleToPercentage()
+      scaleProportion.textContent = scaleToPercentage() + '%'
+    }
+  }
+
+  private scaleHandler(type: 'up' | 'down' | 'reset' | 'situ') {
+    if (type === 'situ') {
+      setTransformFrame({scale: 1, offsetX: 0, offsetY: 0})
+      return;
+    }
+
+    const cvs = getCanvas();
+    if (!cvs) return;
+    let {offsetX, offsetY, scale} = getTransformState();
+    const centerX = cvs.width / 2;
+    const centerY = cvs.height / 2;
+    if (type === "reset") {
+      const scaleChange = 1 / scale;
+
+      const oX = centerX - (centerX - offsetX) * scaleChange
+      const oY = centerY - (centerY - offsetY) * scaleChange
+      setTransformFrame({offsetX: oX, offsetY: oY, scale: 1})
+    } else {
+      const currentScale = scaleToPercentage();
+      const newScalePercentage = type === 'up' ? currentScale + 50 : currentScale - 50;
+      if (newScalePercentage > MAX_SCALE * 100) return;
+      if (newScalePercentage < 0) return;
+      const newScale = percentageToScale(newScalePercentage)
+
+      const scaleChange = newScale / scale;
+      const oX = centerX - (centerX - offsetX) * scaleChange
+      const oY = centerY - (centerY - offsetY) * scaleChange
+
+      setTransformFrame({offsetX: oX, offsetY: oY, scale: newScale})
     }
   }
 
@@ -30,11 +64,17 @@ class ZoomTool {
     const target = e.target as HTMLElement | null;
     if (target) {
       switch (target.className) {
+        case 'zx-zoom-in-situ':
+          this.scaleHandler('situ')
+          break
         case 'zx-zoom-scale-up':
+          this.scaleHandler('up')
           break
         case 'zx-zoom-scale-proportion':
+          this.scaleHandler('reset')
           break
         case 'zx-zoom-scale-down':
+          this.scaleHandler('down')
           break
       }
     }
@@ -43,14 +83,20 @@ class ZoomTool {
   private createToolElement(): HTMLDivElement {
     const tool = document.createElement('div');
 
+    const resetScale = document.createElement('div');
+    resetScale.className = 'zx-zoom-in-situ';
+
     const scaleUp = document.createElement('div');
     scaleUp.className = 'zx-zoom-scale-up';
+
     const scaleProportion = document.createElement('div');
     scaleProportion.className = 'zx-zoom-scale-proportion';
-    scaleProportion.textContent = scaleToPercentage()
+    scaleProportion.textContent = scaleToPercentage() + '%'
+
     const scaleDown = document.createElement('div');
     scaleDown.className = 'zx-zoom-scale-down';
 
+    tool.appendChild(resetScale);
     tool.appendChild(scaleUp);
     tool.appendChild(scaleProportion);
     tool.appendChild(scaleDown);

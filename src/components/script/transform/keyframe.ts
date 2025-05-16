@@ -27,10 +27,12 @@ export function setTransformFrame(endState: { offsetX: number, offsetY: number, 
       const t = Math.min(1, elapsed / duration);
       const easeOut = t * (2 - t);
 
+      // 更新比例显示百分比
+      PubSub.publish('calculateProportion')
+
       // 动画完成时移除任务
       if (t >= 1) {
         delBehavior("resetTransform");
-        PubSub.publish('calculateProportion')
       }
 
       return {
