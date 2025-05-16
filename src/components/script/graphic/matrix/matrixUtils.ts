@@ -7,11 +7,7 @@ import {
   MATRIX_GAP
 } from "../constant.ts";
 import {canvasToScreen, scaleSize} from "../../transform/transform.ts";
-import {drawGroupBaseElement, drawGroupElementIndex, setCtxFont} from "../graphicUtils.ts";
-import AssetsLoader from "../../assetsLoader/assetsLoader.ts";
-import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
-
-const store = RuntimeStore.getInstance();
+import {drawGroupBaseElement, setCtxFont} from "../graphicUtils.ts";
 
 // 获取初始化矩阵的宽高，后续用来获取放在画布中的位置，得到此组基准位置
 export function getMatrixRect(row: number, col: number): [w: number, h: number] {
