@@ -56,8 +56,8 @@ export function saveToImages(name = 'graphic-export', groupId?: string) {
 
   // 创建离屏 canvas
   const canvas = document.createElement('canvas');
-  canvas.width = width + 10;
-  canvas.height = height + 10;
+  canvas.width = width + 12;
+  canvas.height = height + 12;
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
@@ -73,8 +73,8 @@ export function saveToImages(name = 'graphic-export', groupId?: string) {
   // 渲染每个 Group
   for (const group of allGroup.sort((a, b) => a.z_index - b.z_index)) {
     const [x, y] = screenToCanvas(group.x, group.y)
-    group.x = x + 5
-    group.y = y + 5
+    group.x = x + 6
+    group.y = y + 6
     group.w = group.w / scale
     group.h = group.h / scale
     group.baseFontSize = group.baseFontSize / scale
