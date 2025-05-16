@@ -90,19 +90,6 @@ function drawGroupName(ctx: CanvasRenderingContext2D, group: Group, x: number, y
   ctx.fillText(`区域名称：${group.group_name}`, x + w / 2, y + h - h * .06);
 }
 
-export function drawDragElement(ctx: CanvasRenderingContext2D) {
-  const currentDragEl = store.getState('currentDragEl')
-
-  if (currentDragEl) {
-
-    const [x, y] = canvasToScreen(currentDragEl.dX, currentDragEl.dY);
-
-    ctx.drawImage(AssetsLoader.unSeat.bitmap, x, y, scaleSize(currentDragEl.width), scaleSize(currentDragEl.height))
-
-    drawGroupElementIndex(ctx, currentDragEl, x, y);
-  }
-}
-
 export function matrixElementPosInGroup(group: Group, element: Element) {
   return {
     x: group.x + element.x,

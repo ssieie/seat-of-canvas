@@ -183,6 +183,13 @@ class RuntimeStore {
     return eIds.map(eId => this.state.graphicMatrix.elements[eId])
   }
 
+  // 获取指定元素
+  getGraphicGroupElementById(elementId: string): Element | null {
+    const el = this.state.graphicMatrix.elements[elementId]
+    if (el) return el
+    return null
+  }
+
   reset() {
     this.state = initRuntimeState()
   }

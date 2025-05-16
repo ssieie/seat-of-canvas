@@ -1,12 +1,13 @@
 import type {Canvaser, ContextMenuOperateFunc, GraphicOperateFunc} from "../core/core.types.ts";
 import Matrix from "./matrix/matrix.ts";
 import OperateGraphic from "./operateGraphic.ts";
-import {drawDragElement, drawGroupMatrixElement, drawMatrixGroup} from "./matrix/matrixUtils.ts";
+import {drawGroupMatrixElement, drawMatrixGroup} from "./matrix/matrixUtils.ts";
 import Circle from "./circle/circle.ts";
 import RuntimeStore from "../runtimeStore/runtimeStore.ts";
 import {drawCircleGroup, drawGroupCircleElement} from "./circle/circleUtils.ts";
 import Strip from "./strip/strip.ts";
 import {drawGroupStripElement, drawStripGroup} from "./strip/stripUtils.ts";
+import {drawDragElement} from "./graphicUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -94,6 +95,7 @@ class GraphicMain extends OperateGraphic {
       exportToPng: super.exportToPng,
       increaseElement: super.increaseElement,
       decreaseElement: super.decreaseElement,
+      setElementStatus: super.setElementStatus,
     }
   }
 }

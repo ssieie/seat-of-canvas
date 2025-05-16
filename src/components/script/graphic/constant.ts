@@ -27,3 +27,5 @@ export const ELEMENT_NO_COLOR = 'rgb(0,0,0)'
 export const ELEMENT_DESC_COLOR = 'rgb(0,0,0)'
 
 export const CIRCLE_COLOR = 'rgb(255,255,255)'
+
+export const OCCUPY_DESC = '占座'

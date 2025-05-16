@@ -154,7 +154,10 @@ export class ContextMenu {
       ],
       element: [
         {label: '编辑人员', type: 'default', onClick: () => console.log('编辑人员')},
-        {label: '占位', type: 'default', onClick: () => console.log('占位')},
+        {
+          label: '占位', type: 'default',
+          onClick: () => func!.contextMenuOperateFunc.setElementStatus.call(this.instances!.Graphic, ContextMenu.instance.currentContextMenuElement!, 'occupy')
+        },
         {label: '删除人员', type: 'default', onClick: () => console.log('删除人员')},
         {
           label: '向前插入', type: 'default', children: [

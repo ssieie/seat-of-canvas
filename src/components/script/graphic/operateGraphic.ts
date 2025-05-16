@@ -1,7 +1,7 @@
 import type {Canvaser} from "../core/core.types.ts";
 import PubSub from "../utils/pubSub.ts";
 import RuntimeStore, {rebuildGroupTree} from "../runtimeStore/runtimeStore.ts";
-import type {Element, Group, IncreaseElementPos} from "./graphic.types.ts";
+import type {Element, ElementStatus, Group, IncreaseElementPos} from "./graphic.types.ts";
 import {updateHoverState} from "../eventCenter/tool/hitTargetDetection.ts";
 import {
   exchangeElements,
@@ -209,7 +209,7 @@ class OperateGraphic {
   increaseElement(group: Group, element: Element, type: IncreaseElementPos, num: number) {
     switch (group.type) {
       case "circle":
-        addCircleGroupElement(group, element,type,num)
+        addCircleGroupElement(group, element, type, num)
         break
       case 'strip':
         break
@@ -231,6 +231,13 @@ class OperateGraphic {
 
     if (group.size === 1) {
       this.delGroup(group)
+    }
+  }
+
+  setElementStatus(element: Element, type: ElementStatus) {
+    const el = store.getGraphicGroupElementById(element.id)
+    if (el) {
+      el.status = type
     }
   }
 

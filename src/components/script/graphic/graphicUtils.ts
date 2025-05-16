@@ -3,7 +3,7 @@ import RuntimeStore, {allGraphicGroups} from "../runtimeStore/runtimeStore.ts";
 import type {Element, ElementStatus, Group, GroupType} from "./graphic.types.ts";
 import {didNotHitAnyElement, hitElement} from "../eventCenter/tool/hitTargetDetection.ts";
 import {swapElement, swapInArrayFlexible} from "../utils/common.ts";
-import {ELEMENT_DESC_COLOR, ELEMENT_MOVE_IN_BD_COLOR, ELEMENT_NO_COLOR} from "./constant.ts";
+import {ELEMENT_DESC_COLOR, ELEMENT_MOVE_IN_BD_COLOR, ELEMENT_NO_COLOR, OCCUPY_DESC} from "./constant.ts";
 import AssetsLoader from "../assetsLoader/assetsLoader.ts";
 
 const store = RuntimeStore.getInstance();
@@ -175,6 +175,20 @@ function getBitmap(type: ElementStatus) {
   }
 }
 
+export function drawDragElement(ctx: CanvasRenderingContext2D) {
+  const currentDragEl = store.getState('currentDragEl')
+
+  if (currentDragEl) {
+    const bitmap = getBitmap(currentDragEl.status)
+
+    const [x, y] = canvasToScreen(currentDragEl.dX, currentDragEl.dY);
+
+    ctx.drawImage(bitmap, x, y, scaleSize(currentDragEl.width), scaleSize(currentDragEl.height))
+
+    drawGroupElementIndex(ctx, currentDragEl, x, y);
+  }
+}
+
 export function drawGroupBaseElement(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number, width: number, height: number) {
 
   const bitmap = getBitmap(element.status)
@@ -195,7 +209,10 @@ export function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: El
 
   ctx.fillText(String(element.index), dx, y + scaleSize(element.width * .3));
 
-  if (element.text) {
+  if (element.status === 'occupy') {
+    setCtxFont(ctx, ELEMENT_DESC_COLOR, 'center', 'middle', element.nameFontSize)
+    ctx.fillText(OCCUPY_DESC, dx, y + scaleSize(element.height / 2 + 2));
+  } else if (element.text) {
     setCtxFont(ctx, ELEMENT_DESC_COLOR, 'center', 'middle', element.nameFontSize)
     ctx.fillText(element.text, dx, y + scaleSize(element.height / 2 + 2));
   }

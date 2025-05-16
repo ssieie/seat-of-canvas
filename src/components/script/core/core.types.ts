@@ -1,4 +1,4 @@
-import type {Graphic, Group, Element, IncreaseElementPos} from "../graphic/graphic.types.ts";
+import type {Graphic, Group, Element, IncreaseElementPos, ElementStatus} from "../graphic/graphic.types.ts";
 
 export type Canvaser = {
   cvs: HTMLCanvasElement | null;
@@ -16,6 +16,7 @@ export type ContextMenuOperateFunc = {
   exportToPng: (group: Group) => void
   increaseElement: (group: Group, element: Element, type: IncreaseElementPos, num: number) => void
   decreaseElement: (group: Group, element: Element) => void
+  setElementStatus: (element: Element, status: ElementStatus) => void
 }
 
 export type OperateFunc = {
