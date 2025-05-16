@@ -160,7 +160,7 @@ export class ContextMenu {
         },
         {label: '删除人员', type: 'default', onClick: () => console.log('删除人员')},
         {
-          label: '向前插入', type: 'default', children: [
+          label: '向前插入(当前圆桌实现)', type: 'default', children: [
             {
               label: '插入一个', type: 'default',
               onClick: () => insertEl('before', 1)
@@ -172,7 +172,7 @@ export class ContextMenu {
           ]
         },
         {
-          label: '向后插入', type: 'default', children: [
+          label: '向后插入(当前圆桌实现)', type: 'default', children: [
             {
               label: '插入一个', type: 'default',
               onClick: () => insertEl('after', 1)
