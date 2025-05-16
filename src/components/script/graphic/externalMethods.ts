@@ -1,5 +1,5 @@
 import type {Element, Group} from "./graphic.types.ts";
-import {canvasToScreen, getTransformState, scaleSize, screenToCanvas} from "../transform/transform.ts";
+import {getTransformState, screenToCanvas} from "../transform/transform.ts";
 import RuntimeStore from "../runtimeStore/runtimeStore.ts";
 import {drawGroupMatrixElement, drawMatrixGroup} from "./matrix/matrixUtils.ts";
 import {drawGroupStripElement, drawStripGroup} from "./strip/stripUtils.ts";
@@ -7,38 +7,6 @@ import {drawCircleGroup, drawGroupCircleElement} from "./circle/circleUtils.ts";
 import {deepCopy} from "../utils/common.ts";
 
 const store = RuntimeStore.getInstance();
-
-export function exportLogicalRegionToImage(
-  canvas: HTMLCanvasElement,
-  logicX: number,
-  logicY: number,
-  logicW: number,
-  logicH: number,
-  downloadName: string
-) {
-  const [srcX, srcY] = canvasToScreen(logicX, logicY)
-  const srcW = scaleSize(logicW);
-  const srcH = scaleSize(logicH);
-
-  const tempCanvas = document.createElement('canvas');
-  tempCanvas.width = srcW;
-  tempCanvas.height = srcW;
-
-  const ctx = tempCanvas.getContext('2d');
-  if (!ctx) throw new Error("无法获取上下文");
-
-  ctx.drawImage(canvas, srcX, srcY, srcW, srcH, 0, 0, srcW, srcW);
-
-  tempCanvas.toBlob((blob) => {
-    if (blob) {
-      const link = document.createElement('a');
-      link.download = `${downloadName}.png`;
-      link.href = URL.createObjectURL(blob);
-      link.click();
-      URL.revokeObjectURL(link.href);
-    }
-  }, 'image/png');
-}
 
 function calculateCanvasBoundingBox(groups: Group[]) {
   let minX = Infinity, minY = Infinity;
@@ -71,9 +39,19 @@ function calculateCanvasBoundingBox(groups: Group[]) {
   };
 }
 
-// 保存整个画布为图片
-export function saveToImages(name = 'graphic-export') {
-  const allGroup: Group[] = deepCopy(store.getGraphicGroupsArr())
+// 保存组为图片
+export function saveToImages(name = 'graphic-export', groupId?: string) {
+  let allGroup: Group[] = []
+
+  if (groupId) {
+    const group = deepCopy(store.getGraphicGroupsById(groupId))
+    if (group) {
+      allGroup = [group]
+    }
+  } else {
+    allGroup = deepCopy(store.getGraphicGroupsArr())
+  }
+
   const {width, height, offsetX, offsetY} = calculateCanvasBoundingBox(allGroup);
 
   // 创建离屏 canvas
@@ -103,7 +81,7 @@ export function saveToImages(name = 'graphic-export') {
 
     switch (group.type) {
       case "rectangle":
-        drawMatrixGroup(ctx, group)
+        drawMatrixGroup(ctx, group, false)
         break;
       case "circle":
         group.radius = group.radius! / scale

@@ -8,7 +8,7 @@ import {
   withinCanvas,
   toCanvasCoords,
 } from "./graphicUtils.ts";
-import {exportLogicalRegionToImage} from "./externalMethods.ts";
+import {saveToImages} from "./externalMethods.ts";
 import {addCircleGroupElement, delCircleGroupElement} from "./circle/circleUtils.ts";
 
 const store = RuntimeStore.getInstance();
@@ -203,7 +203,7 @@ class OperateGraphic {
   }
 
   exportToPng(group: Group) {
-    exportLogicalRegionToImage(this.canvas!, group.x, group.y, group.w, group.h, group.group_name);
+    saveToImages(group.group_name, group.group_id);
   }
 
   increaseElement(group: Group, element: Element, type: IncreaseElementPos, num: number) {
