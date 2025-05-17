@@ -6,10 +6,11 @@ import {updateHoverState} from "../eventCenter/tool/hitTargetDetection.ts";
 import {
   exchangeElements,
   withinCanvas,
-  toCanvasCoords,
+  toCanvasCoords, delGroupElement,
 } from "./graphicUtils.ts";
 import {saveToImages} from "./externalMethods.ts";
-import {addCircleGroupElement, delCircleGroupElement} from "./circle/circleUtils.ts";
+import {addCircleGroupElement} from "./circle/circleUtils.ts";
+import {addMatrixGroupElement} from "./matrix/matrixUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -214,20 +215,13 @@ class OperateGraphic {
       case 'strip':
         break
       case "rectangle":
+        addMatrixGroupElement(group, element, type, num)
         break
     }
   }
 
   decreaseElement(group: Group, element: Element) {
-    switch (group.type) {
-      case "circle":
-        delCircleGroupElement(group, element)
-        break
-      case 'strip':
-        break
-      case "rectangle":
-        break
-    }
+    delGroupElement(group, element)
 
     if (group.size === 1) {
       this.delGroup(group)

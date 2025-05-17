@@ -3,8 +3,16 @@ import RuntimeStore, {allGraphicGroups} from "../runtimeStore/runtimeStore.ts";
 import type {Element, ElementStatus, Group, GroupType} from "./graphic.types.ts";
 import {didNotHitAnyElement, hitElement} from "../eventCenter/tool/hitTargetDetection.ts";
 import {swapElement, swapInArrayFlexible} from "../utils/common.ts";
-import {ELEMENT_DESC_COLOR, ELEMENT_MOVE_IN_BD_COLOR, ELEMENT_NO_COLOR, OCCUPY_DESC} from "./constant.ts";
+import {
+  ELEMENT_DESC_COLOR, ELEMENT_HEIGHT,
+  ELEMENT_MOVE_IN_BD_COLOR,
+  ELEMENT_NO_COLOR,
+  ELEMENT_WIDTH,
+  OCCUPY_DESC
+} from "./constant.ts";
 import AssetsLoader from "../assetsLoader/assetsLoader.ts";
+import {updateCircleGroupLayout} from "./circle/circleUtils.ts";
+import {updateMatrixGroupLayout} from "./matrix/matrixUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -217,6 +225,47 @@ export function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: El
     ctx.fillText(element.text, dx, y + scaleSize(element.height / 2 + 2));
   }
 
+}
+
+export function createEmptyElement(id: string, group: Group, index: number, x: number, y: number, pos?: [number, number], name?: string): Element {
+  return {
+    id,
+    group_by: group.group_id,
+    index,
+    x: x,
+    y: y,
+    isDragging: false,
+    dX: 0,
+    dY: 0,
+    width: ELEMENT_WIDTH,
+    height: ELEMENT_HEIGHT,
+    pos,
+    text: name || Math.random().toString(36).substr(2, 2),
+    status: 'idle',
+    baseFontSize: 13,
+    nameFontSize: 10,
+  }
+}
+
+// 删除座位
+export function delGroupElement(groupTree: Group, element: Element) {
+  const graphicMatrix = store.getState('graphicMatrix')
+
+  Reflect.deleteProperty(graphicMatrix.elements, element.id)
+
+  graphicMatrix.groupElements[groupTree.group_id] = graphicMatrix.groupElements[groupTree.group_id].filter(v => v !== element.id)
+
+  switch (groupTree.type) {
+    case "circle":
+      updateCircleGroupLayout(groupTree.group_id)
+      break
+    case "rectangle":
+      updateMatrixGroupLayout(groupTree.group_id)
+      break
+    case "strip":
+      break;
+
+  }
 }
 
 export function graphicUtilsInit() {

@@ -10,7 +10,7 @@ import {
 } from "../constant.ts";
 import type {Element, Group, IncreaseElementPos, POS} from "../graphic.types.ts";
 import {canvasToScreen, scaleSize} from "../../transform/transform.ts";
-import {drawGroupBaseElement, setCtxFont} from "../graphicUtils.ts";
+import {createEmptyElement, drawGroupBaseElement, setCtxFont} from "../graphicUtils.ts";
 import RuntimeStore, {rebuildGroupTree} from "../../runtimeStore/runtimeStore.ts";
 import {generateUuid} from "../../utils/common.ts";
 
@@ -42,25 +42,6 @@ function getCircleElementXy(group: Group, i: number) {
   return [x, y]
 }
 
-function createEmptyElement(id: string, group: Group, index: number, x: number, y: number, name?: string): Element {
-  return {
-    id,
-    group_by: group.group_id,
-    index,
-    x: x,
-    y: y,
-    isDragging: false,
-    dX: 0,
-    dY: 0,
-    width: ELEMENT_WIDTH,
-    height: ELEMENT_HEIGHT,
-    text: name || Math.random().toString(36).substr(2, 2),
-    status: 'idle',
-    baseFontSize: 13,
-    nameFontSize: 10,
-  }
-}
-
 export function fillCircleElement(group: Group): {
   [s: string]: Element,
 } {
@@ -78,16 +59,6 @@ export function fillCircleElement(group: Group): {
   return elements
 }
 
-export function delCircleGroupElement(groupTree: Group, element: Element) {
-  const graphicMatrix = store.getState('graphicMatrix')
-
-  Reflect.deleteProperty(graphicMatrix.elements, element.id)
-
-  graphicMatrix.groupElements[groupTree.group_id] = graphicMatrix.groupElements[groupTree.group_id].filter(v => v !== element.id)
-
-  updateCircleGroupLayout(groupTree.group_id)
-}
-
 export function addCircleGroupElement(groupTree: Group, element: Element, type: IncreaseElementPos, num: number) {
   const graphicMatrix = store.getState('graphicMatrix')
 
@@ -98,7 +69,7 @@ export function addCircleGroupElement(groupTree: Group, element: Element, type: 
 
   for (let i = 0; i < num; i++) {
     const id = generateUuid();
-    elements.push(createEmptyElement(id, groupTree, 0, 0, 0, `测试新增${i}`))
+    elements.push(createEmptyElement(id, groupTree, 0, 0, 0, undefined, `测试新增${i}`))
   }
 
   const targetIdx = newElementIds.indexOf(element.id)
