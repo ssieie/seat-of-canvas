@@ -13,6 +13,7 @@ import {
 import AssetsLoader from "../assetsLoader/assetsLoader.ts";
 import {updateCircleGroupLayout} from "./circle/circleUtils.ts";
 import {updateMatrixGroupLayout} from "./matrix/matrixUtils.ts";
+import {updateStripGroupLayout} from "./strip/stripUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -263,6 +264,7 @@ export function delGroupElement(groupTree: Group, element: Element) {
       updateMatrixGroupLayout(groupTree.group_id)
       break
     case "strip":
+      updateStripGroupLayout(groupTree.group_id)
       break;
 
   }

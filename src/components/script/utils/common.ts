@@ -95,6 +95,7 @@ export function swapElement(e1: Element, e2: Element) {
     width: e1.width,
     height: e1.height,
     pos: e1.pos ? [...e1.pos] : undefined,
+    strip: e1.strip ? {...e1.strip} : undefined,
     text: e1.text,
     baseFontSize: e1.baseFontSize,
     nameFontSize: e1.nameFontSize,
@@ -117,5 +118,6 @@ export function copyElement(e1: Element, e2: Element) {
   e1.width = e2.width
   e1.height = e2.height
   e1.pos = e2.pos ? [...e2.pos] : undefined
+  e1.strip = e2.strip ? {...e2.strip} : undefined
   // e1.text = e2.text
 }

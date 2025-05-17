@@ -13,7 +13,6 @@ import {generateUuid} from "../../utils/common.ts";
 
 const store = RuntimeStore.getInstance();
 
-
 // 获取初始化矩阵的宽高，后续用来获取放在画布中的位置，得到此组基准位置
 export function getMatrixRect(row: number, col: number): [w: number, h: number] {
   const w = col * ELEMENT_WIDTH + (col - 1) * MATRIX_GAP + GROUP_GAP
@@ -183,7 +182,7 @@ export function addMatrixGroupElement(groupTree: Group, element: Element, type: 
         pos = [referenceEl.pos![0], referenceEl.pos![1] + i]
         break
     }
-    newElements.push(createEmptyElement(id, groupTree, 0, 0, 0, pos, `测试新增${i}`))
+    newElements.push(createEmptyElement(id, groupTree, 0, 0, 0, pos, `测试${i}`))
   }
 
   graphicMatrix.elements = {

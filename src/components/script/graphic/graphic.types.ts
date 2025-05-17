@@ -7,6 +7,8 @@ export interface Graphic {
 
 export type POS = { x: number, y: number }
 
+export type StripPos = 'top' | 'bottom' | 'left' | 'right';
+
 export type IncreaseElementPos = 'before' | 'after';
 
 export type GroupType = 'rectangle' | 'circle' | 'strip';
@@ -48,9 +50,16 @@ export interface Element {
   highlight?: boolean
   // 矩阵组特有
   pos?: [number, number]
+  //
+  // 条状特有
+  strip?: {
+    pos: StripPos,
+    idx: number,
+  }
   // 业务相关
   status: ElementStatus
   text?: string
+  //
   baseFontSize: number
   nameFontSize: number
 }

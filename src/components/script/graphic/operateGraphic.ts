@@ -11,6 +11,7 @@ import {
 import {saveToImages} from "./externalMethods.ts";
 import {addCircleGroupElement} from "./circle/circleUtils.ts";
 import {addMatrixGroupElement} from "./matrix/matrixUtils.ts";
+import {addStripGroupElement} from "./strip/stripUtils.ts";
 
 const store = RuntimeStore.getInstance();
 
@@ -213,6 +214,7 @@ class OperateGraphic {
         addCircleGroupElement(group, element, type, num)
         break
       case 'strip':
+        addStripGroupElement(group, element, type, num)
         break
       case "rectangle":
         addMatrixGroupElement(group, element, type, num)

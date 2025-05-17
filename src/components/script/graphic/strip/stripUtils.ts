@@ -7,79 +7,94 @@ import {
   GROUP_BG_COLOR, GROUP_GAP, GROUP_HOVER_BD_COLOR, GROUP_NAME_COLOR,
   MATRIX_GAP
 } from "../constant.ts";
-import type {Element, Group} from "../graphic.types.ts";
+import type {Element, Group, IncreaseElementPos, StripPos} from "../graphic.types.ts";
 import {canvasToScreen, scaleSize} from "../../transform/transform.ts";
 import {drawGroupBaseElement, setCtxFont} from "../graphicUtils.ts";
+import RuntimeStore, {rebuildGroupTree} from "../../runtimeStore/runtimeStore.ts";
+import {generateUuid} from "../../utils/common.ts";
 
-function getMatrixPoints(a: number, b: number): Map<string, boolean> {
-  const points = new Map<string, boolean>();
-
-  // 左边竖列
-  for (let y = 1; y <= a; y++) {
-    points.set(`${0},${y}`, true);
-  }
-
-  // 右边竖列
-  for (let y = 1; y <= a; y++) {
-    points.set(`${b + 1},${y}`, true);
-  }
-
-  // 上边横行
-  for (let x = 1; x <= b; x++) {
-    points.set(`${x},${0}`, true);
-  }
-
-  // 下边横行
-  for (let x = 1; x <= b; x++) {
-    points.set(`${x},${a + 1}`, true);
-  }
-
-  return points;
-}
+const store = RuntimeStore.getInstance();
 
 export function getStripRect(shortNum: number, longNum: number) {
   const row = longNum + 2;
   const col = shortNum + 2;
-  return [col * ELEMENT_WIDTH + (col - 1) * MATRIX_GAP + GROUP_GAP, row * ELEMENT_HEIGHT + (row - 1) * MATRIX_GAP + GROUP_GAP];
+
+  const w = col * ELEMENT_WIDTH + (col - 1) * MATRIX_GAP + GROUP_GAP
+  const h = row * ELEMENT_HEIGHT + (row - 1) * MATRIX_GAP + GROUP_GAP
+
+  return [w, h];
+}
+
+function createEmptyElement(id: string, groupId: string, index: number, gX: number, gY: number, pos: StripPos, i: number, name?: string): Element {
+  return {
+    id,
+    group_by: groupId,
+    index,
+    x: gX,
+    y: gY,
+    isDragging: false,
+    dX: 0,
+    dY: 0,
+    width: ELEMENT_WIDTH,
+    height: ELEMENT_HEIGHT,
+    strip: {
+      pos: pos,
+      idx: i,
+    },
+    text: name || Math.random().toString(36).substr(2, 2),
+    status: 'idle',
+    baseFontSize: 13,
+    nameFontSize: 10,
+  }
 }
 
 export function fillStripElement(groupId: string, shortNum: number, longNum: number): {
   [s: string]: Element,
 } {
-  const row = shortNum + 2;
-  const col = longNum + 2;
   const elements: {
     [s: string]: Element,
   } = {};
-  const realPoint = getMatrixPoints(shortNum, longNum)
+
+  // shortNum -> 上下, longNum -> 左右
+
+  // 上
   let index = 1
-  for (let y = 0; y <= col; y++) {
-    for (let x = 0; x <= row; x++) {
-      if (realPoint.has(`${y},${x}`)) {
-        const id = `${groupId}-${y}-${x}`;
-        const gX = x * ELEMENT_WIDTH + MATRIX_GAP * x + E_GAP
-        const gY = y * ELEMENT_HEIGHT + MATRIX_GAP * y + E_GAP
-        elements[id] = {
-          id,
-          group_by: groupId,
-          index,
-          x: gX,
-          y: gY,
-          isDragging: false,
-          dX: 0,
-          dY: 0,
-          width: ELEMENT_WIDTH,
-          height: ELEMENT_HEIGHT,
-          pos: [y, x],
-          text: Math.random().toString(36).substr(2, 2),
-          status: 'idle',
-          baseFontSize: 13,
-          nameFontSize: 10,
-        }
-        index++
-      }
-    }
+  const tBasicY = E_GAP
+  for (let i = 0; i < shortNum; i++) {
+    const id = `${groupId}-top-${i}`;
+    const gX = ELEMENT_WIDTH + MATRIX_GAP + i * ELEMENT_WIDTH + MATRIX_GAP * i + E_GAP
+    const gY = tBasicY
+    elements[id] = createEmptyElement(id, groupId, index, gX, gY, 'top', i)
+    index++
   }
+  // 右
+  const rBasicX = elements[`${groupId}-top-${shortNum - 1}`].x + ELEMENT_WIDTH + MATRIX_GAP
+  for (let i = 0; i < longNum; i++) {
+    const id = `${groupId}-right-${i}`;
+    const gX = rBasicX
+    const gY = ELEMENT_HEIGHT + MATRIX_GAP + i * ELEMENT_HEIGHT + MATRIX_GAP * i + E_GAP
+    elements[id] = createEmptyElement(id, groupId, index, gX, gY, 'right', i)
+    index++
+  }
+  // 下
+  const bBasicY = elements[`${groupId}-right-${longNum - 1}`].y + ELEMENT_WIDTH + MATRIX_GAP
+  for (let i = shortNum; i > 0; i--) {
+    const id = `${groupId}-bottom-${i}`;
+    const gX = i * ELEMENT_WIDTH + MATRIX_GAP * i + E_GAP
+    const gY = bBasicY
+    elements[id] = createEmptyElement(id, groupId, index, gX, gY, 'bottom', i)
+    index++
+  }
+  // 左
+  const lBasicX = E_GAP
+  for (let i = longNum; i > 0; i--) {
+    const id = `${groupId}-left-${i}`;
+    const gX = lBasicX
+    const gY = i * ELEMENT_HEIGHT + MATRIX_GAP * i + E_GAP
+    elements[id] = createEmptyElement(id, groupId, index, gX, gY, 'left', i)
+    index++
+  }
+
   return elements
 }
 
@@ -144,4 +159,170 @@ export function drawGroupStripElement(ctx: CanvasRenderingContext2D, element: El
 
     drawGroupBaseElement(ctx, element, x, y, width, height)
   }
+}
+
+function reindexStrips(elements: Element[]) {
+  // 按 pos 分组
+  const grouped: Record<StripPos, Element[]> = {
+    top: [],
+    right: [],
+    bottom: [],
+    left: [],
+  };
+
+  for (const el of elements) {
+    grouped[el.strip!.pos].push(el);
+  }
+
+  // 对每组重新编号
+  for (const pos of Object.keys(grouped) as StripPos[]) {
+    const group: Element[] = grouped[pos];
+    group.sort((a, b) => a.strip!.idx - b.strip!.idx); // 保留原始顺序
+    group.forEach((el, newIdx) => {
+      el.strip!.idx = newIdx;
+    });
+  }
+}
+
+export function addStripGroupElement(groupTree: Group, element: Element, type: IncreaseElementPos, num: number) {
+  const referenceEl = store.getGraphicGroupElementById(element.id)
+  if (!referenceEl) return
+  const referenceElIdx = referenceEl.strip!.idx
+  const graphicMatrix = store.getState('graphicMatrix')
+
+  const allElements = store.getGraphicGroupElementsById(groupTree.group_id)
+
+  // 更新基准元素同一方向的所有元素
+  for (const el of allElements) {
+    if (el.strip!.pos === referenceEl.strip!.pos) {
+      switch (type) {
+        // 0，1，2
+        // 0，3，4
+        case "before": // 向前插入将基准元素以及后续元素 idx + num
+          if (el.strip!.idx >= referenceElIdx)
+            el.strip!.idx = el.strip!.idx + num
+          break
+        case "after": // 向后插入将基准元素的后续元素idx + num
+          if (el.strip!.idx > referenceElIdx)
+            el.strip!.idx = el.strip!.idx + num
+          break
+      }
+    }
+  }
+
+  const newElements: Element[] = []
+  const elementMap: {
+    [s: string]: Element,
+  } = {}
+
+  for (let i = 1; i <= num; i++) {
+    const id = generateUuid();
+    let idx: number = 0
+    let pos: StripPos = referenceEl.strip!.pos
+    switch (type) {
+      case "before":
+        idx = referenceEl.strip!.idx - i
+        break
+      case "after":
+        idx = referenceEl.strip!.idx + i
+        break
+    }
+    newElements.push(createEmptyElement(id, groupTree.group_id, 0, 0, 0, pos, idx, `测试${i}`))
+  }
+
+  graphicMatrix.elements = {
+    ...graphicMatrix.elements,
+    ...newElements.reduce((acc, item: Element) => {
+      acc[item.id] = item;
+      return acc;
+    }, elementMap),
+  }
+
+  graphicMatrix.groupElements[groupTree.group_id] = [...graphicMatrix.groupElements[groupTree.group_id], ...newElements.map(v => v.id)]
+
+  updateStripGroupLayout(groupTree.group_id)
+}
+
+export function updateStripGroupLayout(groupId: string) {
+  const group = store.getGraphicGroupsById(groupId)
+  if (!group) return
+  const elements = store.getGraphicGroupElementsById(groupId)
+  const elementLen = elements.length;
+
+  // 获取最长 上下 左右
+  const sideLen: Record<StripPos, number> = {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  }
+
+  reindexStrips(elements)
+
+  for (const el of elements) {
+    switch (el.strip!.pos) {
+      case "top":
+        sideLen.top++
+        break
+      case "right":
+        sideLen.right++
+        break
+      case "bottom":
+        sideLen.bottom++
+        break
+      case "left":
+        sideLen.left++
+        break
+    }
+  }
+
+  const tMax = Math.max(sideLen.top, sideLen.bottom, 1)
+  const lMax = Math.max(sideLen.left, sideLen.right, 1)
+  const [w, h] = getStripRect(tMax, lMax)
+
+  group.w = w
+  group.h = h
+  group.size = elementLen
+
+  let index = 1
+  for (const el of elements.filter(v => v.strip!.pos === 'top').sort((a, b) => a.strip!.idx - b.strip!.idx)) {
+    const base = tMax - sideLen.top
+    const gX = base * ((ELEMENT_WIDTH + MATRIX_GAP) / 2) + ELEMENT_WIDTH + MATRIX_GAP + el.strip!.idx * ELEMENT_WIDTH + MATRIX_GAP * el.strip!.idx + E_GAP
+    const gY = E_GAP
+    el.x = gX
+    el.y = gY
+    el.index = index
+    index++
+  }
+  for (const el of elements.filter(v => v.strip!.pos === 'right').sort((a, b) => a.strip!.idx - b.strip!.idx)) {
+    const base = lMax - sideLen.right
+    const rBasicX = ELEMENT_WIDTH + MATRIX_GAP + tMax * ELEMENT_WIDTH + MATRIX_GAP * tMax + E_GAP
+    const gX = rBasicX
+    const gY = base * ((ELEMENT_HEIGHT + MATRIX_GAP) / 2) + ELEMENT_HEIGHT + MATRIX_GAP + el.strip!.idx * ELEMENT_HEIGHT + MATRIX_GAP * el.strip!.idx + E_GAP
+    el.x = gX
+    el.y = gY
+    el.index = index
+    index++
+  }
+  for (const el of elements.filter(v => v.strip!.pos === 'bottom').sort((a, b) => a.strip!.idx - b.strip!.idx)) {
+    const bBasicY = ELEMENT_HEIGHT + MATRIX_GAP + lMax * ELEMENT_HEIGHT + MATRIX_GAP * lMax + E_GAP
+    const base = tMax - sideLen.bottom
+    const gX = base * ((ELEMENT_WIDTH + MATRIX_GAP) / 2) + ELEMENT_WIDTH + MATRIX_GAP + el.strip!.idx * ELEMENT_WIDTH + MATRIX_GAP * el.strip!.idx + E_GAP
+    const gY = bBasicY
+    el.x = gX
+    el.y = gY
+    el.index = index
+    index++
+  }
+  for (const el of elements.filter(v => v.strip!.pos === 'left').sort((a, b) => a.strip!.idx - b.strip!.idx)) {
+    const base = lMax - sideLen.left
+    const gX = E_GAP
+    const gY = base * ((ELEMENT_HEIGHT + MATRIX_GAP) / 2) + ELEMENT_HEIGHT + MATRIX_GAP + el.strip!.idx * ELEMENT_HEIGHT + MATRIX_GAP * el.strip!.idx + E_GAP
+    el.x = gX
+    el.y = gY
+    el.index = index
+    index++
+  }
+
+  rebuildGroupTree(store)
 }
