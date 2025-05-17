@@ -50,7 +50,6 @@ export interface Element {
   highlight?: boolean
   // 矩阵组特有
   pos?: [number, number]
-  //
   // 条状特有
   strip?: {
     pos: StripPos,
