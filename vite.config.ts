@@ -3,7 +3,7 @@ import {defineConfig} from 'vite';
 export default defineConfig({
   build: {
     lib: {
-      entry: 'src/main.ts', // 入口文件
+      entry: 'src/main.js', // 入口文件
       name: 'MyCanvasCore', // UMD 全局变量名
       fileName: (format) => `my-canvas-core.${format}.js`,
       formats: ['es', 'umd'],
