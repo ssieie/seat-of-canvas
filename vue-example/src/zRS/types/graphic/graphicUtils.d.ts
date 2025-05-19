@@ -1,0 +1,21 @@
+import type { Element, Group, GroupType } from "./graphic.types.ts";
+export declare function getGraphicGroups(graphic?: GroupType[]): Map<string, Group>;
+type TextAlignType = 'start' | 'end' | 'left' | 'right' | 'center';
+type TextBaselineType = 'alphabetic' | 'top' | 'hanging' | 'middle' | 'ideographic' | 'bottom';
+export declare function setCtxFont(ctx: CanvasRenderingContext2D, color: string, textAlign: TextAlignType, textBaseline?: TextBaselineType, fontSize?: number): void;
+export declare function getBasicPos(w: number, h: number): [number, number];
+export declare function withinCanvas(e: MouseEvent): boolean;
+export declare const toCanvasCoords: (e: MouseEvent) => {
+    mx: number;
+    my: number;
+} | null;
+export declare function exchangeElements(e: MouseEvent, dragEl: Element): void;
+export declare function moveInHighlight(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void;
+export declare function drawDragElement(ctx: CanvasRenderingContext2D): void;
+export declare function drawGroupBaseElement(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number, width: number, height: number): void;
+export declare function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number): void;
+export declare function createEmptyElement(id: string, group: Group, index: number, x: number, y: number, pos?: [number, number], name?: string): Element;
+export declare function delGroupElement(groupTree: Group, element: Element): void;
+export declare function graphicUtilsInit(): void;
+export declare function graphicUtilsClear(): void;
+export {};

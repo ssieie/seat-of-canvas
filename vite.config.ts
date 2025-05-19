@@ -1,21 +1,22 @@
 import {defineConfig} from 'vite';
+import * as path from 'path';
 
 export default defineConfig({
   build: {
     lib: {
-      entry: 'src/main.js', // 入口文件
-      name: 'MyCanvasCore', // UMD 全局变量名
-      fileName: (format) => `my-canvas-core.${format}.js`,
+      entry: path.resolve(__dirname, 'src/core/core.ts'), // 入口文件
+      name: 'ZRS', // UMD 全局变量名
       formats: ['es', 'umd'],
+      fileName: (format) => `z-rs-core.${format}.js`,
     },
-    rollupOptions: {
-      // 第三方依赖（如 lodash），可通过 external 排除
-      external: ['rbush'],
-      output: {
-        globals: {
-          rbush: 'RBush'
-        }
-      }
-    },
+    // rollupOptions: {
+    // 第三方依赖（如 lodash），可通过 external 排除
+    //   external: ['rbush'],
+    //   output: {
+    //     globals: {
+    //       rbush: 'RBush'
+    //     }
+    //   }
+    // },
   },
 });

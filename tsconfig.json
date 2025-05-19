@@ -5,12 +5,15 @@
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
+    "declaration": false,
     "noEmit": true,
 
     /* Linting */
@@ -21,10 +24,10 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "declaration": true,
-    "declarationDir": "dist/types",
-    "outDir": "dist",
-    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@z-rs-core": ["dist/types/main"]
+    }
   },
   "include": ["src"]
 }

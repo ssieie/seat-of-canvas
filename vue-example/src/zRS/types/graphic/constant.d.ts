@@ -1,0 +1,18 @@
+export declare const MY_CANVAS_BG = "rgb(255, 255, 255)";
+export declare const ELEMENT_WIDTH = 50;
+export declare const ELEMENT_HEIGHT = 50;
+export declare const ELEMENT_ACTIVATION_COLOR = "rgb(141, 198, 253)";
+export declare const BOTTOM_TEXT_HEIGHT = 30;
+export declare const MATRIX_GAP = 10;
+export declare const GROUP_GAP: number;
+export declare const INDEX_TEXT_MARGIN: number;
+export declare const E_GAP: number;
+export declare const GROUP_BG_COLOR = "#f6f6f6";
+export declare const GROUP_BD_COLOR = "#E3D2C3";
+export declare const GROUP_HOVER_BD_COLOR = "#2DAA9E";
+export declare const GROUP_NAME_COLOR = "rgb(0,0,0)";
+export declare const ELEMENT_MOVE_IN_BD_COLOR = "#074799";
+export declare const ELEMENT_NO_COLOR = "rgb(0,0,0)";
+export declare const ELEMENT_DESC_COLOR = "rgb(0,0,0)";
+export declare const CIRCLE_COLOR = "rgb(255,255,255)";
+export declare const OCCUPY_DESC = "\u5360\u5EA7";

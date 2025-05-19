@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, onBeforeUnmount, ref} from 'vue'
-import {init, exit, resize, throttle} from "../../../dist/my-canvas-core.es.js";
+import {init, exit, resize, throttle} from "z-rs-core";
 
 const wrapperRef = ref<HTMLElement | null>(null)
 

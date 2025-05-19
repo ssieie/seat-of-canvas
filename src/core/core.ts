@@ -10,6 +10,8 @@ import {graphicUtilsClear, graphicUtilsInit} from "../graphic/graphicUtils.ts";
 import ContextMenu from "../contextMenu/contextMenu.ts";
 import {MY_CANVAS_BG} from "../graphic/constant.ts";
 import ZoomTool from "../canvasTool/zoomTool.ts";
+import {throttle} from '../utils/common.ts'
+import '../style.css'
 
 const store = RuntimeStore.getInstance();
 const menu = ContextMenu.getInstance();
@@ -110,4 +112,8 @@ export function exit() {
   MY_CANVAS.cvs!.remove()
   MY_CANVAS.cvs = null;
   MY_CANVAS.pen = null;
+}
+
+export {
+  throttle
 }

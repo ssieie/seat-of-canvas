@@ -1,16 +1,20 @@
 {
-  "name": "my-canvas-lib",
+  "name": "z-rs-lib",
   "version": "1.0.0",
   "type": "module",
-  "main": "dist/my-canvas-core.umd.js",
-  "module": "dist/my-canvas-core.es.js",
+  "main": "dist/z-rs-core.umd.js",
+  "module": "dist/z-rs-core.es.js",
   "types": "dist/types/core/core.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "vite build && tsc -p tsconfig.build.json",
     "dev": "vite",
-    "build": "tsc && vite build && tsc -p tsconfig.build.json",
-    "preview": "vite preview"
+    "clean": "rm -rf dist"
   },
   "devDependencies": {
+    "@types/node": "^22.15.19",
     "@types/rbush": "^4.0.0",
     "typescript": "~5.8.3",
     "vite": "^6.3.5"
