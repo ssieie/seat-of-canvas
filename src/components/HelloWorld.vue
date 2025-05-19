@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import {onMounted, onBeforeUnmount, ref} from 'vue'
-import {init, exit, resize} from "./script/core/core.ts";
-import {throttle} from './script/utils/common.ts'
-import type {OperateFunc} from "./script/core/core.types.ts";
+import {init, exit, resize, throttle} from "../components/my-canvas-lib/dist/my-canvas-core.es";
 
 const wrapperRef = ref<HTMLElement | null>(null)
 
@@ -17,7 +15,7 @@ const resizeThrottleHandler = throttle(resizeHandler, 300)
 
 const resizeObserver = new ResizeObserver(resizeThrottleHandler)
 
-let cFunc: OperateFunc = null
+let cFunc: any = null
 
 const addM = (row: number, col: number) => {
   if (cFunc) {
