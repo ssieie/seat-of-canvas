@@ -1,11 +1,21 @@
-import {defineConfig} from 'vite'
-import vue from '@vitejs/plugin-vue'
+import {defineConfig} from 'vite';
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue()],
-  server: {
-    open: true,
-    port: 8888,
-  }
-})
+  build: {
+    lib: {
+      entry: 'src/main.ts', // 入口文件
+      name: 'MyCanvasCore', // UMD 全局变量名
+      fileName: (format) => `my-canvas-core.${format}.js`,
+      formats: ['es', 'umd'],
+    },
+    rollupOptions: {
+      // 第三方依赖（如 lodash），可通过 external 排除
+      external: ['rbush'],
+      output: {
+        globals: {
+          rbush: 'RBush'
+        }
+      }
+    },
+  },
+});
