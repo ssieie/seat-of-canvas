@@ -1,4 +1,4 @@
-import type {Graphic, Group, Element, IncreaseElementPos, ElementStatus} from "../graphic/graphic.types.ts";
+import type {Graphic, Group, Element, IncreaseElementPos, ElementStatus} from "../graphic/graphic.types";
 
 export type Canvaser = {
   cvs: HTMLCanvasElement | null;

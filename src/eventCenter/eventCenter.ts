@@ -1,7 +1,7 @@
-import PubSub from '../utils/pubSub.ts'
-import {didNotHitAnyElement, hitElement, mousemoveTargetThrottleHandler} from "./tool/hitTargetDetection.ts";
-import type {Element} from "../graphic/graphic.types.ts";
-import {openMenu} from "./tool/menuOperation.ts";
+import PubSub from '../utils/pubSub'
+import {didNotHitAnyElement, hitElement, mousemoveTargetThrottleHandler} from "./tool/hitTargetDetection";
+import type {Element} from "../graphic/graphic.types";
+import {openMenu} from "./tool/menuOperation";
 
 const mousedownHandler = (e: MouseEvent) => {
 

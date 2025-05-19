@@ -1,10 +1,10 @@
-import {throttle} from "../../utils/common.ts";
-import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
-import type {Element, RBushGroupItem} from "../../graphic/graphic.types.ts";
-import {toCanvasCoords} from "../../graphic/graphicUtils.ts";
-import {matrixElementPosInGroup} from "../../graphic/matrix/matrixUtils.ts";
-import {circleElementPosInGroup} from "../../graphic/circle/circleUtils.ts";
-import {stripElementPosInGroup} from "../../graphic/strip/stripUtils.ts";
+import {throttle} from "../../utils/common";
+import RuntimeStore from "../../runtimeStore/runtimeStore";
+import type {Element, RBushGroupItem} from "../../graphic/graphic.types";
+import {toCanvasCoords} from "../../graphic/graphicUtils";
+import {matrixElementPosInGroup} from "../../graphic/matrix/matrixUtils";
+import {circleElementPosInGroup} from "../../graphic/circle/circleUtils";
+import {stripElementPosInGroup} from "../../graphic/strip/stripUtils";
 
 const store = RuntimeStore.getInstance();
 

@@ -1,9 +1,9 @@
-import behaviorTasksInstance from "../behaviorTasks/behaviorTasks.ts";
-import type {ContainerTransformState} from "../container/container.type.ts";
-import {getTransformState} from "./transform.ts";
-import RuntimeStore from "../runtimeStore/runtimeStore.ts";
-import {delBehavior} from "../behaviorTasks/behaviorController.ts";
-import PubSub from "../utils/pubSub.ts";
+import behaviorTasksInstance from "../behaviorTasks/behaviorTasks";
+import type {ContainerTransformState} from "../container/container.type";
+import {getTransformState} from "./transform";
+import RuntimeStore from "../runtimeStore/runtimeStore";
+import {delBehavior} from "../behaviorTasks/behaviorController";
+import PubSub from "../utils/pubSub";
 
 const store = RuntimeStore.getInstance();
 

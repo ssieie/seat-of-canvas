@@ -1,4 +1,4 @@
-import type {ContextMenuOperateFunc, GraphicOperateFunc} from "../core/core.types.ts";
+import type {ContextMenuOperateFunc, GraphicOperateFunc} from "../core/core.types";
 
 interface RenderTargetInstancesFunc {
   draw: () => void;

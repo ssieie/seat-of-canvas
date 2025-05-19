@@ -1,7 +1,7 @@
-import {MAX_SCALE, percentageToScale, scaleToPercentage} from "../container/container.ts";
-import PubSub from "../utils/pubSub.ts";
-import {setTransformFrame} from "../transform/keyframe.ts";
-import {getCanvas, getTransformState} from "../transform/transform.ts";
+import {MAX_SCALE, percentageToScale, scaleToPercentage} from "../container/container";
+import PubSub from "../utils/pubSub";
+import {setTransformFrame} from "../transform/keyframe";
+import {getCanvas, getTransformState} from "../transform/transform";
 
 class ZoomTool {
   private static instance: ZoomTool;

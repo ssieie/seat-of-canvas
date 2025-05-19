@@ -1,7 +1,7 @@
-import type {ContextMenuItem} from "./contextMenu.types.ts";
-import type {OperateFunc} from "../core/core.types.ts";
-import type {Element, Group, IncreaseElementPos} from "../graphic/graphic.types.ts";
-import type {RenderTargetInstances} from "../render/render.types.ts";
+import type {ContextMenuItem} from "./contextMenu.types";
+import type {OperateFunc} from "../core/core.types";
+import type {Element, Group, IncreaseElementPos} from "../graphic/graphic.types";
+import type {RenderTargetInstances} from "../render/render.types";
 
 type ContextMenuType = 'group' | 'element'
 

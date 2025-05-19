@@ -1,19 +1,19 @@
-import {canvasToScreen, getCanvas, getTransformState, scaleSize} from "../transform/transform.ts";
-import RuntimeStore, {allGraphicGroups} from "../runtimeStore/runtimeStore.ts";
-import type {Element, ElementStatus, Group, GroupType} from "./graphic.types.ts";
-import {didNotHitAnyElement, hitElement} from "../eventCenter/tool/hitTargetDetection.ts";
-import {swapElement, swapInArrayFlexible} from "../utils/common.ts";
+import {canvasToScreen, getCanvas, getTransformState, scaleSize} from "../transform/transform";
+import RuntimeStore, {allGraphicGroups} from "../runtimeStore/runtimeStore";
+import type {Element, ElementStatus, Group, GroupType} from "./graphic.types";
+import {didNotHitAnyElement, hitElement} from "../eventCenter/tool/hitTargetDetection";
+import {swapElement, swapInArrayFlexible} from "../utils/common";
 import {
   ELEMENT_DESC_COLOR, ELEMENT_HEIGHT,
   ELEMENT_MOVE_IN_BD_COLOR,
   ELEMENT_NO_COLOR,
   ELEMENT_WIDTH,
   OCCUPY_DESC
-} from "./constant.ts";
-import AssetsLoader from "../assetsLoader/assetsLoader.ts";
-import {updateCircleGroupLayout} from "./circle/circleUtils.ts";
-import {updateMatrixGroupLayout} from "./matrix/matrixUtils.ts";
-import {updateStripGroupLayout} from "./strip/stripUtils.ts";
+} from "./constant";
+import AssetsLoader from "../assetsLoader/assetsLoader";
+import {updateCircleGroupLayout} from "./circle/circleUtils";
+import {updateMatrixGroupLayout} from "./matrix/matrixUtils";
+import {updateStripGroupLayout} from "./strip/stripUtils";
 
 const store = RuntimeStore.getInstance();
 

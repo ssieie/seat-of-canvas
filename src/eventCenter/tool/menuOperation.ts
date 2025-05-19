@@ -1,5 +1,5 @@
-import type {Element, Group} from "../../graphic/graphic.types.ts";
-import ContextMenu from "../../contextMenu/contextMenu.ts";
+import type {Element, Group} from "../../graphic/graphic.types";
+import ContextMenu from "../../contextMenu/contextMenu";
 
 const menu = ContextMenu.getInstance();
 

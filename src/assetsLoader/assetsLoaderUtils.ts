@@ -1,4 +1,4 @@
-import type {LoadImgRes} from "./assetsLoader.types.ts";
+import type {LoadImgRes} from "./assetsLoader.types";
 
 function clearFileName(params = "") {
   return params.split("/").pop();

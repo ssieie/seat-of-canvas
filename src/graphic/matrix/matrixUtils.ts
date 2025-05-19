@@ -1,15 +1,15 @@
-import type {Element, Group, IncreaseElementPos} from "../graphic.types.ts";
+import type {Element, Group, IncreaseElementPos} from "../graphic.types";
 import {
   BOTTOM_TEXT_HEIGHT,
   E_GAP,
   ELEMENT_HEIGHT,
   ELEMENT_WIDTH, GROUP_BD_COLOR, GROUP_BG_COLOR, GROUP_GAP, GROUP_HOVER_BD_COLOR, GROUP_NAME_COLOR,
   MATRIX_GAP
-} from "../constant.ts";
-import {canvasToScreen, scaleSize} from "../../transform/transform.ts";
-import {createEmptyElement, drawGroupBaseElement, setCtxFont} from "../graphicUtils.ts";
-import RuntimeStore, {rebuildGroupTree} from "../../runtimeStore/runtimeStore.ts";
-import {generateUuid} from "../../utils/common.ts";
+} from "../constant";
+import {canvasToScreen, scaleSize} from "../../transform/transform";
+import {createEmptyElement, drawGroupBaseElement, setCtxFont} from "../graphicUtils";
+import RuntimeStore, {rebuildGroupTree} from "../../runtimeStore/runtimeStore";
+import {generateUuid} from "../../utils/common";
 
 const store = RuntimeStore.getInstance();
 

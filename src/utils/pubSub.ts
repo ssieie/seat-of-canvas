@@ -1,4 +1,4 @@
-import type {Element, RBushGroupItem} from "../graphic/graphic.types.ts";
+import type {Element, RBushGroupItem} from "../graphic/graphic.types";
 
 type Callback<T extends any[] = any[]> = (...args: T) => void;
 

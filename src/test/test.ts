@@ -1,5 +1,5 @@
-import type {Canvaser} from "../core/core.types.ts";
-import {canvasToScreen, scaleSize} from "../transform/transform.ts";
+import type {Canvaser} from "../core/core.types";
+import {canvasToScreen, scaleSize} from "../transform/transform";
 
 
 class Test {

@@ -1,4 +1,4 @@
-import behaviorTasksInstance from "./behaviorTasks.ts";
+import behaviorTasksInstance from "./behaviorTasks";
 
 
 export function behaviorController() {

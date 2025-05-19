@@ -1,17 +1,16 @@
-import Render from "../render/render.ts";
-import type {Canvaser, OperateFunc} from "./core.types.ts";
-import type {RenderTargetInstances} from "../render/render.types.ts";
-import Container from "../container/container.ts";
-import {cancelAllEvents, registerAllEvents} from "../eventCenter/eventCenter.ts";
-import RuntimeStore from "../runtimeStore/runtimeStore.ts";
-import initGraphicInstances from "./graphicRegister.ts";
-import AssetsLoader from "../assetsLoader/assetsLoader.ts";
-import {graphicUtilsClear, graphicUtilsInit} from "../graphic/graphicUtils.ts";
-import ContextMenu from "../contextMenu/contextMenu.ts";
-import {MY_CANVAS_BG} from "../graphic/constant.ts";
-import ZoomTool from "../canvasTool/zoomTool.ts";
-import {throttle} from '../utils/common.ts'
-import '../style.css'
+import Render from "../render/render";
+import type {Canvaser, OperateFunc} from "./core.types";
+import type {RenderTargetInstances} from "../render/render.types";
+import Container from "../container/container";
+import {cancelAllEvents, registerAllEvents} from "../eventCenter/eventCenter";
+import RuntimeStore from "../runtimeStore/runtimeStore";
+import initGraphicInstances from "./graphicRegister";
+import AssetsLoader from "../assetsLoader/assetsLoader";
+import {graphicUtilsClear, graphicUtilsInit} from "../graphic/graphicUtils";
+import ContextMenu from "../contextMenu/contextMenu";
+import {MY_CANVAS_BG} from "../graphic/constant";
+import ZoomTool from "../canvasTool/zoomTool";
+import {throttle} from '../utils/common'
 
 const store = RuntimeStore.getInstance();
 const menu = ContextMenu.getInstance();

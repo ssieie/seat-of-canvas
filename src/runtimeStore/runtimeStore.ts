@@ -1,5 +1,5 @@
-import type {ContainerTransformState} from "../container/container.type.ts";
-import type {Element, Graphic, Group, GroupType, RBushGroupItem} from "../graphic/graphic.types.ts";
+import type {ContainerTransformState} from "../container/container.type";
+import type {Element, Graphic, Group, GroupType, RBushGroupItem} from "../graphic/graphic.types";
 import RBush from 'rbush';
 
 export const allGraphicGroups: GroupType[] = ['rectangle', 'circle', 'strip'];

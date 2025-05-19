@@ -4,14 +4,18 @@
   "type": "module",
   "main": "dist/z-rs-core.umd.js",
   "module": "dist/z-rs-core.es.js",
-  "types": "dist/types/core/core.d.ts",
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/z-rs-core.es.js",
+      "require": "./dist/z-rs-core.umd.js"
+    }
+  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "vite build && tsc -p tsconfig.build.json",
-    "dev": "vite",
-    "clean": "rm -rf dist"
+    "build": "vite build"
   },
   "devDependencies": {
     "@types/node": "^22.15.19",
@@ -20,6 +24,7 @@
     "vite": "^6.3.5"
   },
   "dependencies": {
-    "rbush": "^4.0.1"
+    "rbush": "^4.0.1",
+    "vite-plugin-dts": "^4.5.4"
   }
 }

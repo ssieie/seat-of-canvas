@@ -1,11 +1,11 @@
-import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
-import type {Graphic, Group, GroupType} from "../graphic.types.ts";
-import {generateUuid} from "../../utils/common.ts";
+import RuntimeStore from "../../runtimeStore/runtimeStore";
+import type {Graphic, Group, GroupType} from "../graphic.types";
+import {generateUuid} from "../../utils/common";
 import {
   fillMatrixElement,
   getMatrixRect,
-} from "./matrixUtils.ts";
-import {getBasicPos} from "../graphicUtils.ts";
+} from "./matrixUtils";
+import {getBasicPos} from "../graphicUtils";
 
 const store = RuntimeStore.getInstance();
 

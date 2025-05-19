@@ -1,8 +1,8 @@
-import type {RenderTargetInstances} from "./render.types.ts";
-import type {Canvaser} from "../core/core.types.ts";
-import behaviorTasksInstance from "../behaviorTasks/behaviorTasks.ts";
-import drawGrid from "./drawGrid.ts";
-import {delBehaviorAll} from "../behaviorTasks/behaviorController.ts";
+import type {RenderTargetInstances} from "./render.types";
+import type {Canvaser} from "../core/core.types";
+import behaviorTasksInstance from "../behaviorTasks/behaviorTasks";
+import drawGrid from "./drawGrid";
+import {delBehaviorAll} from "../behaviorTasks/behaviorController";
 
 class Render {
   cvs: HTMLCanvasElement;

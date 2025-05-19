@@ -1,8 +1,8 @@
-import RuntimeStore from "../../runtimeStore/runtimeStore.ts";
-import type {Graphic, Group, GroupType} from "../graphic.types.ts";
-import {generateUuid} from "../../utils/common.ts";
-import {getBasicPos} from "../graphicUtils.ts";
-import {fillCircleElement, getCircleRect} from "./circleUtils.ts";
+import RuntimeStore from "../../runtimeStore/runtimeStore";
+import type {Graphic, Group, GroupType} from "../graphic.types";
+import {generateUuid} from "../../utils/common";
+import {getBasicPos} from "../graphicUtils";
+import {fillCircleElement, getCircleRect} from "./circleUtils";
 
 const store = RuntimeStore.getInstance();
 

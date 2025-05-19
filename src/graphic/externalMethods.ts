@@ -1,10 +1,10 @@
-import type {Element, Group} from "./graphic.types.ts";
-import {getTransformState, screenToCanvas} from "../transform/transform.ts";
-import RuntimeStore from "../runtimeStore/runtimeStore.ts";
-import {drawGroupMatrixElement, drawMatrixGroup} from "./matrix/matrixUtils.ts";
-import {drawGroupStripElement, drawStripGroup} from "./strip/stripUtils.ts";
-import {drawCircleGroup, drawGroupCircleElement} from "./circle/circleUtils.ts";
-import {deepCopy} from "../utils/common.ts";
+import type {Element, Group} from "./graphic.types";
+import {getTransformState, screenToCanvas} from "../transform/transform";
+import RuntimeStore from "../runtimeStore/runtimeStore";
+import {drawGroupMatrixElement, drawMatrixGroup} from "./matrix/matrixUtils";
+import {drawGroupStripElement, drawStripGroup} from "./strip/stripUtils";
+import {drawCircleGroup, drawGroupCircleElement} from "./circle/circleUtils";
+import {deepCopy} from "../utils/common";
 
 const store = RuntimeStore.getInstance();
 

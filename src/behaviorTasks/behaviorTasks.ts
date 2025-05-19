@@ -1,4 +1,4 @@
-import type {BehaviorTasksValueType} from "./behaviorTasks.types.ts";
+import type {BehaviorTasksValueType} from "./behaviorTasks.types";
 
 class BehaviorTasks {
   behaviorTasks: Map<string, BehaviorTasksValueType<any>>;

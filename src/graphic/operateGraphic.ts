@@ -1,17 +1,17 @@
-import type {Canvaser} from "../core/core.types.ts";
-import PubSub from "../utils/pubSub.ts";
-import RuntimeStore, {rebuildGroupTree} from "../runtimeStore/runtimeStore.ts";
-import type {Element, ElementStatus, Group, IncreaseElementPos} from "./graphic.types.ts";
-import {updateHoverState} from "../eventCenter/tool/hitTargetDetection.ts";
+import type {Canvaser} from "../core/core.types";
+import PubSub from "../utils/pubSub";
+import RuntimeStore, {rebuildGroupTree} from "../runtimeStore/runtimeStore";
+import type {Element, ElementStatus, Group, IncreaseElementPos} from "./graphic.types";
+import {updateHoverState} from "../eventCenter/tool/hitTargetDetection";
 import {
   exchangeElements,
   withinCanvas,
   toCanvasCoords, delGroupElement,
-} from "./graphicUtils.ts";
-import {saveToImages} from "./externalMethods.ts";
-import {addCircleGroupElement} from "./circle/circleUtils.ts";
-import {addMatrixGroupElement} from "./matrix/matrixUtils.ts";
-import {addStripGroupElement} from "./strip/stripUtils.ts";
+} from "./graphicUtils";
+import {saveToImages} from "./externalMethods";
+import {addCircleGroupElement} from "./circle/circleUtils";
+import {addMatrixGroupElement} from "./matrix/matrixUtils";
+import {addStripGroupElement} from "./strip/stripUtils";
 
 const store = RuntimeStore.getInstance();
 

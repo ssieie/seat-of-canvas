@@ -7,12 +7,12 @@ import {
   GROUP_HOVER_BD_COLOR,
   GROUP_NAME_COLOR,
   MATRIX_GAP
-} from "../constant.ts";
-import type {Element, Group, IncreaseElementPos, POS} from "../graphic.types.ts";
-import {canvasToScreen, scaleSize} from "../../transform/transform.ts";
-import {createEmptyElement, drawGroupBaseElement, setCtxFont} from "../graphicUtils.ts";
-import RuntimeStore, {rebuildGroupTree} from "../../runtimeStore/runtimeStore.ts";
-import {generateUuid} from "../../utils/common.ts";
+} from "../constant";
+import type {Element, Group, IncreaseElementPos, POS} from "../graphic.types";
+import {canvasToScreen, scaleSize} from "../../transform/transform";
+import {createEmptyElement, drawGroupBaseElement, setCtxFont} from "../graphicUtils";
+import RuntimeStore, {rebuildGroupTree} from "../../runtimeStore/runtimeStore";
+import {generateUuid} from "../../utils/common";
 
 const store = RuntimeStore.getInstance();
 

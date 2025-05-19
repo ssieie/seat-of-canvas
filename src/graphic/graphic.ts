@@ -1,13 +1,13 @@
-import type {Canvaser, ContextMenuOperateFunc, GraphicOperateFunc} from "../core/core.types.ts";
-import Matrix from "./matrix/matrix.ts";
-import OperateGraphic from "./operateGraphic.ts";
-import {drawGroupMatrixElement, drawMatrixGroup} from "./matrix/matrixUtils.ts";
-import Circle from "./circle/circle.ts";
-import RuntimeStore from "../runtimeStore/runtimeStore.ts";
-import {drawCircleGroup, drawGroupCircleElement} from "./circle/circleUtils.ts";
-import Strip from "./strip/strip.ts";
-import {drawGroupStripElement, drawStripGroup} from "./strip/stripUtils.ts";
-import {drawDragElement} from "./graphicUtils.ts";
+import type {Canvaser, ContextMenuOperateFunc, GraphicOperateFunc} from "../core/core.types";
+import Matrix from "./matrix/matrix";
+import OperateGraphic from "./operateGraphic";
+import {drawGroupMatrixElement, drawMatrixGroup} from "./matrix/matrixUtils";
+import Circle from "./circle/circle";
+import RuntimeStore from "../runtimeStore/runtimeStore";
+import {drawCircleGroup, drawGroupCircleElement} from "./circle/circleUtils";
+import Strip from "./strip/strip";
+import {drawGroupStripElement, drawStripGroup} from "./strip/stripUtils";
+import {drawDragElement} from "./graphicUtils";
 
 const store = RuntimeStore.getInstance();
 

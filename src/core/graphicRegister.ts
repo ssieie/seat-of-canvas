@@ -1,9 +1,9 @@
-import type {Canvaser, ContextMenuOperateFunc, GraphicOperateFunc, OperateFunc} from "./core.types.ts";
-import type {RenderTargetInstances} from "../render/render.types.ts";
-import GraphicMain from "../graphic/graphic.ts";
-import RuntimeStore from "../runtimeStore/runtimeStore.ts";
-import {deepCopy} from "../utils/common.ts";
-import {saveToImages} from "../graphic/externalMethods.ts";
+import type {Canvaser, ContextMenuOperateFunc, GraphicOperateFunc, OperateFunc} from "./core.types";
+import type {RenderTargetInstances} from "../render/render.types";
+import GraphicMain from "../graphic/graphic";
+import RuntimeStore from "../runtimeStore/runtimeStore";
+import {deepCopy} from "../utils/common";
+import {saveToImages} from "../graphic/externalMethods";
 
 export default function initGraphicInstances(canvas: Canvaser, instances: RenderTargetInstances): OperateFunc {
 

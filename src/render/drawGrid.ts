@@ -1,4 +1,4 @@
-import {getTransformState} from "../transform/transform.ts";
+import {getTransformState} from "../transform/transform";
 
 export default function drawGrid(
   ctx: CanvasRenderingContext2D,

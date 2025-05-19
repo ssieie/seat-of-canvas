@@ -1,4 +1,4 @@
-import type {Element} from "../graphic/graphic.types.ts";
+import type {Element} from "../graphic/graphic.types";
 
 // 节流
 export function throttle(func: Function, wait: number, options?: { leading?: boolean, trailing?: boolean }) {

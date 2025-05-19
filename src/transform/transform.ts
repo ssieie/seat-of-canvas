@@ -1,4 +1,4 @@
-import RuntimeStore from "../runtimeStore/runtimeStore.ts";
+import RuntimeStore from "../runtimeStore/runtimeStore";
 
 const store = RuntimeStore.getInstance();
 
