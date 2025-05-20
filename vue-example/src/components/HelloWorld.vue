@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {onMounted, onBeforeUnmount, ref} from 'vue'
-import {init, exit, resize, throttle} from "z-rs-lib";
+// import {init, exit, resize, throttle} from "z-rs-lib";
+import {init, exit, resize, throttle} from "z-rs-lib-dev";
 
 const wrapperRef = ref<HTMLElement | null>(null)
 

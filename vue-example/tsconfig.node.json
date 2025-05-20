@@ -8,8 +8,8 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "paths": {
-      "z-rs-core": [
-        "./src/zRS/types/index.d.ts"
+      "z-rs-lib-dev": [
+        "D:\\ZhaoXin\\Html\\vue-drag-demo\\dist\\types\\index.d.ts"
       ]
     },
     /* Bundler mode */
@@ -27,7 +27,6 @@
     "noUncheckedSideEffectImports": true
   },
   "include": [
-    "vite.config.ts",
-    "src/zRS/types"
+    "vite.config.ts"
   ]
 }
