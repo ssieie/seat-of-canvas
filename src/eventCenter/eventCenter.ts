@@ -43,14 +43,14 @@ const wheelHandler = (e: WheelEvent) => {
 export function registerAllEvents(cvs: HTMLCanvasElement) {
   cvs.addEventListener('mousedown', mousedownHandler)
   cvs.addEventListener('mousemove', mousemoveHandler)
-  cvs.addEventListener('mouseup', mouseupHandler)
+  window.addEventListener('mouseup', mouseupHandler)
   cvs.addEventListener('wheel', wheelHandler, {passive: false})
 }
 
 export function cancelAllEvents(cvs: HTMLCanvasElement) {
   cvs.removeEventListener('mousedown', mousedownHandler)
   cvs.removeEventListener('mousemove', mousemoveHandler)
-  cvs.removeEventListener('mouseup', mouseupHandler)
+  window.removeEventListener('mouseup', mouseupHandler)
   cvs.removeEventListener('wheel', wheelHandler)
 
   PubSub.clearAll()
