@@ -40,7 +40,7 @@ function calculateCanvasBoundingBox(groups: Group[]) {
 }
 
 // 保存组为图片
-export function saveToImages(name = 'graphic-export', groupId?: string) {
+export function saveToImages(name = 'graphic-export', preview = false, groupId?: string) {
   let allGroup: Group[] = []
 
   if (groupId) {
@@ -52,6 +52,10 @@ export function saveToImages(name = 'graphic-export', groupId?: string) {
     allGroup = deepCopy(store.getGraphicGroupsArr())
   }
 
+  if (!allGroup.length) {
+    return false
+  }
+
   const {width, height, offsetX, offsetY} = calculateCanvasBoundingBox(allGroup);
 
   // 创建离屏 canvas
@@ -59,7 +63,7 @@ export function saveToImages(name = 'graphic-export', groupId?: string) {
   canvas.width = width + 12;
   canvas.height = height + 12;
   const ctx = canvas.getContext('2d');
-  if (!ctx) return;
+  if (!ctx) return false;
 
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -124,10 +128,12 @@ export function saveToImages(name = 'graphic-export', groupId?: string) {
 
   // 导出为图片
   const imgDataUrl = canvas.toDataURL('image/png');
-
+  if (preview) return imgDataUrl;
   // 下载图片
   const a = document.createElement('a');
   a.href = imgDataUrl;
   a.download = `${name}.png`;
   a.click();
+
+  return true
 }

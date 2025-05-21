@@ -23,5 +23,6 @@ export type OperateFunc = {
   graphicOperateFunc: GraphicOperateFunc
   contextMenuOperateFunc: ContextMenuOperateFunc
   getData: () => Graphic
-  saveToImages: () => void
+  saveToImages: (name?:string, preview?:boolean) => string | boolean
+  clickMenu: (callbackOrArg?: ((...args: any[]) => any) | any, ...args: any[]) => void
 } | null

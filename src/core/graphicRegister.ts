@@ -8,6 +8,8 @@ import {saveToImages} from "../graphic/externalMethods";
 export default function initGraphicInstances(canvas: Canvaser, instances: RenderTargetInstances): OperateFunc {
 
   // initTest(canvas, instances)
+  let clickMenuCallback: ((...args: any[]) => any) | null = null
+
 
   const {graphicOperateFunc, contextMenuOperateFunc} = initGraphic(canvas, instances)
 
@@ -15,7 +17,16 @@ export default function initGraphicInstances(canvas: Canvaser, instances: Render
     graphicOperateFunc,
     contextMenuOperateFunc,
     getData: () => deepCopy(RuntimeStore.getInstance().getState('graphicMatrix')),
-    saveToImages: saveToImages
+    saveToImages: saveToImages,
+    clickMenu: function (callbackOrArg?: ((...args: any[]) => any) | any, ...args: any[]): any {
+      if (typeof callbackOrArg === 'function') {
+        // 设置回调
+        clickMenuCallback = callbackOrArg
+      } else {
+        // 调用回调并传参
+        return clickMenuCallback?.(callbackOrArg, ...args)
+      }
+    }
   }
 
 }

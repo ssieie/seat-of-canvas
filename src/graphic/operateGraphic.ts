@@ -205,7 +205,7 @@ class OperateGraphic {
   }
 
   exportToPng(group: Group) {
-    saveToImages(group.group_name, group.group_id);
+    saveToImages(group.group_name, false, group.group_id);
   }
 
   increaseElement(group: Group, element: Element, type: IncreaseElementPos, num: number) {

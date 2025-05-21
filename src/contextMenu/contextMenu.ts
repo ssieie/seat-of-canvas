@@ -167,7 +167,13 @@ export class ContextMenu {
             },
             {
               label: '任意数量', type: 'default',
-              onClick: () => insertEl('before', 2)
+              onClick: () => {
+                func!.clickMenu('insert', JSON.stringify({
+                  type: 'before',
+                  group: ContextMenu.instance.currentContextMenuGroup!,
+                  element: ContextMenu.instance.currentContextMenuElement!,
+                }))
+              }
             }
           ]
         },
@@ -179,7 +185,13 @@ export class ContextMenu {
             },
             {
               label: '任意数量', type: 'default',
-              onClick: () => insertEl('after', 2)
+              onClick: () => {
+                func!.clickMenu('insert', JSON.stringify({
+                  type: 'after',
+                  group: ContextMenu.instance.currentContextMenuGroup!,
+                  element: ContextMenu.instance.currentContextMenuElement!,
+                }))
+              }
             }
           ]
         },
