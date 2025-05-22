@@ -71,6 +71,11 @@ onMounted(async () => {
 
     cFunc = await init(wrapperRef.value, 60)
 
+    cFunc.clickMenu((type: string, ags: string) => {
+      console.log(type)
+      console.log(ags)
+    })
+
     resizeObserver.observe(wrapperRef.value)
 
     addM(2, 2)

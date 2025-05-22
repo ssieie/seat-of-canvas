@@ -8,6 +8,7 @@ type ContextMenuType = 'group' | 'element'
 export class ContextMenu {
   private static instance: ContextMenu;
   private menuElement: HTMLUListElement | null = null;
+  private cFunc: OperateFunc | null = null;
   private readonly handleDocumentClick: ((e: MouseEvent) => void);
 
   currentContextMenuGroup: Group | null = null;
@@ -129,6 +130,7 @@ export class ContextMenu {
   }
 
   public generateContextMenuItem(func: OperateFunc) {
+    this.cFunc = func
     const insertEl = (type: IncreaseElementPos, num = 1) => {
       return func!.contextMenuOperateFunc.increaseElement.call(this.instances!.Graphic, ContextMenu.instance.currentContextMenuGroup!, ContextMenu.instance.currentContextMenuElement!, type, num)
     }
@@ -204,11 +206,18 @@ export class ContextMenu {
     }
   }
 
+  public sendEvent(type: string, val: string) {
+    if (this.cFunc) {
+      this.cFunc.clickMenu(type, val)
+    }
+  }
+
   private bindGlobalEvents(): void {
     document.addEventListener('click', this.handleDocumentClick!);
   }
 
   public destroy(): void {
+    this.cFunc = null
     if (this.menuElement) {
       this.menuElement.remove();
       this.menuElement = null;

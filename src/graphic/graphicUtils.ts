@@ -14,6 +14,7 @@ import AssetsLoader from "../assetsLoader/assetsLoader";
 import {updateCircleGroupLayout} from "./circle/circleUtils";
 import {updateMatrixGroupLayout} from "./matrix/matrixUtils";
 import {updateStripGroupLayout} from "./strip/stripUtils";
+import ContextMenu from "../contextMenu/contextMenu";
 
 const store = RuntimeStore.getInstance();
 
@@ -152,6 +153,7 @@ export function exchangeElements(e: MouseEvent, dragEl: Element) {
         graphicMatrix.groupElements[toGroupId] = swapInArrayFlexible(graphicMatrix.groupElements[toGroupId], hitEl.id, dragEl.id)
       }
 
+      ContextMenu.getInstance().sendEvent('elementChanged', JSON.stringify([dragEl, hitEl]))
     }
   }
 
