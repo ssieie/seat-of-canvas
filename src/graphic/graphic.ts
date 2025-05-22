@@ -85,7 +85,8 @@ class GraphicMain extends OperateGraphic {
     return {
       addMatrixGraphic: this.matrix.addMatrixGraphic!.bind(this.matrix),
       addCircleGraphic: this.circle.addCircleGraphic!.bind(this.circle),
-      addStripGraphic: this.strip.addStripGraphic!.bind(this.circle)
+      addStripGraphic: this.strip.addStripGraphic!.bind(this.circle),
+      highlightAppointEl: super.highlightAppointEl
     }
   }
 

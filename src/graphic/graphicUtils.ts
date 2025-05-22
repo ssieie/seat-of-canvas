@@ -207,6 +207,11 @@ export function drawGroupBaseElement(ctx: CanvasRenderingContext2D, element: Ele
   // 当前拖拽的元素在目标元素范围内提示
   moveInHighlight(ctx, x, y, width, height)
 
+  if (element.highlight) {
+    ctx.strokeStyle = ELEMENT_MOVE_IN_BD_COLOR;
+    ctx.strokeRect(x, y, width, height)
+  }
+
   drawGroupElementIndex(ctx, element, x, y);
 }
 

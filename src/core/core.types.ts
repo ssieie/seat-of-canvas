@@ -9,6 +9,7 @@ export type GraphicOperateFunc = {
   addMatrixGraphic: (name: string, row: number, col: number) => void
   addCircleGraphic: (name: string, num: number) => void
   addStripGraphic: (name: string, shortNum: number, longNum: number) => void
+  highlightAppointEl: (groupId: string, elementId: string) => void
 }
 
 export type ContextMenuOperateFunc = {
@@ -23,6 +24,6 @@ export type OperateFunc = {
   graphicOperateFunc: GraphicOperateFunc
   contextMenuOperateFunc: ContextMenuOperateFunc
   getData: () => Graphic
-  saveToImages: (name?:string, preview?:boolean) => string | boolean
+  saveToImages: (name?: string, preview?: boolean) => string | boolean
   clickMenu: (callbackOrArg?: ((...args: any[]) => any) | any, ...args: any[]) => void
 } | null

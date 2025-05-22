@@ -34,6 +34,10 @@ class BehaviorTasks {
     this.behaviorTasks.clear();
   }
 
+  hasBehavior(key: string) {
+    return this.behaviorTasks.has(key);
+  }
+
   behaviorProcess(currentTime: number) {
     this.behaviorTasks.forEach((task, _key) => {
       let sendElapsed = currentTime - task.lastExecuteTime;

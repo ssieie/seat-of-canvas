@@ -12,6 +12,9 @@ import {saveToImages} from "./externalMethods";
 import {addCircleGroupElement} from "./circle/circleUtils";
 import {addMatrixGroupElement} from "./matrix/matrixUtils";
 import {addStripGroupElement} from "./strip/stripUtils";
+import {getCanvas} from "../transform/transform";
+import {setTransformFrame} from "../transform/keyframe";
+import {elementIntervalHighlight} from "../behaviorTasks/behaviorController";
 
 const store = RuntimeStore.getInstance();
 
@@ -204,10 +207,12 @@ class OperateGraphic {
     return result
   }
 
+  // 保存为图片
   exportToPng(group: Group) {
     saveToImages(group.group_name, false, group.group_id);
   }
 
+  // 插入元素
   increaseElement(group: Group, element: Element, type: IncreaseElementPos, num: number) {
     switch (group.type) {
       case "circle":
@@ -222,6 +227,7 @@ class OperateGraphic {
     }
   }
 
+  // 删除元素
   decreaseElement(group: Group, element: Element) {
     delGroupElement(group, element)
 
@@ -230,10 +236,33 @@ class OperateGraphic {
     }
   }
 
+  // 设置元素状态
   setElementStatus(element: Element, type: ElementStatus) {
     const el = store.getGraphicGroupElementById(element.id)
     if (el) {
       el.status = type
+    }
+  }
+
+  // 定位指定元素到中心
+  highlightAppointEl(groupId: string, elementId: string) {
+    const group = store.getGraphicGroupsById(groupId)
+    const element = store.getGraphicGroupElementById(elementId)
+    if (group && element) {
+      // 区域中心（世界坐标）
+      const regionCenterX = group.x + group.w / 2;
+      const regionCenterY = group.y + group.h / 2;
+
+      // 画布中心（屏幕坐标）
+      const canvasCenterX = getCanvas()!.width / 2;
+      const canvasCenterY = getCanvas()!.height / 2;
+
+      // 计算新的偏移量，使得区域中心映射到画布中心
+      const offsetX = canvasCenterX - regionCenterX;
+      const offsetY = canvasCenterY - regionCenterY;
+      setTransformFrame({scale: 1, offsetX: offsetX, offsetY: offsetY})
+
+      elementIntervalHighlight(element)
     }
   }
 
