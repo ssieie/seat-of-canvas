@@ -16,12 +16,12 @@ class Circle {
     this.graphicData = store.getState('graphicMatrix')
   }
 
-  async addCircleGraphic(name: string, num: number) {
+  async addCircleGraphic(name: string, num: number, pos?: [number, number]) {
     const graphicMatrix: Graphic = this.graphicData
     const groupId = generateUuid()
     const {radius, w, h} = getCircleRect(num)
 
-    const [basicX, basicY] = getBasicPos(w, h)
+    const [basicX, basicY] = pos || getBasicPos(w, h)
 
     const group: Group = {
       group_id: groupId,

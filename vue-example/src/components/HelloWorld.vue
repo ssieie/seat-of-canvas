@@ -42,6 +42,15 @@ const posTest = () => {
   cFunc?.graphicOperateFunc.highlightAppointEl('zzzzxxxx', 'zzzzxxxx-0-1')
 }
 
+const rCAddTest = () => {
+  cFunc?.graphicOperateFunc.accordingToTheRanksAddGroup(2, 2, 'circle', {
+    name: '测试',
+    num: 5,
+    shortNum: 3,
+    longNum: 3,
+  })
+}
+
 const saveToImg = () => {
   cFunc?.saveToImages()
 }
@@ -93,6 +102,7 @@ onBeforeUnmount(() => {
     <div class="btn" style="background-color: orange" @click="addS(3,5)">+条(3,5)</div>
     <div class="btn" style="background-color: slateblue" @click="getData">获取当前数据</div>
     <div class="btn" style="background-color: slateblue" @click="posTest">定位测试</div>
+    <div class="btn" style="background-color: slateblue" @click="rCAddTest">RC批量新增测试</div>
     <div class="btn" style="background-color: sienna" @click="saveToImg">保存为图片</div>
   </div>
   <div class="content">

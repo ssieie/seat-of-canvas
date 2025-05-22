@@ -1,13 +1,20 @@
-import type {Canvaser, ContextMenuOperateFunc, GraphicOperateFunc} from "../core/core.types";
+import {
+  AccordingToTheRanksAddGroupOptions,
+  Canvaser,
+  ContextMenuOperateFunc,
+  GraphicOperateFunc
+} from "../core/core.types";
 import Matrix from "./matrix/matrix";
 import OperateGraphic from "./operateGraphic";
 import {drawGroupMatrixElement, drawMatrixGroup} from "./matrix/matrixUtils";
 import Circle from "./circle/circle";
 import RuntimeStore from "../runtimeStore/runtimeStore";
-import {drawCircleGroup, drawGroupCircleElement} from "./circle/circleUtils";
+import {drawCircleGroup, drawGroupCircleElement, getCircleRect} from "./circle/circleUtils";
 import Strip from "./strip/strip";
 import {drawGroupStripElement, drawStripGroup} from "./strip/stripUtils";
-import {drawDragElement} from "./graphicUtils";
+import {drawDragElement, getBasicPos} from "./graphicUtils";
+import {GroupType} from "./graphic.types";
+import {MATRIX_GAP} from "./constant";
 
 const store = RuntimeStore.getInstance();
 
@@ -81,12 +88,36 @@ class GraphicMain extends OperateGraphic {
     this.strip.clear()
   }
 
+  // 按照行列批量新增区域
+  accordingToTheRanksAddGroup(row: number, col: number, type: GroupType, groupOptions: AccordingToTheRanksAddGroupOptions) {
+    switch (type) {
+      case "rectangle": // 未实现
+        break
+      case "circle":
+        const {w, h} = getCircleRect(groupOptions.num)
+        const bW = w * row + (row - 1) * MATRIX_GAP
+        const bH = h * col + (col - 1) * MATRIX_GAP
+        const [basicX, basicY] = getBasicPos(bW, bH)
+        for (let r = 0; r < row; r++) {
+          for (let c = 0; c < col; c++) {
+            const x = basicX + c * (w + MATRIX_GAP);
+            const y = basicY + r * (h + MATRIX_GAP);
+            this.circle.addCircleGraphic(groupOptions.name, groupOptions.num, [x, y]).then()
+          }
+        }
+        break
+      case "strip":
+        break
+    }
+  }
+
   operate(): GraphicOperateFunc {
     return {
       addMatrixGraphic: this.matrix.addMatrixGraphic!.bind(this.matrix),
       addCircleGraphic: this.circle.addCircleGraphic!.bind(this.circle),
       addStripGraphic: this.strip.addStripGraphic!.bind(this.circle),
-      highlightAppointEl: super.highlightAppointEl
+      highlightAppointEl: super.highlightAppointEl,
+      accordingToTheRanksAddGroup: this.accordingToTheRanksAddGroup.bind(this),
     }
   }
 

@@ -16,12 +16,12 @@ class Strip {
     this.graphicData = store.getState('graphicMatrix')
   }
 
-  async addStripGraphic(name: string, shortNum: number, longNum: number) {
+  async addStripGraphic(name: string, shortNum: number, longNum: number, pos?: [number, number]) {
     const graphicMatrix: Graphic = this.graphicData
     const groupId = generateUuid()
     const [w, h] = getStripRect(shortNum, longNum)
 
-    const [basicX, basicY] = getBasicPos(w, h)
+    const [basicX, basicY] = pos || getBasicPos(w, h)
 
     const group: Group = {
       group_id: groupId,
