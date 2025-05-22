@@ -11,7 +11,7 @@ import Circle from "./circle/circle";
 import RuntimeStore from "../runtimeStore/runtimeStore";
 import {drawCircleGroup, drawGroupCircleElement, getCircleRect} from "./circle/circleUtils";
 import Strip from "./strip/strip";
-import {drawGroupStripElement, drawStripGroup} from "./strip/stripUtils";
+import {drawGroupStripElement, drawStripGroup, getStripRect} from "./strip/stripUtils";
 import {drawDragElement, getBasicPos} from "./graphicUtils";
 import {GroupType} from "./graphic.types";
 import {MATRIX_GAP} from "./constant";
@@ -88,26 +88,44 @@ class GraphicMain extends OperateGraphic {
     this.strip.clear()
   }
 
+  addGroup(w: number, h: number, row: number, col: number, type: GroupType, groupOptions: AccordingToTheRanksAddGroupOptions) {
+    const bW = w * row + (row - 1) * MATRIX_GAP
+    const bH = h * col + (col - 1) * MATRIX_GAP
+    const [basicX, basicY] = getBasicPos(bW, bH)
+    for (let r = 0; r < row; r++) {
+      for (let c = 0; c < col; c++) {
+        const x = basicX + c * (w + MATRIX_GAP);
+        const y = basicY + r * (h + MATRIX_GAP);
+        const name = typeof groupOptions.name === 'string' ? groupOptions.name : groupOptions.name.shift();
+        switch (type) {
+          case "rectangle":
+            break
+          case "circle":
+            this.circle.addCircleGraphic(name || '', groupOptions.num, [x, y]).then()
+            break
+          case "strip":
+            this.strip.addStripGraphic(name || '', groupOptions.shortNum, groupOptions.longNum, [x, y]).then()
+            break
+        }
+      }
+    }
+  }
+
   // 按照行列批量新增区域
   accordingToTheRanksAddGroup(row: number, col: number, type: GroupType, groupOptions: AccordingToTheRanksAddGroupOptions) {
     switch (type) {
       case "rectangle": // 未实现
         break
-      case "circle":
+      case "circle": {
         const {w, h} = getCircleRect(groupOptions.num)
-        const bW = w * row + (row - 1) * MATRIX_GAP
-        const bH = h * col + (col - 1) * MATRIX_GAP
-        const [basicX, basicY] = getBasicPos(bW, bH)
-        for (let r = 0; r < row; r++) {
-          for (let c = 0; c < col; c++) {
-            const x = basicX + c * (w + MATRIX_GAP);
-            const y = basicY + r * (h + MATRIX_GAP);
-            this.circle.addCircleGraphic(groupOptions.name, groupOptions.num, [x, y]).then()
-          }
-        }
+        this.addGroup(w, h, row, col, type, groupOptions)
         break
-      case "strip":
+      }
+      case "strip": {
+        const [w, h] = getStripRect(groupOptions.shortNum, groupOptions.longNum)
+        this.addGroup(w, h, row, col, type, groupOptions)
         break
+      }
     }
   }
 

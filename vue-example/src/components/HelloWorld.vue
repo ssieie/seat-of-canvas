@@ -44,7 +44,7 @@ const posTest = () => {
 
 const rCAddTest = () => {
   cFunc?.graphicOperateFunc.accordingToTheRanksAddGroup(2, 2, 'circle', {
-    name: '测试',
+    name: ['1', '2', '3', '4'],
     num: 5,
     shortNum: 3,
     longNum: 3,
