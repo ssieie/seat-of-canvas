@@ -158,10 +158,36 @@ export class ContextMenu {
         },
       ],
       element: [
-        {label: '编辑人员', type: 'default', onClick: () => console.log('编辑人员')},
+        {
+          label: '编辑人员', type: 'default', children: [
+            {
+              label: '新增人员', type: 'default',
+              onClick: () => {
+                if (ContextMenu.instance.currentContextMenuElement?.business_id) return
+                func!.clickMenu('newPersonnelAdded', JSON.stringify({
+                  group: ContextMenu.instance.currentContextMenuGroup!,
+                  element: ContextMenu.instance.currentContextMenuElement!,
+                }))
+              }
+            },
+            {
+              label: '从人员库选择', type: 'default',
+              onClick: () => {
+                if (ContextMenu.instance.currentContextMenuElement?.business_id) return
+                func!.clickMenu('selectFromPersonnelPool', JSON.stringify({
+                  group: ContextMenu.instance.currentContextMenuGroup!,
+                  element: ContextMenu.instance.currentContextMenuElement!,
+                }))
+              }
+            }
+          ]
+        },
         {
           label: '占位', type: 'default',
-          onClick: () => func!.contextMenuOperateFunc.setElementStatus.call(this.instances!.Graphic, ContextMenu.instance.currentContextMenuElement!, 'occupy')
+          onClick: () => {
+            if (ContextMenu.instance.currentContextMenuElement?.business_id) return
+            func!.contextMenuOperateFunc.setElementStatus.call(this.instances!.Graphic, ContextMenu.instance.currentContextMenuElement!, 'occupy')
+          }
         },
         {label: '删除人员', type: 'default', onClick: () => console.log('删除人员')},
         {
@@ -172,6 +198,7 @@ export class ContextMenu {
             },
             {
               label: '任意数量', type: 'default',
+              // onClick: () => insertEl('before', 2)
               onClick: () => {
                 func!.clickMenu('insert', JSON.stringify({
                   type: 'before',
@@ -203,7 +230,12 @@ export class ContextMenu {
         {type: 'divider'},
         {
           label: '删除座位', type: 'default',
-          onClick: () => func!.contextMenuOperateFunc.decreaseElement.call(this.instances!.Graphic, ContextMenu.instance.currentContextMenuGroup!, ContextMenu.instance.currentContextMenuElement!)
+          onClick: () => {
+            func!.clickMenu('deleteSeat', JSON.stringify({
+              element: ContextMenu.instance.currentContextMenuElement!,
+            }))
+            func!.contextMenuOperateFunc.decreaseElement.call(this.instances!.Graphic, ContextMenu.instance.currentContextMenuGroup!, ContextMenu.instance.currentContextMenuElement!)
+          }
         },
       ],
     }

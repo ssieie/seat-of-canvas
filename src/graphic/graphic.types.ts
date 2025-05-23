@@ -58,6 +58,7 @@ export interface Element {
   // 业务相关
   status: ElementStatus
   text?: string
+  business_id?: string
   //
   baseFontSize: number
   nameFontSize: number

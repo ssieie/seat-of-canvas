@@ -30,6 +30,7 @@ export type ContextMenuOperateFunc = {
   decreaseElement: (group: Group, element: Element) => void
   setElementStatus: (element: Element, status: ElementStatus) => void
   updateGroupName: (groupId: string, name: string) => void
+  updateElementBusinessState: (elementId: string, name: string, business_id: string) => void
 }
 
 export type OperateFunc = {

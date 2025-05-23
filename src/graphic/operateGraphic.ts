@@ -244,6 +244,16 @@ class OperateGraphic {
     }
   }
 
+  // 设置元素业务信息
+  updateElementBusinessState(elementId: string, name: string, business_id: string) {
+    const el = store.getGraphicGroupElementById(elementId)
+    if (el) {
+      el.status = 'full'
+      el.text = name
+      el.business_id = business_id
+    }
+  }
+
   // 定位指定元素到中心
   highlightAppointEl(groupId: string, elementId: string) {
     const group = store.getGraphicGroupsById(groupId)
