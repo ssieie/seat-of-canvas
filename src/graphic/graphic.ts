@@ -146,6 +146,7 @@ class GraphicMain extends OperateGraphic {
       increaseElement: super.increaseElement,
       decreaseElement: super.decreaseElement,
       setElementStatus: super.setElementStatus,
+      updateGroupName: super.updateGroupName,
     }
   }
 }

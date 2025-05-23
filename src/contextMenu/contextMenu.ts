@@ -140,6 +140,9 @@ export class ContextMenu {
           label: '区域编辑',
           type: 'default',
           onClick: () => {
+            func!.clickMenu('areaEditing', JSON.stringify({
+              group: ContextMenu.instance.currentContextMenuGroup!,
+            }))
           }
         },
         {

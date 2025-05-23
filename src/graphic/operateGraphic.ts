@@ -266,6 +266,13 @@ class OperateGraphic {
     }
   }
 
+  // 更新组名称
+  updateGroupName(groupId: string, name: string) {
+    const group = store.getGraphicGroupsById(groupId)
+    if (!group) return
+    group.group_name = name
+  }
+
   clear() {
   }
 }

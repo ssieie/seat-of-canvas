@@ -1,4 +1,5 @@
 import {Graphic, Group, Element, IncreaseElementPos, ElementStatus, GroupType} from "../graphic/graphic.types";
+import {ContainerTransformState} from "../container/container.type";
 
 export type Canvaser = {
   cvs: HTMLCanvasElement | null;
@@ -28,12 +29,14 @@ export type ContextMenuOperateFunc = {
   increaseElement: (group: Group, element: Element, type: IncreaseElementPos, num: number) => void
   decreaseElement: (group: Group, element: Element) => void
   setElementStatus: (element: Element, status: ElementStatus) => void
+  updateGroupName: (groupId: string, name: string) => void
 }
 
 export type OperateFunc = {
   graphicOperateFunc: GraphicOperateFunc
   contextMenuOperateFunc: ContextMenuOperateFunc
   getData: () => Graphic
+  setData: (arg: { graphic: Graphic, transform: ContainerTransformState }) => void
   saveToImages: (name?: string, preview?: boolean) => string | boolean
   clickMenu: (callbackOrArg?: ((...args: any[]) => any) | any, ...args: any[]) => void
 } | null
