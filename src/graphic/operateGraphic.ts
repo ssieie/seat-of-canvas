@@ -245,10 +245,10 @@ class OperateGraphic {
   }
 
   // 设置元素业务信息
-  updateElementBusinessState(elementId: string, name: string, business_id: string) {
+  updateElementBusinessState(elementId: string, name: string, business_id: string, status?: ElementStatus) {
     const el = store.getGraphicGroupElementById(elementId)
     if (el) {
-      el.status = 'full'
+      el.status = status || 'full'
       el.text = name
       el.business_id = business_id
     }
