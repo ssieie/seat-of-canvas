@@ -13,17 +13,13 @@ const GRAPHIC_TYPE: GroupType = 'rectangle'
 
 class Matrix {
 
-  graphicData: Graphic
-
   constructor() {
-
-    this.graphicData = store.getState('graphicMatrix')
   }
 
   addMatrixGraphic(name: string, row: number, col: number, _element: Element[] = []) {
     // 新建一个矩形组
     // const graphicMatrix: Graphic = deepCopy()
-    const graphicMatrix: Graphic = this.graphicData
+    const graphicMatrix: Graphic = store.getState('graphicMatrix')
     const groupId = generateUuid()
 
     const elements = fillMatrixElement(groupId, row, col)

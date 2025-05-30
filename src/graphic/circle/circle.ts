@@ -10,14 +10,11 @@ const GRAPHIC_TYPE: GroupType = 'circle'
 
 class Circle {
 
-  graphicData: Graphic
-
   constructor() {
-    this.graphicData = store.getState('graphicMatrix')
   }
 
   async addCircleGraphic(name: string, num: number, pos?: [number, number]) {
-    const graphicMatrix: Graphic = this.graphicData
+    const graphicMatrix: Graphic = store.getState('graphicMatrix')
     const groupId = generateUuid()
     const {radius, w, h} = getCircleRect(num)
 

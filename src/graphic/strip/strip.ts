@@ -10,14 +10,11 @@ const GRAPHIC_TYPE: GroupType = 'strip'
 
 class Strip {
 
-  graphicData: Graphic
-
   constructor() {
-    this.graphicData = store.getState('graphicMatrix')
   }
 
   async addStripGraphic(name: string, shortNum: number, longNum: number, pos?: [number, number]) {
-    const graphicMatrix: Graphic = this.graphicData
+    const graphicMatrix: Graphic = store.getState('graphicMatrix')
     const groupId = generateUuid()
     const [w, h] = getStripRect(shortNum, longNum)
 

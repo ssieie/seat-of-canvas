@@ -37,6 +37,7 @@ export type ElementStatus = 'idle' | 'occupy' | 'full';
 export interface Element {
   id: string;
   group_by: string
+  groupName?: string
   index: number;
   // 组内坐标用于正常渲染
   x: number;

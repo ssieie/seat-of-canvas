@@ -153,7 +153,10 @@ export function exchangeElements(e: MouseEvent, dragEl: Element) {
         graphicMatrix.groupElements[toGroupId] = swapInArrayFlexible(graphicMatrix.groupElements[toGroupId], hitEl.id, dragEl.id)
       }
 
-      ContextMenu.getInstance().sendEvent('elementChanged', JSON.stringify([dragEl, hitEl]))
+      ContextMenu.getInstance().sendEvent('elementChanged', JSON.stringify([dragEl, hitEl].map(v => {
+        v.groupName = store.getGraphicGroupsById(v.group_by)?.group_name || ''
+        return v
+      })))
     }
   }
 
