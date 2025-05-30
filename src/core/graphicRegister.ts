@@ -16,13 +16,19 @@ export default function initGraphicInstances(canvas: Canvaser, instances: Render
   return {
     graphicOperateFunc,
     contextMenuOperateFunc,
-    getData: () => deepCopy({
-      graphic: RuntimeStore.getInstance().getState('graphicMatrix'),
-      transform: RuntimeStore.getInstance().getState('containerTransformState')
-    }),
+    getData: () => {
+      const graphicData = RuntimeStore.getInstance().getState('graphicMatrix')
+      for (const el in graphicData.elements) {
+        graphicData.elements[el].groupName = RuntimeStore.getInstance().getGraphicGroupsById(graphicData.elements[el].group_by)?.group_name || ''
+      }
+      return deepCopy({
+        graphic: graphicData,
+        transform: RuntimeStore.getInstance().getState('containerTransformState')
+      })
+    },
     setData: (data) => {
-      if (data.graphic) RuntimeStore.getInstance().updateState('graphicMatrix',data.graphic)
-      if (data.transform) RuntimeStore.getInstance().updateState('containerTransformState',data.transform)
+      if (data.graphic) RuntimeStore.getInstance().updateState('graphicMatrix', data.graphic)
+      if (data.transform) RuntimeStore.getInstance().updateState('containerTransformState', data.transform)
     },
     saveToImages: saveToImages,
     clickMenu: function (callbackOrArg?: ((...args: any[]) => any) | any, ...args: any[]): any {
