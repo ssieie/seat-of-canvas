@@ -66,10 +66,12 @@ const initCanvas = async () => {
   resizeObserver.observe(wrapperRef!)
 
   addM(2, 2)
+  addM(3, 3)
+  addM(4, 4)
 
-  addC(8)
-
-  addS(3, 4)
+  // addC(8)
+  //
+  // addS(3, 4)
 }
 
 initCanvas().then()

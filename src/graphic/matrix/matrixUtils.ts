@@ -63,6 +63,7 @@ export function fillMatrixElement(groupId: string, row: number, col: number, oId
         id,
         group_by: groupId,
         index,
+        index1: 0,
         x: gX,
         y: gY,
         isDragging: false,
@@ -196,6 +197,11 @@ export function addMatrixGroupElement(groupTree: Group, element: Element, type: 
   graphicMatrix.groupElements[groupTree.group_id] = [...graphicMatrix.groupElements[groupTree.group_id], ...newElements.map(v => v.id)]
 
   updateMatrixGroupLayout(groupTree.group_id)
+}
+
+// 中间到两边的编号填充
+export function fillElementIndexOfRule2(elements: Record<string, Element>) {
+
 }
 
 // 矩阵重布局

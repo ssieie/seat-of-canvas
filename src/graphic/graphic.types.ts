@@ -28,6 +28,9 @@ export interface Group {
   baseFontSize: number
   // 圆形专有
   radius?: number
+  // 矩阵专有
+  // 编号方式 1 依次排列 2 中间到两边
+  index_rule?: '1' | '2'
 }
 
 export type RBushGroupItem = Group & { minX: number, minY: number, maxX: number, maxY: number };
@@ -51,6 +54,7 @@ export interface Element {
   highlight?: boolean
   // 矩阵组特有
   pos?: [number, number]
+  index1: number // 中间到两边编号规则的值
   // 条状特有
   strip?: {
     pos: StripPos,

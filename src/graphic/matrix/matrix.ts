@@ -2,6 +2,7 @@ import RuntimeStore from "../../runtimeStore/runtimeStore";
 import type {Graphic, Group, GroupType} from "../graphic.types";
 import {generateUuid} from "../../utils/common";
 import {
+  fillElementIndexOfRule2,
   fillMatrixElement,
   getMatrixRect,
 } from "./matrixUtils";
@@ -16,13 +17,17 @@ class Matrix {
   constructor() {
   }
 
-  addMatrixGraphic(name: string, row: number, col: number, _element: Element[] = []) {
+  addMatrixGraphic(name: string, row: number, col: number, index_rule?:'1'|'2', _element: Element[] = []) {
     // 新建一个矩形组
     // const graphicMatrix: Graphic = deepCopy()
     const graphicMatrix: Graphic = store.getState('graphicMatrix')
     const groupId = generateUuid()
 
     const elements = fillMatrixElement(groupId, row, col)
+
+    if (index_rule === '2') {
+      fillElementIndexOfRule2(elements)
+    }
 
     const [w, h] = getMatrixRect(row, col)
 
@@ -40,6 +45,7 @@ class Matrix {
       size: row * col,
       type: GRAPHIC_TYPE,
       baseFontSize: 13,
+      index_rule: index_rule
     }
 
     graphicMatrix.groups[GRAPHIC_TYPE][groupId] = group

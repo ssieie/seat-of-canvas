@@ -16,7 +16,7 @@ export type AccordingToTheRanksAddGroupOptions = {
 }
 
 export type GraphicOperateFunc = {
-  addMatrixGraphic: (name: string, row: number, col: number) => void
+  addMatrixGraphic: (name: string, row: number, col: number, index_rule?: '1' | '2') => void
   addCircleGraphic: (name: string, num: number) => void
   addStripGraphic: (name: string, shortNum: number, longNum: number) => void
   highlightAppointEl: (groupId: string, elementId: string) => void
