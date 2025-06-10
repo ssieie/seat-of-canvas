@@ -193,17 +193,19 @@ export function drawDragElement(ctx: CanvasRenderingContext2D) {
   const currentDragEl = store.getState('currentDragEl')
 
   if (currentDragEl) {
+    const group = store.getGraphicGroupsById(currentDragEl.group_by)
+
     const bitmap = getBitmap(currentDragEl.status)
 
     const [x, y] = canvasToScreen(currentDragEl.dX, currentDragEl.dY);
 
     ctx.drawImage(bitmap, x, y, scaleSize(currentDragEl.width), scaleSize(currentDragEl.height))
 
-    drawGroupElementIndex(ctx, currentDragEl, x, y);
+    drawGroupElementIndex(ctx, currentDragEl, x, y, group?.index_rule);
   }
 }
 
-export function drawGroupBaseElement(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number, width: number, height: number) {
+export function drawGroupBaseElement(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number, width: number, height: number, index_rule?: '1'|'2') {
 
   const bitmap = getBitmap(element.status)
 
@@ -217,16 +219,16 @@ export function drawGroupBaseElement(ctx: CanvasRenderingContext2D, element: Ele
     ctx.strokeRect(x, y, width, height)
   }
 
-  drawGroupElementIndex(ctx, element, x, y);
+  drawGroupElementIndex(ctx, element, x, y, index_rule);
 }
 
-export function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number) {
+export function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number, index_rule?: '1'|'2') {
 
   const dx = x + scaleSize(element.width / 2)
 
   setCtxFont(ctx, ELEMENT_NO_COLOR, 'center', 'alphabetic', element.baseFontSize)
 
-  ctx.fillText(String(element.index), dx, y + scaleSize(element.width * .3));
+  ctx.fillText(String(index_rule === '2' ? element.index1 : element.index), dx, y + scaleSize(element.width * .3));
 
   if (element.status === 'occupy') {
     setCtxFont(ctx, ELEMENT_DESC_COLOR, 'center', 'middle', element.nameFontSize)
@@ -243,6 +245,7 @@ export function createEmptyElement(id: string, group: Group, index: number, x: n
     id,
     group_by: group.group_id,
     index,
+    index1: 0,
     x: x,
     y: y,
     isDragging: false,

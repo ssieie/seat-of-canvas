@@ -136,7 +136,7 @@ export function drawGroupMatrixElement(ctx: CanvasRenderingContext2D, element: E
     const width = scaleSize(element.width)
     const height = scaleSize(element.height)
 
-    drawGroupBaseElement(ctx, element, x, y, width, height)
+    drawGroupBaseElement(ctx, element, x, y, width, height, group.index_rule)
   }
 }
 
@@ -201,7 +201,37 @@ export function addMatrixGroupElement(groupTree: Group, element: Element, type: 
 
 // 中间到两边的编号填充
 export function fillElementIndexOfRule2(elements: Record<string, Element>) {
+  const rowsMap = new Map<number, Element[]>();
 
+  // 按行聚合元素
+  Object.values(elements).forEach(el => {
+    const row = el.pos?.[0];
+    if (row == null) return;
+    (rowsMap.get(row) ?? rowsMap.set(row, []).get(row)!).push(el);
+  });
+
+  let globalIndex = 1;
+
+  for (const rowElements of rowsMap.values()) {
+    // 按列升序排列
+    rowElements.sort((a, b) => a.pos![1] - b.pos![1]);
+
+    const len = rowElements.length;
+    const center = Math.floor((len - 1) / 2);
+    const ordered: Element[] = [];
+
+    let left = center, right = center + 1;
+    ordered.push(rowElements[center]);
+
+    while (left > 0 || right < len) {
+      if (right < len) ordered.push(rowElements[right++]);
+      if (left > 0) ordered.push(rowElements[--left]);
+    }
+
+    for (const el of ordered) {
+      el.index1 = globalIndex++;
+    }
+  }
 }
 
 // 矩阵重布局
@@ -337,6 +367,17 @@ export function updateMatrixGroupLayout(groupId: string) {
         index++
       }
     }
+  }
+
+  // 重新计算序号(如果需要)
+  if (group.index_rule === '2') {
+    const els = store.getGraphicGroupElementsById(groupId)
+    const result: Record<string, Element> = els.reduce((acc, current) => {
+      acc[current.id] = current;
+      return acc;
+    }, {} as Record<string, Element>);
+
+    fillElementIndexOfRule2(result)
   }
 
   rebuildGroupTree(store)

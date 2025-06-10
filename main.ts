@@ -26,9 +26,9 @@ const resizeObserver = new ResizeObserver(resizeThrottleHandler)
 
 let cFunc: any = null
 
-const addM = (row: number, col: number) => {
+const addM = (row: number, col: number, rule:string) => {
   if (cFunc) {
-    cFunc.graphicOperateFunc.addMatrixGraphic('测试1', row, col)
+    cFunc.graphicOperateFunc.addMatrixGraphic('测试1', row, col, rule)
   }
 }
 const addC = (num: number) => {
@@ -65,9 +65,10 @@ const initCanvas = async () => {
 
   resizeObserver.observe(wrapperRef!)
 
-  addM(2, 2)
-  addM(3, 3)
-  addM(4, 4)
+  addM(2, 2, '2')
+  addM(3, 3, '2')
+  addM(4, 4, '2')
+  addM(5, 5, '2')
 
   // addC(8)
   //

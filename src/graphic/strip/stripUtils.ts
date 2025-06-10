@@ -30,6 +30,7 @@ function createEmptyElement(id: string, groupId: string, index: number, gX: numb
     id,
     group_by: groupId,
     index,
+    index1: 0,
     x: gX,
     y: gY,
     isDragging: false,
@@ -157,7 +158,7 @@ export function drawGroupStripElement(ctx: CanvasRenderingContext2D, element: El
     const width = scaleSize(element.width)
     const height = scaleSize(element.height)
 
-    drawGroupBaseElement(ctx, element, x, y, width, height)
+    drawGroupBaseElement(ctx, element, x, y, width, height, group.index_rule)
   }
 }
 

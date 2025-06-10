@@ -170,7 +170,7 @@ export function drawGroupCircleElement(ctx: CanvasRenderingContext2D, element: E
     const pos = circleElementPosInGroup(group, element)
     const [x, y] = canvasToScreen(pos.x, pos.y);
 
-    drawGroupBaseElement(ctx, element, x, y, width, height)
+    drawGroupBaseElement(ctx, element, x, y, width, height, group.index_rule)
   }
 }
 
