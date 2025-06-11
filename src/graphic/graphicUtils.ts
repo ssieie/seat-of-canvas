@@ -153,10 +153,22 @@ export function exchangeElements(e: MouseEvent, dragEl: Element) {
         graphicMatrix.groupElements[toGroupId] = swapInArrayFlexible(graphicMatrix.groupElements[toGroupId], hitEl.id, dragEl.id)
       }
 
-      ContextMenu.getInstance().sendEvent('elementChanged', JSON.stringify([dragEl, hitEl].map(v => {
-        v.groupName = store.getGraphicGroupsById(v.group_by)?.group_name || ''
-        return v
-      })))
+      const dragElIdx2 = store.getGraphicGroupsById(dragEl.group_by)?.index_rule === '2'
+      const hitElIdx2 = store.getGraphicGroupsById(hitEl.group_by)?.index_rule === '2'
+
+      ContextMenu.getInstance().sendEvent(
+        'elementChanged',
+        JSON.stringify(
+          [
+            {...dragEl, index: dragElIdx2 ? dragEl.index1 : dragEl.index},
+            {...hitEl, index: hitElIdx2 ? hitEl.index1 : hitEl.index}
+          ].map(v => {
+            v.groupName = store.getGraphicGroupsById(v.group_by)?.group_name || '';
+            return v;
+          })
+        )
+      );
+
     }
   }
 
@@ -205,7 +217,7 @@ export function drawDragElement(ctx: CanvasRenderingContext2D) {
   }
 }
 
-export function drawGroupBaseElement(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number, width: number, height: number, index_rule?: '1'|'2') {
+export function drawGroupBaseElement(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number, width: number, height: number, index_rule?: '1' | '2') {
 
   const bitmap = getBitmap(element.status)
 
@@ -222,7 +234,7 @@ export function drawGroupBaseElement(ctx: CanvasRenderingContext2D, element: Ele
   drawGroupElementIndex(ctx, element, x, y, index_rule);
 }
 
-export function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number, index_rule?: '1'|'2') {
+export function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number, index_rule?: '1' | '2') {
 
   const dx = x + scaleSize(element.width / 2)
 

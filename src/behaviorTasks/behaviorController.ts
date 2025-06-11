@@ -21,22 +21,22 @@ export function behaviorController() {
 }
 
 export function elementIntervalHighlight(el: Element) {
-  if (behaviorTasksInstance.hasBehavior('elementIntervalHighlight')) return
+  if (behaviorTasksInstance.hasBehavior(`elementIntervalHighlight-${el.id}`)) return
   let count = 0;
   behaviorTasksInstance.addBehavior<number>(
-    "elementIntervalHighlight",
+    `elementIntervalHighlight-${el.id}`,
     () => {
       el.highlight = !el.highlight;
       return count++
     },
     (count) => {
-      if (count === 5){
-        delBehavior('elementIntervalHighlight')
+      if (count === 5) {
+        delBehavior(`elementIntervalHighlight-${el.id}`)
       }
     },
     1000 / 3,
     false,
-  ); // 3 次/秒
+  ); // (1000 / 3)ms / 次
 }
 
 export function delBehavior(key: string) {

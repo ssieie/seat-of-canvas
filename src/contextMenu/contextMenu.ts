@@ -2,6 +2,7 @@ import type {ContextMenuItem} from "./contextMenu.types";
 import type {OperateFunc} from "../core/core.types";
 import type {Element, Group, IncreaseElementPos} from "../graphic/graphic.types";
 import type {RenderTargetInstances} from "../render/render.types";
+import {deepCopy} from "../utils/common";
 
 type ContextMenuType = 'group' | 'element'
 
@@ -97,8 +98,17 @@ export class ContextMenu {
 
   public show(x: number, y: number, type: ContextMenuType, group: Group | null, element: Element | null): void {
     if (!this.menuElement || !this.contextMenuItems) return;
-    this.currentContextMenuGroup = group;
-    this.currentContextMenuElement = element;
+
+    this.currentContextMenuGroup = deepCopy(group);
+    this.currentContextMenuElement = deepCopy(element);
+
+    // 不管行列规则统一设置为index
+    if (this.currentContextMenuGroup?.index_rule === '2') {
+      if (this.currentContextMenuElement) {
+        this.currentContextMenuElement.index = this.currentContextMenuElement.index1;
+      }
+    }
+
     this.populateMenuItems(this.contextMenuItems?.[type] || []);
 
     if (this.menuElement) {
