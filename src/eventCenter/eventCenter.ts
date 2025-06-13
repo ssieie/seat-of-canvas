@@ -2,6 +2,7 @@ import PubSub from '../utils/pubSub'
 import {didNotHitAnyElement, hitElement, mousemoveTargetThrottleHandler} from "./tool/hitTargetDetection";
 import type {Element} from "../graphic/graphic.types";
 import {openMenu} from "./tool/menuOperation";
+import RuntimeStore from "../runtimeStore/runtimeStore";
 
 const mousedownHandler = (e: MouseEvent) => {
 
@@ -11,6 +12,7 @@ const mousedownHandler = (e: MouseEvent) => {
   if (!dnh) {
     PubSub.publish('mousedown_dnh', e)
   } else {
+    if (RuntimeStore.getInstance().getState('canvasState') ==='freeze') return;
     // 判断是否命中的元素
     element = hitElement(e, dnh)
     if (element) {

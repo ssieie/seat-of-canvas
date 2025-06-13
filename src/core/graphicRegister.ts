@@ -4,6 +4,7 @@ import GraphicMain from "../graphic/graphic";
 import RuntimeStore from "../runtimeStore/runtimeStore";
 import {deepCopy} from "../utils/common";
 import {saveToImages} from "../graphic/externalMethods";
+import {CanvasState} from '../runtimeStore/runtimeStore'
 
 export default function initGraphicInstances(canvas: Canvaser, instances: RenderTargetInstances): OperateFunc {
 
@@ -39,6 +40,9 @@ export default function initGraphicInstances(canvas: Canvaser, instances: Render
         // 调用回调并传参
         return clickMenuCallback?.(callbackOrArg, ...args)
       }
+    },
+    setCanvasState: (state: CanvasState) => {
+      RuntimeStore.getInstance().updateState('canvasState', state)
     }
   }
 

@@ -1,5 +1,6 @@
 import {Graphic, Group, Element, IncreaseElementPos, ElementStatus, GroupType} from "../graphic/graphic.types";
 import {ContainerTransformState} from "../container/container.type";
+import {CanvasState} from '../runtimeStore/runtimeStore'
 
 export type Canvaser = {
   cvs: HTMLCanvasElement | null;
@@ -40,4 +41,5 @@ export type OperateFunc = {
   setData: (arg: { graphic: Graphic, transform: ContainerTransformState }) => void
   saveToImages: (name?: string, preview?: boolean) => string | boolean
   clickMenu: (callbackOrArg?: ((...args: any[]) => any) | any, ...args: any[]) => void
+  setCanvasState: (state: CanvasState) => void
 } | null

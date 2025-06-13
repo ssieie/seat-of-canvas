@@ -4,6 +4,8 @@ import RBush from 'rbush';
 
 export const allGraphicGroups: GroupType[] = ['rectangle', 'circle', 'strip'];
 
+export type CanvasState = 'normal' | 'freeze'
+
 type RuntimeState = {
   highlightElements: boolean
   currentDragEl: Element | null
@@ -11,6 +13,7 @@ type RuntimeState = {
   containerTransformState: ContainerTransformState
   graphicMatrix: Graphic
   groupTree: RBush<RBushGroupItem>
+  canvasState: CanvasState
 };
 
 function initRuntimeState(): RuntimeState {
@@ -35,6 +38,7 @@ function initRuntimeState(): RuntimeState {
       groupElements: {}
     },
     groupTree: new RBush(),
+    canvasState: 'normal'
   }
 }
 
