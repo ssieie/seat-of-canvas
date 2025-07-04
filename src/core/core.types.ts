@@ -39,6 +39,7 @@ export type OperateFunc = {
   contextMenuOperateFunc: ContextMenuOperateFunc
   getData: () => { graphic: Graphic, transform: ContainerTransformState }
   setData: (arg: { graphic: Graphic, transform: ContainerTransformState }) => void
+  resetData: () => void
   saveToImages: (name?: string, preview?: boolean) => string | boolean
   clickMenu: (callbackOrArg?: ((...args: any[]) => any) | any, ...args: any[]) => void
   setCanvasState: (state: CanvasState) => void

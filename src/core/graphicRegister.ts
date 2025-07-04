@@ -31,6 +31,9 @@ export default function initGraphicInstances(canvas: Canvaser, instances: Render
       if (data.graphic) RuntimeStore.getInstance().updateState('graphicMatrix', data.graphic)
       if (data.transform) RuntimeStore.getInstance().updateState('containerTransformState', data.transform)
     },
+    resetData: () => {
+      RuntimeStore.getInstance().reset()
+    },
     saveToImages: saveToImages,
     clickMenu: function (callbackOrArg?: ((...args: any[]) => any) | any, ...args: any[]): any {
       if (typeof callbackOrArg === 'function') {
