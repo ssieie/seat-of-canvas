@@ -9,6 +9,7 @@ export type Canvaser = {
 
 export type AccordingToTheRanksAddGroupOptions = {
   name: string | string[];
+  setName: string;
   row?: number;
   col?: number;
   num: number;

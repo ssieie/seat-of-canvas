@@ -1,24 +1,27 @@
 import RuntimeStore from "../../runtimeStore/runtimeStore";
-import type {Graphic, Group, GroupType} from "../graphic.types";
-import {generateUuid} from "../../utils/common";
-import {getBasicPos} from "../graphicUtils";
-import {fillCircleElement, getCircleRect} from "./circleUtils";
+import type { Graphic, Group, GroupType } from "../graphic.types";
+import { generateUuid } from "../../utils/common";
+import { getBasicPos } from "../graphicUtils";
+import { fillCircleElement, getCircleRect } from "./circleUtils";
 
 const store = RuntimeStore.getInstance();
 
-const GRAPHIC_TYPE: GroupType = 'circle'
+const GRAPHIC_TYPE: GroupType = "circle";
 
 class Circle {
+  constructor() {}
 
-  constructor() {
-  }
+  async addCircleGraphic(
+    name: string,
+    num: number,
+    pos?: [number, number],
+    setOps?: { id: string; name: string }
+  ) {
+    const graphicMatrix: Graphic = store.getState("graphicMatrix");
+    const groupId = generateUuid();
+    const { radius, w, h } = getCircleRect(num);
 
-  async addCircleGraphic(name: string, num: number, pos?: [number, number]) {
-    const graphicMatrix: Graphic = store.getState('graphicMatrix')
-    const groupId = generateUuid()
-    const {radius, w, h} = getCircleRect(num)
-
-    const [basicX, basicY] = pos || getBasicPos(w, h)
+    const [basicX, basicY] = pos || getBasicPos(w, h);
 
     const group: Group = {
       group_id: groupId,
@@ -33,24 +36,25 @@ class Circle {
       type: GRAPHIC_TYPE,
       radius,
       baseFontSize: 13,
-    }
+      group_set_id: setOps?.id,
+      group_set_name: setOps?.name,
+    };
 
-    const elements = fillCircleElement(group)
+    const elements = fillCircleElement(group);
 
-    graphicMatrix.groups[GRAPHIC_TYPE][groupId] = group
+    graphicMatrix.groups[GRAPHIC_TYPE][groupId] = group;
 
     graphicMatrix.elements = {
       ...graphicMatrix.elements,
       ...elements,
-    }
+    };
 
-    graphicMatrix.groupElements[groupId] = Object.keys(elements)
+    graphicMatrix.groupElements[groupId] = Object.keys(elements);
 
-    store.updateState('graphicMatrix', graphicMatrix)
+    store.updateState("graphicMatrix", graphicMatrix);
   }
 
-  clear() {
-  }
+  clear() {}
 }
 
-export default Circle
+export default Circle;

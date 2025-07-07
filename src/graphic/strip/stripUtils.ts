@@ -7,7 +7,7 @@ import {
   GROUP_BG_COLOR, GROUP_GAP, GROUP_HOVER_BD_COLOR, GROUP_NAME_COLOR,
   MATRIX_GAP
 } from "../constant";
-import type {Element, Group, IncreaseElementPos, StripPos} from "../graphic.types";
+import type {Element, Group, IncreaseElementPos, POS, StripPos} from "../graphic.types";
 import {canvasToScreen, scaleSize} from "../../transform/transform";
 import {drawGroupBaseElement, setCtxFont} from "../graphicUtils";
 import RuntimeStore, {rebuildGroupTree} from "../../runtimeStore/runtimeStore";
@@ -138,8 +138,17 @@ function drawStripGroupEmptyRegion(ctx: CanvasRenderingContext2D, x: number, y: 
 }
 
 function drawGroupName(ctx: CanvasRenderingContext2D, group: Group, x: number, y: number, w: number, h: number) {
+  const centerOfAStripPos: POS = {
+    x: x + w / 2,
+    y: y + h / 2,
+  }
   setCtxFont(ctx, GROUP_NAME_COLOR, 'center', 'middle', group.baseFontSize)
-  ctx.fillText(`${group.group_name}`, x + w / 2, y + h / 2);
+  if (group.group_set_id){
+    ctx.fillText(`${group.group_set_name}`, centerOfAStripPos.x, centerOfAStripPos.y - scaleSize(group.baseFontSize) / 2);
+    ctx.fillText(`${group.group_name}`, centerOfAStripPos.x, centerOfAStripPos.y + scaleSize(group.baseFontSize));
+  } else {
+    ctx.fillText(`${group.group_name}`, centerOfAStripPos.x, centerOfAStripPos.y);
+  }
 }
 
 export function stripElementPosInGroup(group: Group, element: Element) {

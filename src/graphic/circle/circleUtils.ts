@@ -152,7 +152,12 @@ export function drawCircleGroup(ctx: CanvasRenderingContext2D, group: Group) {
 
 export function drawGroupName(ctx: CanvasRenderingContext2D, group: Group, centerOfACirclePos: POS) {
   setCtxFont(ctx, GROUP_NAME_COLOR, 'center', 'middle', group.baseFontSize)
-  ctx.fillText(`${group.group_name}`, centerOfACirclePos.x, centerOfACirclePos.y);
+  if (group.group_set_id){
+    ctx.fillText(`${group.group_set_name}`, centerOfACirclePos.x, centerOfACirclePos.y - scaleSize(group.baseFontSize) / 2);
+    ctx.fillText(`${group.group_name}`, centerOfACirclePos.x, centerOfACirclePos.y + scaleSize(group.baseFontSize));
+  }else {
+    ctx.fillText(`${group.group_name}`, centerOfACirclePos.x, centerOfACirclePos.y);
+  }
 }
 
 export function circleElementPosInGroup(group: Group, element: Element) {

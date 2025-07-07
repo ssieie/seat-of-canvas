@@ -1,24 +1,28 @@
 import RuntimeStore from "../../runtimeStore/runtimeStore";
-import type {Graphic, Group, GroupType} from "../graphic.types";
-import {generateUuid} from "../../utils/common";
-import {getBasicPos} from "../graphicUtils";
-import {fillStripElement, getStripRect} from "./stripUtils";
+import type { Graphic, Group, GroupType } from "../graphic.types";
+import { generateUuid } from "../../utils/common";
+import { getBasicPos } from "../graphicUtils";
+import { fillStripElement, getStripRect } from "./stripUtils";
 
 const store = RuntimeStore.getInstance();
 
-const GRAPHIC_TYPE: GroupType = 'strip'
+const GRAPHIC_TYPE: GroupType = "strip";
 
 class Strip {
+  constructor() {}
 
-  constructor() {
-  }
+  async addStripGraphic(
+    name: string,
+    shortNum: number,
+    longNum: number,
+    pos?: [number, number],
+    setOps?: { id: string; name: string }
+  ) {
+    const graphicMatrix: Graphic = store.getState("graphicMatrix");
+    const groupId = generateUuid();
+    const [w, h] = getStripRect(shortNum, longNum);
 
-  async addStripGraphic(name: string, shortNum: number, longNum: number, pos?: [number, number]) {
-    const graphicMatrix: Graphic = store.getState('graphicMatrix')
-    const groupId = generateUuid()
-    const [w, h] = getStripRect(shortNum, longNum)
-
-    const [basicX, basicY] = pos || getBasicPos(w, h)
+    const [basicX, basicY] = pos || getBasicPos(w, h);
 
     const group: Group = {
       group_id: groupId,
@@ -32,24 +36,25 @@ class Strip {
       size: shortNum * 2 + longNum * 2,
       type: GRAPHIC_TYPE,
       baseFontSize: 13,
-    }
+      group_set_id: setOps?.id,
+      group_set_name: setOps?.name,
+    };
 
-    const elements = fillStripElement(groupId, shortNum, longNum)
+    const elements = fillStripElement(groupId, shortNum, longNum);
 
-    graphicMatrix.groups[GRAPHIC_TYPE][groupId] = group
+    graphicMatrix.groups[GRAPHIC_TYPE][groupId] = group;
 
     graphicMatrix.elements = {
       ...graphicMatrix.elements,
       ...elements,
-    }
+    };
 
-    graphicMatrix.groupElements[groupId] = Object.keys(elements)
+    graphicMatrix.groupElements[groupId] = Object.keys(elements);
 
-    store.updateState('graphicMatrix', graphicMatrix)
+    store.updateState("graphicMatrix", graphicMatrix);
   }
 
-  clear() {
-  }
+  clear() {}
 }
 
-export default Strip
+export default Strip;

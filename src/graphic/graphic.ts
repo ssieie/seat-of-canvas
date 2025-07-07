@@ -15,6 +15,8 @@ import {drawGroupStripElement, drawStripGroup, getStripRect} from "./strip/strip
 import {drawDragElement, getBasicPos} from "./graphicUtils";
 import {GroupType} from "./graphic.types";
 import {MATRIX_GAP} from "./constant";
+import {generateUuid} from "../utils/common";
+
 
 const store = RuntimeStore.getInstance();
 
@@ -92,8 +94,13 @@ class GraphicMain extends OperateGraphic {
     const bW = w * row + (row - 1) * MATRIX_GAP
     const bH = h * col + (col - 1) * MATRIX_GAP
     const [basicX, basicY] = getBasicPos(bW, bH)
+
+    const setUuid = generateUuid()
+
     for (let r = 0; r < row; r++) {
       for (let c = 0; c < col; c++) {
+        const setId = `${setUuid}Z#X${r}-${c}`
+
         const x = basicX + c * (w + MATRIX_GAP);
         const y = basicY + r * (h + MATRIX_GAP);
         const name = typeof groupOptions.name === 'string' ? groupOptions.name : groupOptions.name.shift();
@@ -101,10 +108,10 @@ class GraphicMain extends OperateGraphic {
           case "rectangle":
             break
           case "circle":
-            this.circle.addCircleGraphic(name || '', groupOptions.num, [x, y]).then()
+            this.circle.addCircleGraphic(name || '', groupOptions.num, [x, y], {id:setId,name:groupOptions.setName}).then()
             break
           case "strip":
-            this.strip.addStripGraphic(name || '', groupOptions.shortNum, groupOptions.longNum, [x, y]).then()
+            this.strip.addStripGraphic(name || '', groupOptions.shortNum, groupOptions.longNum, [x, y], {id:setId,name:groupOptions.setName}).then()
             break
         }
       }
