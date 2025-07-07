@@ -11,6 +11,7 @@ import ContextMenu from "../contextMenu/contextMenu";
 import {MY_CANVAS_BG} from "../graphic/constant";
 import ZoomTool from "../canvasTool/zoomTool";
 import {throttle} from '../utils/common'
+import {resizeMount, resizeUnmount} from "../utils/resize";
 
 const store = RuntimeStore.getInstance();
 const menu = ContextMenu.getInstance();
@@ -24,7 +25,6 @@ const MY_CANVAS: Canvaser = {
 let RenderInstance: Render | null = null;
 
 let ContainerInstance: Container | null = null;
-
 
 const instances: RenderTargetInstances = {
   Test: null,
@@ -58,9 +58,13 @@ export async function init(
 
   MY_CANVAS.cvs.setAttribute('id', 'zx-drag-canvas');
   MY_CANVAS.cvs.style.display = 'block'
+  MY_CANVAS.cvs.style.width = '100%'
+  MY_CANVAS.cvs.style.height = '100%'
   MY_CANVAS.cvs.style.backgroundColor = MY_CANVAS_BG
 
   MY_CANVAS.pen = MY_CANVAS.cvs.getContext('2d')
+
+  resizeMount(MY_CANVAS.cvs)
 
   graphicUtilsInit()
 
@@ -89,6 +93,8 @@ export function exit() {
   ContainerInstance = null;
 
   graphicUtilsClear()
+
+  resizeUnmount(MY_CANVAS.cvs!)
 
   RenderInstance?.clear();
   RenderInstance = null;

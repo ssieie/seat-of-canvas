@@ -32,7 +32,9 @@ export default function initGraphicInstances(canvas: Canvaser, instances: Render
       if (data.transform) RuntimeStore.getInstance().updateState('containerTransformState', data.transform)
     },
     resetData: () => {
+      const cvs = RuntimeStore.getInstance().getState('cvs')
       RuntimeStore.getInstance().reset()
+      RuntimeStore.getInstance().updateState('cvs', cvs)
     },
     saveToImages: saveToImages,
     clickMenu: function (callbackOrArg?: ((...args: any[]) => any) | any, ...args: any[]): any {

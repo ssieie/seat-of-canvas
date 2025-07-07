@@ -185,7 +185,7 @@ export function moveInHighlight(ctx: CanvasRenderingContext2D, x: number, y: num
       dxy[1] + height / 2 >= y &&
       dxy[1] + height / 2 <= y + height
     ) {
-      // ctx.lineWidth = scaleSize(1);
+      ctx.lineWidth = scaleSize(2);
       ctx.strokeStyle = ELEMENT_MOVE_IN_BD_COLOR;
       ctx.strokeRect(x, y, width, height)
     }
@@ -227,6 +227,7 @@ export function drawGroupBaseElement(ctx: CanvasRenderingContext2D, element: Ele
   moveInHighlight(ctx, x, y, width, height)
 
   if (element.highlight) {
+    ctx.lineWidth = scaleSize(2);
     ctx.strokeStyle = ELEMENT_MOVE_IN_BD_COLOR;
     ctx.strokeRect(x, y, width, height)
   }
