@@ -15,6 +15,8 @@ import {
   editorialStaffRule,
   occupyASeatRule,
 } from "./menuRules";
+import {moveForwardInSequence, movingForwardAsAWhole} from "../graphic/graphicUtils";
+
 
 type ContextMenuType = "group" | "element";
 
@@ -312,12 +314,34 @@ export class ContextMenu {
             {
               label: "整体向前移动",
               type: "default",
-              onClick: () => {},
+              onClick: () => {
+                const effectElement = movingForwardAsAWhole(this.currentContextMenuGroup,this.currentContextMenuElement)
+
+                func!.clickMenu(
+                  'covering',
+                  JSON.stringify({
+                    group: ContextMenu.instance.currentContextMenuGroup!,
+                    element: ContextMenu.instance.currentContextMenuElement!,
+                    effectElement
+                  })
+                );
+              }
             },
             {
               label: "依次向前移动",
               type: "default",
-              onClick: () => {},
+              onClick: () => {
+                const effectElement = moveForwardInSequence(this.currentContextMenuGroup,this.currentContextMenuElement)
+
+                func!.clickMenu(
+                  'covering',
+                  JSON.stringify({
+                    group: ContextMenu.instance.currentContextMenuGroup!,
+                    element: ContextMenu.instance.currentContextMenuElement!,
+                    effectElement
+                  })
+                );
+              }
             },
           ],
         },
@@ -329,12 +353,34 @@ export class ContextMenu {
             {
               label: "整体向前移动",
               type: "default",
-              onClick: () => {},
+              onClick: () => {
+                const effectElement = movingForwardAsAWhole(this.currentContextMenuGroup,this.currentContextMenuElement)
+
+                func!.clickMenu(
+                  'covering',
+                  JSON.stringify({
+                    group: ContextMenu.instance.currentContextMenuGroup!,
+                    element: ContextMenu.instance.currentContextMenuElement!,
+                    effectElement
+                  })
+                );
+              }
             },
             {
               label: "依次向前移动",
               type: "default",
-              onClick: () => {},
+              onClick: () => {
+                const effectElement = moveForwardInSequence(this.currentContextMenuGroup,this.currentContextMenuElement,true)
+
+                func!.clickMenu(
+                  'covering',
+                  JSON.stringify({
+                    group: ContextMenu.instance.currentContextMenuGroup!,
+                    element: ContextMenu.instance.currentContextMenuElement!,
+                    effectElement
+                  })
+                );
+              }
             },
           ],
         },

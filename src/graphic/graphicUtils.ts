@@ -1,19 +1,32 @@
-import {canvasToScreen, getCanvas, getTransformState, scaleSize} from "../transform/transform";
-import RuntimeStore, {allGraphicGroups} from "../runtimeStore/runtimeStore";
-import type {Element, ElementStatus, Group, GroupType} from "./graphic.types";
-import {didNotHitAnyElement, hitElement} from "../eventCenter/tool/hitTargetDetection";
-import {swapElement, swapInArrayFlexible} from "../utils/common";
 import {
-  ELEMENT_DESC_COLOR, ELEMENT_HEIGHT,
+  canvasToScreen,
+  getCanvas,
+  getTransformState,
+  scaleSize,
+} from "../transform/transform";
+import RuntimeStore, { allGraphicGroups } from "../runtimeStore/runtimeStore";
+import type { Element, ElementStatus, Group, GroupType } from "./graphic.types";
+import {
+  didNotHitAnyElement,
+  hitElement,
+} from "../eventCenter/tool/hitTargetDetection";
+import {
+  deepCopy,
+  swapElement,
+  swapInArrayFlexible,
+} from "../utils/common";
+import {
+  ELEMENT_DESC_COLOR,
+  ELEMENT_HEIGHT,
   ELEMENT_MOVE_IN_BD_COLOR,
   ELEMENT_NO_COLOR,
   ELEMENT_WIDTH,
-  OCCUPY_DESC
+  OCCUPY_DESC,
 } from "./constant";
 import AssetsLoader from "../assetsLoader/assetsLoader";
-import {updateCircleGroupLayout} from "./circle/circleUtils";
-import {updateMatrixGroupLayout} from "./matrix/matrixUtils";
-import {updateStripGroupLayout} from "./strip/stripUtils";
+import { updateCircleGroupLayout } from "./circle/circleUtils";
+import { updateMatrixGroupLayout } from "./matrix/matrixUtils";
+import { updateStripGroupLayout } from "./strip/stripUtils";
 import ContextMenu from "../contextMenu/contextMenu";
 
 const store = RuntimeStore.getInstance();
@@ -24,10 +37,22 @@ export function getGraphicGroups(graphic?: GroupType[]) {
   return store.getGraphicGroups(graphic ? graphic : allGraphicGroups);
 }
 
-type TextAlignType = 'start' | 'end' | 'left' | 'right' | 'center'
-type TextBaselineType = 'alphabetic' | 'top' | 'hanging' | 'middle' | 'ideographic' | 'bottom'
+type TextAlignType = "start" | "end" | "left" | "right" | "center";
+type TextBaselineType =
+  | "alphabetic"
+  | "top"
+  | "hanging"
+  | "middle"
+  | "ideographic"
+  | "bottom";
 
-export function setCtxFont(ctx: CanvasRenderingContext2D, color: string, textAlign: TextAlignType, textBaseline: TextBaselineType = 'alphabetic', fontSize = 13) {
+export function setCtxFont(
+  ctx: CanvasRenderingContext2D,
+  color: string,
+  textAlign: TextAlignType,
+  textBaseline: TextBaselineType = "alphabetic",
+  fontSize = 13
+) {
   ctx.font = `${scaleSize(fontSize)}px Arial`;
   ctx.fillStyle = color;
   ctx.textAlign = textAlign;
@@ -35,14 +60,14 @@ export function setCtxFont(ctx: CanvasRenderingContext2D, color: string, textAli
 }
 
 // 矩形是否重叠
-function isOverlap(newRect: Pick<Group, 'x' | 'y' | 'w' | 'h'>, existingRects: Map<string, Group>): boolean {
-  const {x, y, w, h} = newRect;
+function isOverlap(
+  newRect: Pick<Group, "x" | "y" | "w" | "h">,
+  existingRects: Map<string, Group>
+): boolean {
+  const { x, y, w, h } = newRect;
 
   for (const r of existingRects.values()) {
-    if (
-      !(x + w <= r.x || x >= r.x + r.w ||
-        y + h <= r.y || y >= r.y + r.h)
-    ) {
+    if (!(x + w <= r.x || x >= r.x + r.w || y + h <= r.y || y >= r.y + r.h)) {
       return true;
     }
   }
@@ -52,7 +77,7 @@ function isOverlap(newRect: Pick<Group, 'x' | 'y' | 'w' | 'h'>, existingRects: M
 
 // 根据画布矩形分布情况返回新矩形可用的基准Pos --以下为简单实现性能欠佳
 export function getBasicPos(w: number, h: number): [number, number] {
-  const {scale, offsetX, offsetY} = getTransformState();
+  const { scale, offsetX, offsetY } = getTransformState();
   // 屏幕转换后的宽
   const screenW = getCanvas()!.width / scale;
   // 已存在的所有组
@@ -67,14 +92,14 @@ export function getBasicPos(w: number, h: number): [number, number] {
   if (startX > xBoundary) {
     // console.log(startX)
     // console.log(xBoundary)
-    xBoundary = w
+    xBoundary = w;
     // alert("当前形状超出画布大小,缩小画布后添加")
     // throw new Error();
   }
 
   for (let y = startY; ; y += step) {
     for (let x = startX; x < xBoundary; x += step) {
-      if (isOverlap({x, y, w, h}, allGraphicGroups)) {
+      if (isOverlap({ x, y, w, h }, allGraphicGroups)) {
         x += w; // 跳过宽度，避免在同一区域继续尝试
         continue;
       }
@@ -87,8 +112,8 @@ let canvasRect: DOMRect | null = null;
 let cvsInstance: HTMLCanvasElement | null = null;
 
 function cvsChange(cvs: HTMLCanvasElement | null) {
-  cvsInstance = cvs
-  canvasRect = cvs!.getBoundingClientRect()
+  cvsInstance = cvs;
+  canvasRect = cvs!.getBoundingClientRect();
 }
 
 export function withinCanvas(e: MouseEvent) {
@@ -100,83 +125,99 @@ export function withinCanvas(e: MouseEvent) {
     const mouseX = e.clientX;
     const mouseY = e.clientY;
     // 判断是否在 canvas 内
-    const withinCanvas = (
+    const withinCanvas =
       mouseX - 8 >= canvasRect.left &&
       mouseX + 8 <= canvasRect.right &&
       mouseY - 8 >= canvasRect.top &&
-      mouseY + 8 <= canvasRect.bottom
-    );
+      mouseY + 8 <= canvasRect.bottom;
 
-    return withinCanvas
+    return withinCanvas;
   }
 
-  return false
+  return false;
 }
 
 // 把鼠标坐标转换到画布坐标
 export const toCanvasCoords = (e: MouseEvent) => {
-  const {offsetX, offsetY, scale} = getTransformState();
+  const { offsetX, offsetY, scale } = getTransformState();
   if (canvasRect && cvsInstance) {
     // DOM -> 像素坐标
-    const px = (e.clientX - canvasRect.left) * (cvsInstance.width / canvasRect.width);
-    const py = (e.clientY - canvasRect.top) * (cvsInstance.height / canvasRect.height);
+    const px =
+      (e.clientX - canvasRect.left) * (cvsInstance.width / canvasRect.width);
+    const py =
+      (e.clientY - canvasRect.top) * (cvsInstance.height / canvasRect.height);
 
     // 像素坐标 -> 逻辑坐标（反变换）
     const mx = (px - offsetX) / scale;
     const my = (py - offsetY) / scale;
 
-    return {mx, my};
+    return { mx, my };
   }
 
-  return null
-}
+  return null;
+};
 
 // 释放元素是否交换元素如果有
 export function exchangeElements(e: MouseEvent, dragEl: Element) {
-  const dnh = didNotHitAnyElement(e)
+  const dnh = didNotHitAnyElement(e);
 
   if (dnh) {
-    const hitEl = hitElement(e, dnh)
+    const hitEl = hitElement(e, dnh);
 
     if (hitEl) {
-      if (hitEl.id === dragEl.id) return
+      if (hitEl.id === dragEl.id) return;
 
-      const graphicMatrix = store.getState('graphicMatrix')
+      const graphicMatrix = store.getState("graphicMatrix");
       const fromGroupId = dragEl.group_by;
       const toGroupId = hitEl.group_by;
 
-      swapElement(dragEl, hitEl)
+      swapElement(dragEl, hitEl);
 
       if (fromGroupId !== toGroupId) {
         // 不同组交换
-        graphicMatrix.groupElements[fromGroupId] = swapInArrayFlexible(graphicMatrix.groupElements[fromGroupId], dragEl.id, hitEl.id)
-        graphicMatrix.groupElements[toGroupId] = swapInArrayFlexible(graphicMatrix.groupElements[toGroupId], hitEl.id, dragEl.id)
+        graphicMatrix.groupElements[fromGroupId] = swapInArrayFlexible(
+          graphicMatrix.groupElements[fromGroupId],
+          dragEl.id,
+          hitEl.id
+        );
+        graphicMatrix.groupElements[toGroupId] = swapInArrayFlexible(
+          graphicMatrix.groupElements[toGroupId],
+          hitEl.id,
+          dragEl.id
+        );
       }
 
-      const dragElIdx2 = store.getGraphicGroupsById(dragEl.group_by)?.index_rule === '2'
-      const hitElIdx2 = store.getGraphicGroupsById(hitEl.group_by)?.index_rule === '2'
+      const dragElIdx2 =
+        store.getGraphicGroupsById(dragEl.group_by)?.index_rule === "2";
+      const hitElIdx2 =
+        store.getGraphicGroupsById(hitEl.group_by)?.index_rule === "2";
 
       ContextMenu.getInstance().sendEvent(
-        'elementChanged',
+        "elementChanged",
         JSON.stringify(
           [
-            {...dragEl, index: dragElIdx2 ? dragEl.index1 : dragEl.index},
-            {...hitEl, index: hitElIdx2 ? hitEl.index1 : hitEl.index}
-          ].map(v => {
-            v.groupName = store.getGraphicGroupsById(v.group_by)?.group_name || '';
+            { ...dragEl, index: dragElIdx2 ? dragEl.index1 : dragEl.index },
+            { ...hitEl, index: hitElIdx2 ? hitEl.index1 : hitEl.index },
+          ].map((v) => {
+            v.groupName =
+              store.getGraphicGroupsById(v.group_by)?.group_name || "";
             return v;
           })
         )
       );
-
     }
   }
-
 }
 
-export function moveInHighlight(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number) {
+export function moveInHighlight(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number
+) {
   // 当前拖拽的元素在目标元素范围内提示
-  const currentDragEl = store.getState('currentDragEl')
+  const currentDragEl = store.getState("currentDragEl");
   if (currentDragEl) {
     const dxy = canvasToScreen(currentDragEl.dX, currentDragEl.dY);
     if (
@@ -187,7 +228,7 @@ export function moveInHighlight(ctx: CanvasRenderingContext2D, x: number, y: num
     ) {
       ctx.lineWidth = scaleSize(2);
       ctx.strokeStyle = ELEMENT_MOVE_IN_BD_COLOR;
-      ctx.strokeRect(x, y, width, height)
+      ctx.strokeRect(x, y, width, height);
     }
   }
 }
@@ -195,65 +236,112 @@ export function moveInHighlight(ctx: CanvasRenderingContext2D, x: number, y: num
 function getBitmap(type: ElementStatus) {
   switch (type) {
     case "idle":
-      return AssetsLoader.unSeat.bitmap
+      return AssetsLoader.unSeat.bitmap;
     default:
-      return AssetsLoader.onSeat.bitmap
+      return AssetsLoader.onSeat.bitmap;
   }
 }
 
 export function drawDragElement(ctx: CanvasRenderingContext2D) {
-  const currentDragEl = store.getState('currentDragEl')
+  const currentDragEl = store.getState("currentDragEl");
 
   if (currentDragEl) {
-    const group = store.getGraphicGroupsById(currentDragEl.group_by)
+    const group = store.getGraphicGroupsById(currentDragEl.group_by);
 
-    const bitmap = getBitmap(currentDragEl.status)
+    const bitmap = getBitmap(currentDragEl.status);
 
     const [x, y] = canvasToScreen(currentDragEl.dX, currentDragEl.dY);
 
-    ctx.drawImage(bitmap, x, y, scaleSize(currentDragEl.width), scaleSize(currentDragEl.height))
+    ctx.drawImage(
+      bitmap,
+      x,
+      y,
+      scaleSize(currentDragEl.width),
+      scaleSize(currentDragEl.height)
+    );
 
     drawGroupElementIndex(ctx, currentDragEl, x, y, group?.index_rule);
   }
 }
 
-export function drawGroupBaseElement(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number, width: number, height: number, index_rule?: '1' | '2') {
+export function drawGroupBaseElement(
+  ctx: CanvasRenderingContext2D,
+  element: Element,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  index_rule?: "1" | "2"
+) {
+  const bitmap = getBitmap(element.status);
 
-  const bitmap = getBitmap(element.status)
-
-  ctx.drawImage(bitmap, x, y, width, height)
+  ctx.drawImage(bitmap, x, y, width, height);
 
   // 当前拖拽的元素在目标元素范围内提示
-  moveInHighlight(ctx, x, y, width, height)
+  moveInHighlight(ctx, x, y, width, height);
 
   if (element.highlight) {
     ctx.lineWidth = scaleSize(2);
     ctx.strokeStyle = ELEMENT_MOVE_IN_BD_COLOR;
-    ctx.strokeRect(x, y, width, height)
+    ctx.strokeRect(x, y, width, height);
   }
 
   drawGroupElementIndex(ctx, element, x, y, index_rule);
 }
 
-export function drawGroupElementIndex(ctx: CanvasRenderingContext2D, element: Element, x: number, y: number, index_rule?: '1' | '2') {
+export function drawGroupElementIndex(
+  ctx: CanvasRenderingContext2D,
+  element: Element,
+  x: number,
+  y: number,
+  index_rule?: "1" | "2"
+) {
+  const dx = x + scaleSize(element.width / 2);
 
-  const dx = x + scaleSize(element.width / 2)
+  setCtxFont(
+    ctx,
+    ELEMENT_NO_COLOR,
+    "center",
+    "alphabetic",
+    element.baseFontSize
+  );
 
-  setCtxFont(ctx, ELEMENT_NO_COLOR, 'center', 'alphabetic', element.baseFontSize)
+  ctx.fillText(
+    String(index_rule === "2" ? element.index1 : element.index),
+    dx,
+    y + scaleSize(element.width * 0.3)
+  );
 
-  ctx.fillText(String(index_rule === '2' ? element.index1 : element.index), dx, y + scaleSize(element.width * .3));
-
-  if (element.status === 'occupy') {
-    setCtxFont(ctx, ELEMENT_DESC_COLOR, 'center', 'middle', element.nameFontSize)
+  if (element.status === "occupy") {
+    setCtxFont(
+      ctx,
+      ELEMENT_DESC_COLOR,
+      "center",
+      "middle",
+      element.nameFontSize
+    );
     ctx.fillText(OCCUPY_DESC, dx, y + scaleSize(element.height / 2 + 2));
   } else if (element.text) {
-    setCtxFont(ctx, ELEMENT_DESC_COLOR, 'center', 'middle', element.nameFontSize)
+    setCtxFont(
+      ctx,
+      ELEMENT_DESC_COLOR,
+      "center",
+      "middle",
+      element.nameFontSize
+    );
     ctx.fillText(element.text, dx, y + scaleSize(element.height / 2 + 2));
   }
-
 }
 
-export function createEmptyElement(id: string, group: Group, index: number, x: number, y: number, pos?: [number, number], name?: string): Element {
+export function createEmptyElement(
+  id: string,
+  group: Group,
+  index: number,
+  x: number,
+  y: number,
+  pos?: [number, number],
+  name?: string
+): Element {
   return {
     id,
     group_by: group.group_id,
@@ -267,41 +355,152 @@ export function createEmptyElement(id: string, group: Group, index: number, x: n
     width: ELEMENT_WIDTH,
     height: ELEMENT_HEIGHT,
     pos,
-    text: name || Math.random().toString(36).substr(2, 2),
-    status: 'idle',
+    // text: name || Math.random().toString(36).substr(2, 2),
+    text: name || "",
+    status: "idle",
     baseFontSize: 13,
     nameFontSize: 10,
-  }
+  };
 }
 
 // 删除座位
 export function delGroupElement(groupTree: Group, element: Element) {
-  const graphicMatrix = store.getState('graphicMatrix')
+  const graphicMatrix = store.getState("graphicMatrix");
 
-  Reflect.deleteProperty(graphicMatrix.elements, element.id)
+  Reflect.deleteProperty(graphicMatrix.elements, element.id);
 
-  graphicMatrix.groupElements[groupTree.group_id] = graphicMatrix.groupElements[groupTree.group_id].filter(v => v !== element.id)
+  graphicMatrix.groupElements[groupTree.group_id] = graphicMatrix.groupElements[
+    groupTree.group_id
+  ].filter((v) => v !== element.id);
 
   switch (groupTree.type) {
     case "circle":
-      updateCircleGroupLayout(groupTree.group_id)
-      break
-    case "rectangle":
-      updateMatrixGroupLayout(groupTree.group_id)
-      break
-    case "strip":
-      updateStripGroupLayout(groupTree.group_id)
+      updateCircleGroupLayout(groupTree.group_id);
       break;
-
+    case "rectangle":
+      updateMatrixGroupLayout(groupTree.group_id);
+      break;
+    case "strip":
+      updateStripGroupLayout(groupTree.group_id);
+      break;
   }
 }
 
 export function graphicUtilsInit() {
-  store.subscribe('cvs', cvsChange)
+  store.subscribe("cvs", cvsChange);
 }
 
 export function graphicUtilsClear() {
-  store.unsubscribe('cvs', cvsChange)
-  cvsInstance = null
-  canvasRect = null
+  store.unsubscribe("cvs", cvsChange);
+  cvsInstance = null;
+  canvasRect = null;
+}
+
+// 补位相关
+// 依次向前(紧凑)
+export function moveForwardInSequence(
+  group: Group | null,
+  element: Element | null,
+  theEntireRegion?: boolean
+) {
+  if (!group || !element) return [];
+
+  let gElement: Element[] = [];
+  let startIndex = -1;
+
+  if (theEntireRegion && group.group_set_id) {
+    //
+  }
+
+  if (!group.index_rule || group.index_rule === "1") {
+    gElement = store
+      .getGraphicGroupElementsById(group.group_id)
+      .sort((a, b) => a.index - b.index);
+    startIndex = gElement.findIndex((el) => el.index === element.index);
+  } else {
+    gElement = store
+      .getGraphicGroupElementsById(group.group_id)
+      .sort((a, b) => a.index1 - b.index1);
+    startIndex = gElement.findIndex((el) => el.index1 === element.index1);
+  }
+
+  // 找到目标 index 的位置（位置一定是 status === 'idle'）
+  if (startIndex === -1) return [];
+
+  let insertPos = startIndex;
+
+  for (let i = startIndex; i < gElement.length; i++) {
+    if (gElement[i].status !== "idle") {
+      // swap 到 insertPos
+      if (i !== insertPos) {
+        swapElement(gElement[insertPos], gElement[i]);
+
+        // 交换后同步更新数组中的元素顺序（非常重要）
+        const temp = gElement[insertPos];
+        gElement[insertPos] = gElement[i];
+        gElement[i] = temp;
+      }
+      insertPos++;
+    }
+  }
+
+  return deepCopy(gElement);
+}
+
+function swapElementInArray(arr: Element[], i: number, j: number) {
+  const temp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = temp;
+}
+
+// 整体向前(保持间隔)
+export function movingForwardAsAWhole(
+  group: Group | null,
+  element: Element | null,
+  theEntireRegion?: boolean
+) {
+  if (!group || !element) return [];
+
+  let gElement: Element[] = [];
+  let inputPos = -1;
+
+  if (theEntireRegion && group.group_set_id) {
+    //
+  }
+
+  if (group.index_rule === "1" || !group.index_rule) {
+    gElement = store
+      .getGraphicGroupElementsById(group.group_id)
+      .sort((a, b) => a.index - b.index);
+    inputPos = gElement.findIndex((el) => el.index === element.index);
+  } else {
+    gElement = store
+      .getGraphicGroupElementsById(group.group_id)
+      .sort((a, b) => a.index1 - b.index1);
+    inputPos = gElement.findIndex((el) => el.index1 === element.index1);
+  }
+
+  if (inputPos === -1) return [];
+
+  const moveEl = deepCopy(
+    gElement.filter((v, idx) => idx > inputPos && v.status !== "idle")
+  );
+
+  if (moveEl.length === 0) return [];
+  const elGap =
+    !group.index_rule || group.index_rule === "1"
+      ? moveEl[0].index - inputPos - 1
+      : moveEl[0].index1 - inputPos - 1;
+  for (let i = 0; i < moveEl.length; i++) {
+    swapElement(gElement[inputPos], gElement[inputPos + elGap]);
+    swapElementInArray(gElement, inputPos, inputPos + elGap);
+    if (i < moveEl.length - 1) {
+      inputPos =
+        !group.index_rule || group.index_rule === "1"
+          ? moveEl[i + 1].index - elGap - 1
+          : moveEl[i + 1].index1 - elGap - 1;
+    }
+  }
+
+  return deepCopy(gElement);
 }
