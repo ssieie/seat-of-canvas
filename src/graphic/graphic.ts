@@ -97,10 +97,14 @@ class GraphicMain extends OperateGraphic {
 
     const setUuid = generateUuid()
 
+    let index = 0
+
     for (let r = 0; r < row; r++) {
       for (let c = 0; c < col; c++) {
-        const setId = `${setUuid}Z#X${r}-${c}`
 
+        const setId = `${setUuid}Z#X${index}Z#X${r}-${c}`
+        index++
+        
         const x = basicX + c * (w + MATRIX_GAP);
         const y = basicY + r * (h + MATRIX_GAP);
         const name = typeof groupOptions.name === 'string' ? groupOptions.name : groupOptions.name.shift();

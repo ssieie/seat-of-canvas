@@ -63,6 +63,7 @@ export interface Element {
   // 矩阵组特有
   pos?: [number, number];
   index1: number; // 中间到两边编号规则的值
+  sIndex?: number; // 补位临时
   // 条状特有
   strip?: {
     pos: StripPos;

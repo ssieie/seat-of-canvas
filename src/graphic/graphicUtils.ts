@@ -10,11 +10,7 @@ import {
   didNotHitAnyElement,
   hitElement,
 } from "../eventCenter/tool/hitTargetDetection";
-import {
-  deepCopy,
-  swapElement,
-  swapInArrayFlexible,
-} from "../utils/common";
+import { deepCopy, swapElement, swapInArrayFlexible } from "../utils/common";
 import {
   ELEMENT_DESC_COLOR,
   ELEMENT_HEIGHT,
@@ -397,6 +393,40 @@ export function graphicUtilsClear() {
 }
 
 // 补位相关
+function getIdenticalSetGroups(sId: string) {
+  const id = sId.split("Z#X").shift();
+  if (id) {
+    return store
+      .getGraphicGroupsArr()
+      .filter((v) => v.group_set_id && v.group_set_id.includes(id))
+      .sort((a, b) => {
+        const aIdx = a.group_set_id!.split("Z#X")[1];
+        const bIdx = b.group_set_id!.split("Z#X")[1];
+        return +aIdx - +bIdx;
+      });
+  }
+  return [];
+}
+
+function getSIndex(sId: string) {
+  const groups = getIdenticalSetGroups(sId);
+  let gElement: Element[] = [];
+  let idx = 0;
+  for (const g of groups) {
+    const els = store
+      .getGraphicGroupElementsById(g.group_id)
+      .sort((a, b) => a.index - b.index);
+
+    els.forEach((v) => (v.sIndex = v.index + idx));
+
+    gElement = [...gElement, ...els];
+
+    idx = gElement.length;
+  }
+
+  return gElement;
+}
+
 // 依次向前(紧凑)
 export function moveForwardInSequence(
   group: Group | null,
@@ -409,19 +439,22 @@ export function moveForwardInSequence(
   let startIndex = -1;
 
   if (theEntireRegion && group.group_set_id) {
-    //
-  }
+    gElement = getSIndex(group.group_set_id);
 
-  if (!group.index_rule || group.index_rule === "1") {
-    gElement = store
-      .getGraphicGroupElementsById(group.group_id)
-      .sort((a, b) => a.index - b.index);
-    startIndex = gElement.findIndex((el) => el.index === element.index);
+    startIndex = gElement.findIndex((el) => el.id === element.id);
   } else {
-    gElement = store
-      .getGraphicGroupElementsById(group.group_id)
-      .sort((a, b) => a.index1 - b.index1);
-    startIndex = gElement.findIndex((el) => el.index1 === element.index1);
+    // 排列规则2只存在于行列
+    if (!group.index_rule || group.index_rule === "1") {
+      gElement = store
+        .getGraphicGroupElementsById(group.group_id)
+        .sort((a, b) => a.index - b.index);
+      startIndex = gElement.findIndex((el) => el.index === element.index);
+    } else {
+      gElement = store
+        .getGraphicGroupElementsById(group.group_id)
+        .sort((a, b) => a.index1 - b.index1);
+      startIndex = gElement.findIndex((el) => el.index1 === element.index1);
+    }
   }
 
   // 找到目标 index 的位置（位置一定是 status === 'idle'）
@@ -433,12 +466,28 @@ export function moveForwardInSequence(
     if (gElement[i].status !== "idle") {
       // swap 到 insertPos
       if (i !== insertPos) {
+        const fromGroupId = gElement[insertPos].group_by;
+        const toGroupId = gElement[i].group_by;
+
         swapElement(gElement[insertPos], gElement[i]);
 
+        if (fromGroupId !== toGroupId) {
+          const graphicMatrix = store.getState("graphicMatrix");
+          // 不同组交换
+          graphicMatrix.groupElements[fromGroupId] = swapInArrayFlexible(
+            graphicMatrix.groupElements[fromGroupId],
+            gElement[insertPos].id,
+            gElement[i].id
+          );
+          graphicMatrix.groupElements[toGroupId] = swapInArrayFlexible(
+            graphicMatrix.groupElements[toGroupId],
+            gElement[i].id,
+            gElement[insertPos].id
+          );
+        }
+
         // 交换后同步更新数组中的元素顺序（非常重要）
-        const temp = gElement[insertPos];
-        gElement[insertPos] = gElement[i];
-        gElement[i] = temp;
+        [gElement[insertPos], gElement[i]] = [gElement[i], gElement[insertPos]];
       }
       insertPos++;
     }
@@ -462,43 +511,61 @@ export function movingForwardAsAWhole(
   if (!group || !element) return [];
 
   let gElement: Element[] = [];
-  let inputPos = -1;
+  let startIndex = -1;
 
   if (theEntireRegion && group.group_set_id) {
-    //
-  }
+    gElement = getSIndex(group.group_set_id);
 
-  if (group.index_rule === "1" || !group.index_rule) {
-    gElement = store
-      .getGraphicGroupElementsById(group.group_id)
-      .sort((a, b) => a.index - b.index);
-    inputPos = gElement.findIndex((el) => el.index === element.index);
+    startIndex = gElement.findIndex((el) => el.id === element.id);
   } else {
-    gElement = store
-      .getGraphicGroupElementsById(group.group_id)
-      .sort((a, b) => a.index1 - b.index1);
-    inputPos = gElement.findIndex((el) => el.index1 === element.index1);
+    if (group.index_rule === "1" || !group.index_rule) {
+      gElement = store
+        .getGraphicGroupElementsById(group.group_id)
+        .sort((a, b) => a.index - b.index);
+      gElement.forEach((v) => (v.sIndex = v.index));
+      startIndex = gElement.findIndex((el) => el.index === element.index);
+    } else {
+      gElement = store
+        .getGraphicGroupElementsById(group.group_id)
+        .sort((a, b) => a.index1 - b.index1);
+      gElement.forEach((v) => (v.sIndex = v.index1));
+      startIndex = gElement.findIndex((el) => el.index1 === element.index1);
+    }
   }
 
-  if (inputPos === -1) return [];
+  if (startIndex === -1) return [];
 
   const moveEl = deepCopy(
-    gElement.filter((v, idx) => idx > inputPos && v.status !== "idle")
+    gElement.filter((v, idx) => idx > startIndex && v.status !== "idle")
   );
 
   if (moveEl.length === 0) return [];
-  const elGap =
-    !group.index_rule || group.index_rule === "1"
-      ? moveEl[0].index - inputPos - 1
-      : moveEl[0].index1 - inputPos - 1;
+  const elGap = moveEl[0].sIndex - startIndex - 1;
   for (let i = 0; i < moveEl.length; i++) {
-    swapElement(gElement[inputPos], gElement[inputPos + elGap]);
-    swapElementInArray(gElement, inputPos, inputPos + elGap);
+    const fromGroupId = gElement[startIndex].group_by;
+    const toGroupId = gElement[startIndex + elGap].group_by;
+
+    swapElement(gElement[startIndex], gElement[startIndex + elGap]);
+
+    if (fromGroupId !== toGroupId) {
+      const graphicMatrix = store.getState("graphicMatrix");
+      // 不同组交换
+      graphicMatrix.groupElements[fromGroupId] = swapInArrayFlexible(
+        graphicMatrix.groupElements[fromGroupId],
+        gElement[startIndex].id,
+        gElement[startIndex + elGap].id
+      );
+      graphicMatrix.groupElements[toGroupId] = swapInArrayFlexible(
+        graphicMatrix.groupElements[toGroupId],
+        gElement[startIndex + elGap].id,
+        gElement[startIndex].id
+      );
+    }
+
+    swapElementInArray(gElement, startIndex, startIndex + elGap);
+
     if (i < moveEl.length - 1) {
-      inputPos =
-        !group.index_rule || group.index_rule === "1"
-          ? moveEl[i + 1].index - elGap - 1
-          : moveEl[i + 1].index1 - elGap - 1;
+      startIndex = moveEl[i + 1].sIndex - elGap - 1;
     }
   }
 
