@@ -5,6 +5,7 @@ import RuntimeStore from "../runtimeStore/runtimeStore";
 import {deepCopy} from "../utils/common";
 import {saveToImages} from "../graphic/externalMethods";
 import {CanvasState} from '../runtimeStore/runtimeStore'
+import { fillGroupSetInfo } from "../graphic/graphicUtils";
 
 export default function initGraphicInstances(canvas: Canvaser, instances: RenderTargetInstances): OperateFunc {
 
@@ -19,9 +20,9 @@ export default function initGraphicInstances(canvas: Canvaser, instances: Render
     contextMenuOperateFunc,
     getData: () => {
       const graphicData = RuntimeStore.getInstance().getState('graphicMatrix')
-      for (const el in graphicData.elements) {
-        graphicData.elements[el].groupName = RuntimeStore.getInstance().getGraphicGroupsById(graphicData.elements[el].group_by)?.group_name || ''
-      }
+
+      fillGroupSetInfo(graphicData.elements)
+      
       return deepCopy({
         graphic: graphicData,
         transform: RuntimeStore.getInstance().getState('containerTransformState')

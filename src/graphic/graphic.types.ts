@@ -49,6 +49,8 @@ export interface Element {
   id: string;
   group_by: string;
   groupName?: string;
+  group_set_id?: string
+  group_set_name?: string
   index: number;
   // 组内坐标用于正常渲染
   x: number;

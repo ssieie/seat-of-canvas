@@ -188,18 +188,16 @@ export function exchangeElements(e: MouseEvent, dragEl: Element) {
       const hitElIdx2 =
         store.getGraphicGroupsById(hitEl.group_by)?.index_rule === "2";
 
+      const eEle = [
+        { ...dragEl, index: dragElIdx2 ? dragEl.index1 : dragEl.index },
+        { ...hitEl, index: hitElIdx2 ? hitEl.index1 : hitEl.index },
+      ];
+
+      fillGroupSetInfo(eEle);
+
       ContextMenu.getInstance().sendEvent(
         "elementChanged",
-        JSON.stringify(
-          [
-            { ...dragEl, index: dragElIdx2 ? dragEl.index1 : dragEl.index },
-            { ...hitEl, index: hitElIdx2 ? hitEl.index1 : hitEl.index },
-          ].map((v) => {
-            v.groupName =
-              store.getGraphicGroupsById(v.group_by)?.group_name || "";
-            return v;
-          })
-        )
+        JSON.stringify(eEle)
       );
     }
   }
@@ -392,8 +390,26 @@ export function graphicUtilsClear() {
   canvasRect = null;
 }
 
+export function fillGroupSetInfo(els: Element[] | Record<string, Element>) {
+  if (Array.isArray(els)) {
+    for (const el of els) {
+      const group = store.getGraphicGroupsById(el.group_by);
+      el.groupName = group?.group_name || "";
+      el.group_set_id = group?.group_set_id || "";
+      el.group_set_name = group?.group_set_name || "";
+    }
+  } else {
+    for (const el of Object.values(els)) {
+      const group = store.getGraphicGroupsById(el.group_by);
+      el.groupName = group?.group_name || "";
+      el.group_set_id = group?.group_set_id || "";
+      el.group_set_name = group?.group_set_name || "";
+    }
+  }
+}
+
 // 补位相关
-function getIdenticalSetGroups(sId: string) {
+export function getIdenticalSetGroups(sId: string) {
   const id = sId.split("Z#X").shift();
   if (id) {
     return store
@@ -493,6 +509,8 @@ export function moveForwardInSequence(
     }
   }
 
+  fillGroupSetInfo(gElement);
+
   return deepCopy(gElement);
 }
 
@@ -568,6 +586,8 @@ export function movingForwardAsAWhole(
       startIndex = moveEl[i + 1].sIndex - elGap - 1;
     }
   }
+
+  fillGroupSetInfo(gElement);
 
   return deepCopy(gElement);
 }
