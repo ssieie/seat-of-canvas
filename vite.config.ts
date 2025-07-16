@@ -21,8 +21,9 @@ export default defineConfig({
     // },
   },
   plugins: [dts({
+    entryRoot: 'src',
     outDir: 'dist/types',
-    include: ['src'],
+    include: ['src/**/*.ts'],
     insertTypesEntry: true, // 为 package.json 添加 types
   })],
 });

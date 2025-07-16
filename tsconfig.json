@@ -6,10 +6,13 @@
     "strict": true,
     "declaration": true,
     "declarationDir": "dist/types",
-    "outDir": "dist/esm",
+    "outDir": "dist",
+    "rootDir": "src",
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "baseUrl": ".",
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
