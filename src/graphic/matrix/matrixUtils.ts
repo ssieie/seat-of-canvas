@@ -184,7 +184,7 @@ export function addMatrixGroupElement(groupTree: Group, element: Element, type: 
         pos = [referenceEl.pos![0], referenceEl.pos![1] + i]
         break
     }
-    newElements.push(createEmptyElement(id, groupTree, 0, 0, 0, pos, `测试${i}`))
+    newElements.push(createEmptyElement(id, groupTree, 0, 0, 0, pos, ``))
   }
 
   graphicMatrix.elements = {

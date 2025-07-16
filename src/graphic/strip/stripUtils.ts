@@ -238,7 +238,7 @@ export function addStripGroupElement(groupTree: Group, element: Element, type: I
         idx = referenceEl.strip!.idx + i
         break
     }
-    newElements.push(createEmptyElement(id, groupTree.group_id, 0, 0, 0, pos, idx, `测试${i}`))
+    newElements.push(createEmptyElement(id, groupTree.group_id, 0, 0, 0, pos, idx, ``))
   }
 
   graphicMatrix.elements = {

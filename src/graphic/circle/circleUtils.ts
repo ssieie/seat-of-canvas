@@ -69,7 +69,7 @@ export function addCircleGroupElement(groupTree: Group, element: Element, type: 
 
   for (let i = 0; i < num; i++) {
     const id = generateUuid();
-    elements.push(createEmptyElement(id, groupTree, 0, 0, 0, undefined, `测试${i}`))
+    elements.push(createEmptyElement(id, groupTree, 0, 0, 0, undefined, ``))
   }
 
   const targetIdx = newElementIds.indexOf(element.id)
