@@ -300,6 +300,7 @@ class OperateGraphic {
         group.group_set_name = setName
       })
     }
+    rebuildGroupTree(store)
   }
 
   clear() {}
