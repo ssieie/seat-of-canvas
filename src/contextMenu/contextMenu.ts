@@ -15,8 +15,10 @@ import {
   editorialStaffRule,
   occupyASeatRule,
 } from "./menuRules";
-import {moveForwardInSequence, movingForwardAsAWhole} from "../graphic/graphicUtils";
-
+import {
+  moveForwardInSequence,
+  movingForwardAsAWhole,
+} from "../graphic/graphicUtils";
 
 type ContextMenuType = "group" | "element";
 
@@ -315,33 +317,39 @@ export class ContextMenu {
               label: "整体向前移动",
               type: "default",
               onClick: () => {
-                const effectElement = movingForwardAsAWhole(this.currentContextMenuGroup,this.currentContextMenuElement)
+                const effectElement = movingForwardAsAWhole(
+                  this.currentContextMenuGroup,
+                  this.currentContextMenuElement
+                );
 
                 func!.clickMenu(
-                  'covering',
+                  "covering",
                   JSON.stringify({
                     group: ContextMenu.instance.currentContextMenuGroup!,
                     element: ContextMenu.instance.currentContextMenuElement!,
-                    effectElement
+                    effectElement,
                   })
                 );
-              }
+              },
             },
             {
               label: "依次向前移动",
               type: "default",
               onClick: () => {
-                const effectElement = moveForwardInSequence(this.currentContextMenuGroup,this.currentContextMenuElement)
+                const effectElement = moveForwardInSequence(
+                  this.currentContextMenuGroup,
+                  this.currentContextMenuElement
+                );
 
                 func!.clickMenu(
-                  'covering',
+                  "covering",
                   JSON.stringify({
                     group: ContextMenu.instance.currentContextMenuGroup!,
                     element: ContextMenu.instance.currentContextMenuElement!,
-                    effectElement
+                    effectElement,
                   })
                 );
-              }
+              },
             },
           ],
         },
@@ -354,33 +362,40 @@ export class ContextMenu {
               label: "整体向前移动",
               type: "default",
               onClick: () => {
-                const effectElement = movingForwardAsAWhole(this.currentContextMenuGroup,this.currentContextMenuElement)
+                const effectElement = movingForwardAsAWhole(
+                  this.currentContextMenuGroup,
+                  this.currentContextMenuElement
+                );
 
                 func!.clickMenu(
-                  'covering',
+                  "covering",
                   JSON.stringify({
                     group: ContextMenu.instance.currentContextMenuGroup!,
                     element: ContextMenu.instance.currentContextMenuElement!,
-                    effectElement
+                    effectElement,
                   })
                 );
-              }
+              },
             },
             {
               label: "依次向前移动",
               type: "default",
               onClick: () => {
-                const effectElement = moveForwardInSequence(this.currentContextMenuGroup,this.currentContextMenuElement,true)
+                const effectElement = moveForwardInSequence(
+                  this.currentContextMenuGroup,
+                  this.currentContextMenuElement,
+                  true
+                );
 
                 func!.clickMenu(
-                  'covering',
+                  "covering",
                   JSON.stringify({
                     group: ContextMenu.instance.currentContextMenuGroup!,
                     element: ContextMenu.instance.currentContextMenuElement!,
-                    effectElement
+                    effectElement,
                   })
                 );
-              }
+              },
             },
           ],
         },
@@ -391,7 +406,10 @@ export class ContextMenu {
             {
               label: "插入一个",
               type: "default",
-              onClick: () => insertEl("before", 1),
+              onClick: () => {
+                insertEl("before", 1);
+                func!.clickMenu("insertOne", JSON.stringify({}));
+              },
             },
             {
               label: "任意数量",
@@ -417,7 +435,10 @@ export class ContextMenu {
             {
               label: "插入一个",
               type: "default",
-              onClick: () => insertEl("after", 1),
+              onClick: () => {
+                insertEl("after", 1);
+                func!.clickMenu("insertOne", JSON.stringify({}));
+              },
             },
             {
               label: "任意数量",
