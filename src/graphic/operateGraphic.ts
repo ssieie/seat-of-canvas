@@ -182,8 +182,10 @@ class OperateGraphic {
   }
 
   // contextMenu
-  delGroup(group: Group) {
-    let result = true;
+  delGroup(group: Group):Element[] {
+    const els = store.getGraphicGroupElementsById(group.group_id)
+
+    let result = true
 
     const graphicMatrix = store.getState("graphicMatrix");
 
@@ -191,24 +193,24 @@ class OperateGraphic {
       graphicMatrix.groups[group.type],
       group.group_id
     );
-    if (!result) return result;
+    if (!result) return [];
 
     result = Reflect.deleteProperty(
       graphicMatrix.groupElements,
       group.group_id
     );
-    if (!result) return result;
+    if (!result) return [];
 
     for (const [e_id, element] of Object.entries(graphicMatrix.elements)) {
       if (element.group_by === group.group_id) {
         result = Reflect.deleteProperty(graphicMatrix.elements, e_id);
-        if (!result) return result;
+        if (!result) return [];
       }
     }
 
     store.updateState("graphicMatrix", graphicMatrix);
 
-    return result;
+    return result ? els : []
   }
 
   // 保存为图片
