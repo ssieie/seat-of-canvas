@@ -26,7 +26,7 @@ export type GraphicOperateFunc = {
 }
 
 export type ContextMenuOperateFunc = {
-  delGroup: (group: Group) => boolean
+  delGroup: (group: Group) => Element[]
   exportToPng: (group: Group) => void
   increaseElement: (group: Group, element: Element, type: IncreaseElementPos, num: number) => void
   decreaseElement: (group: Group, element: Element) => void
