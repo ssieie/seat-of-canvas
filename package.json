@@ -1,6 +1,6 @@
 {
   "name": "z-rs-lib",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "type": "module",
   "main": "dist/z-rs-core.umd.js",
   "module": "dist/z-rs-core.es.js",

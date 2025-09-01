@@ -10,7 +10,6 @@ import {graphicUtilsClear, graphicUtilsInit} from "../graphic/graphicUtils";
 import ContextMenu from "../contextMenu/contextMenu";
 import {MY_CANVAS_BG} from "../graphic/constant";
 import ZoomTool from "../canvasTool/zoomTool";
-import {throttle} from '../utils/common'
 import {resizeMount, resizeUnmount} from "../utils/resize";
 
 const store = RuntimeStore.getInstance();
@@ -120,5 +119,5 @@ export function exit() {
 }
 
 export {
-  throttle
+  OperateFunc
 }
