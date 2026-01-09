@@ -102,9 +102,9 @@ export function exit() {
     instances[key]?.clear();
   }
 
-  RuntimeStore.getInstance().destroy()
+  store.destroy()
 
-  RuntimeStore.getInstance().reset()
+  store.reset()
 
   store.unsubscribeAll()
 

@@ -1,28 +1,154 @@
-<!doctype html>
-<html lang="zh">
-<head>
-    <meta charset="UTF-8"/>
-    <link rel="icon" type="image/svg+xml" href="/vite.svg"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Vite + TS</title>
-</head>
-<body>
-<div id="app">
-    <div class="btns">
-        <div class="btn" id="addM" @click="addM(2,2)">+矩形2*2</div>
-        <!--    <div class="btn" @click="addM(3,3)">+矩形3*3</div>-->
-        <div class="btn" @click="addM(6,4)">+矩形6*4</div>
-        <div class="btn" @click="addMTest(6,4)">+矩形6*4 * 100</div>
-        <div class="btn" style="background-color: green" @click="addC(50)">+圆形(6)</div>
-        <div class="btn" style="background-color: orange" @click="addS(2,3)">+条(2,3)</div>
-        <div class="btn" style="background-color: orange" @click="addS(3,5)">+条(3,5)</div>
-        <div class="btn" style="background-color: slateblue" @click="getData">获取当前数据</div>
-        <div class="btn" style="background-color: sienna" @click="saveToImg">保存为图片</div>
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>座位编排工具</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- 顶部工具栏 -->
+      <div class="toolbar">
+        <span class="toolbar-title">座位编排</span>
+
+        <div class="btn-group">
+          <button class="btn" onclick="addGroup('rectangle', 3, 3)">矩形</button>
+          <button class="btn" onclick="addGroup('circle', 6)">圆形</button>
+          <button class="btn" onclick="addGroup('strip', 2, 4)">条形</button>
+        </div>
+
+        <button class="btn btn-info" onclick="showBatchDialog()">批量添加</button>
+
+        <span class="shortcut">右键菜单: 删除/插入 | 滚轮缩放 | 拖拽移动</span>
+
+        <div class="btn-group" style="margin-left: auto">
+          <button class="btn" onclick="exportData()">导出数据</button>
+          <button class="btn" onclick="importData()">导入数据</button>
+          <button class="btn btn-danger" onclick="clearCanvas()">清空</button>
+        </div>
+      </div>
+
+      <!-- 画布区域 -->
+      <div class="canvas-wrapper">
+        <div id="canvas-container"></div>
+      </div>
+
+      <!-- 底部状态栏 -->
+      <div class="status-bar">
+        <div class="status-left">
+          <span class="status-item">
+            <span class="status-dot"></span>
+            就绪
+          </span>
+          <span id="group-count">组: 0</span>
+          <span id="seat-count">座位: 0</span>
+        </div>
+        <div class="status-right">
+          <span id="zoom-level">缩放: 100%</span>
+          <span id="coord-display">坐标: 0, 0</span>
+        </div>
+      </div>
     </div>
-    <div class="content">
-        <div id="wrapper"></div>
+
+    <!-- 右键菜单 -->
+    <div id="context-menu" class="context-menu">
+      <div class="menu-item" onclick="deleteGroup()">
+        <span>🗑️</span>
+        删除区域
+      </div>
+      <div class="menu-item" onclick="insertSeat('before')">
+        <span>↩️</span>
+        前插座位
+      </div>
+      <div class="menu-item" onclick="insertSeat('after')">
+        <span>↪️</span>
+        后插座位
+      </div>
+      <div class="menu-divider"></div>
+      <div class="menu-item" onclick="setSeatStatus('idle')">
+        <span>🟢</span>
+        设为空闲
+      </div>
+      <div class="menu-item" onclick="setSeatStatus('occupy')">
+        <span>🟡</span>
+        设为占用
+      </div>
+      <div class="menu-item" onclick="setSeatStatus('full')">
+        <span>🔴</span>
+        设为满座
+      </div>
+      <div class="menu-divider"></div>
+      <div class="menu-item" onclick="renameGroup()">
+        <span>✏️</span>
+        重命名
+      </div>
+      <div class="menu-item" onclick="exportGroup()">
+        <span>📤</span>
+        导出区域
+      </div>
     </div>
-</div>
-<script type="module" src="/main.ts"></script>
-</body>
+
+    <!-- 批量添加对话框 -->
+    <div id="batch-dialog" class="modal-overlay">
+      <div class="modal">
+        <div class="modal-title">批量添加区域</div>
+        <div class="modal-content">
+          <div class="modal-field">
+            <label>类型</label>
+            <select id="batch-type">
+              <option value="rectangle">矩形</option>
+              <option value="circle">圆形</option>
+              <option value="strip">条形</option>
+            </select>
+          </div>
+          <div class="modal-field">
+            <label>行数</label>
+            <input type="number" id="batch-rows" value="2" min="1" max="10" />
+          </div>
+          <div class="modal-field">
+            <label>列数</label>
+            <input type="number" id="batch-cols" value="2" min="1" max="10" />
+          </div>
+          <div class="modal-field">
+            <label>每个区域座位数</label>
+            <input type="number" id="batch-seats" value="6" min="1" max="50" />
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn" onclick="hideBatchDialog()">取消</button>
+          <button class="btn btn-primary" onclick="confirmBatchAdd()">添加</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 重命名对话框 -->
+    <div id="rename-dialog" class="modal-overlay">
+      <div class="modal">
+        <div class="modal-title">重命名区域</div>
+        <div class="modal-content">
+          <div class="modal-field">
+            <label>区域名称</label>
+            <input type="text" id="rename-input" placeholder="输入区域名称" />
+          </div>
+          <div class="modal-field">
+            <label>组名称</label>
+            <input type="text" id="rename-set-input" placeholder="输入组名称（可选）" />
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn" onclick="hideRenameDialog()">取消</button>
+          <button class="btn btn-primary" onclick="confirmRename()">确定</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast 容器 -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- 隐藏的文件输入 -->
+    <input type="file" id="import-input" accept=".json" style="display: none" />
+
+    <script type="module" src="/main.ts"></script>
+  </body>
 </html>

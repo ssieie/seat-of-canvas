@@ -72,7 +72,7 @@ function isOverlap(
 }
 
 // 根据画布矩形分布情况返回新矩形可用的基准Pos --以下为简单实现性能欠佳
-export function getBasicPos(w: number, h: number): [number, number] {
+export function getBasicPos1(w: number, h: number): [number, number] {
   const { scale, offsetX, offsetY } = getTransformState();
   // 屏幕转换后的宽
   const screenW = getCanvas()!.width / scale;
@@ -102,6 +102,110 @@ export function getBasicPos(w: number, h: number): [number, number] {
       return [x + GRAPHIC_MARGIN, y + GRAPHIC_MARGIN];
     }
   }
+}
+
+/**
+ * 在画布中从左上角开始搜索，找到第一个可以容纳指定矩形的位置
+ * - 可视范围内：从左到右、从上到下搜索
+ * - 可视范围外：只能继续向下搜索，x 范围保持可视区域的左右边界
+ * @param w 矩形宽度
+ * @param h 矩形高度
+ * @returns [x, y] 可用位置的坐标
+ */
+export function getBasicPos(w: number, h: number): [number, number] {
+  // 1. 获取画布可视范围（逻辑坐标）
+  const { scale, offsetX, offsetY } = getTransformState();
+  const canvas = getCanvas();
+  if (!canvas) return [0, 0];
+
+  const startX = -offsetX / scale;
+  const startY = -offsetY / scale;
+  const visibleW = canvas.width / scale;
+  const visibleH = canvas.height / scale;
+
+  // x 轴边界保持可视范围
+  const minX = startX;
+  const maxX = startX + visibleW - w;
+
+  // RBush 空间索引
+  const groupTree = store.getState('groupTree');
+  const step = 10; // 搜索步进
+  const maxSearchY = startY + 5000; // 向下搜索的最大范围
+
+  // 2. 从上到下搜索
+  for (let y = startY; y <= maxSearchY; y += step) {
+    // 3. 判断当前行是否在可视范围内
+    const isVisibleRow = y <= startY + visibleH - h;
+
+    for (let x = minX; x <= maxX; x += step) {
+      // 4. 检查当前位置是否被占用
+      if (!isPositionOccupied(x, y, w, h, groupTree)) {
+        return [x, y];
+      }
+
+      // 5. 跳过当前行的重叠区域
+      const nextX = findNextAvailableX(x, y, w, h, maxX, groupTree);
+      if (nextX > x) {
+        x = nextX - step;
+      }
+    }
+  }
+
+  // 6. 没找到返回可视范围左上角
+  return [startX, startY];
+}
+
+/**
+ * 检查指定位置是否与现有组重叠
+ */
+function isPositionOccupied(
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  groupTree: any
+): boolean {
+  const searchRect = { minX: x, minY: y, maxX: x + w, maxY: y + h };
+  const candidates = groupTree.search(searchRect);
+
+  for (const g of candidates) {
+    // 实际重叠检测（考虑边界）
+    if (x < g.maxX && x + w > g.minX && y < g.maxY && y + h > g.minY) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * 找到当前行中，当前位置右侧最近的可跳过位置
+ * 跳过范围 = 重叠组的右边界 + GRAPHIC_MARGIN
+ */
+function findNextAvailableX(
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  maxX: number,
+  groupTree: any
+): number {
+  const searchRect = { minX: x, minY: y, maxX: maxX + w, maxY: y + h };
+  const candidates = groupTree.search(searchRect);
+
+  let skipTo = maxX; // 默认为最右侧边界
+
+  for (const g of candidates) {
+    // 只考虑实际重叠的组
+    if (x < g.maxX && x + w > g.minX) {
+      // 跳到该组右边界 + 间隙
+      const groupRight = g.x + g.w + GRAPHIC_MARGIN;
+      if (groupRight > x && groupRight < skipTo) {
+        skipTo = groupRight;
+      }
+    }
+  }
+
+  return skipTo;
 }
 
 let canvasRect: DOMRect | null = null;
